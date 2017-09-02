@@ -3,13 +3,16 @@
     <head>
         <meta charset="UTF-8">
         <title>Yomichan Options</title>
-        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
         <style>
             #anki-spinner, #anki-general, #anki-error,
-            #dict-spinner, #dict-error, #dict-warning, #dict-purge-progress, #dict-import-progress,
+            #dict-spinner, #dict-error, #dict-warning, #dict-purge-progress,
             #debug,
             .options-advanced {
+                display: none;
+            }
+            .novisible {
                 display: none;
             }
 
@@ -95,7 +98,7 @@
 
                 <div id="dict-groups"></div>
 
-                <div id="dict-import-progress">
+                <div id="dict-import-progress" class="novisible">
                     Dictionary data is being imported, please be patient...
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped" style="width: 0%"></div>

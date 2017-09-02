@@ -14,13 +14,17 @@
  */
 
 let state = false;
+
 function rikaiToggle(){
 	state = !state;
+	let btn = document.getElementById('open');
 	if (state){
-		document.getElementById('open').innerText = 'Off';	
+		btn.innerText = 'Off';
+		btn.setAttribute('class', 'btn btn btn-danger');
 		browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
 	}else{
-		document.getElementById('open').innerText = 'On';
+		btn.innerText = 'On';
+		btn.setAttribute('class', 'btn btn btn-success');
 		browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
 	}
 	
@@ -30,5 +34,5 @@ function openOptions(){
 	browser.runtime.openOptionsPage();
 }
 
-document.getElementById('open').onclick = rikaiToggle;
+document.getElementById('toggle').onclick = rikaiToggle;
 document.getElementById('open-options').onclick = openOptions;

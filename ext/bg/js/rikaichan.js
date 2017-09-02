@@ -4,12 +4,11 @@ window.rikaichanWebEx = new class {
 		this.toggle = false;
 		this.tabInfo = {};
 		this.dataMessage = {};
+		this.translator = new Translator();
 		this.processMessage = this.processMessage.bind(this);
 		this.messageTab = this.messageTab.bind(this);
-		window.addEventListener('load', this._onLoad, false);
-		var f = this.processMessage;
-		// browser.browserAction.onClicked.addListener(f);
-		// this.st = browser.storage;
+		//window.addEventListener('load', this._onLoad, false);
+		//var f = this.processMessage;
 	}
 /*
 	onLoad(){
@@ -38,25 +37,15 @@ window.rikaichanWebEx = new class {
 		console.log(this.onUnload);
 		this.onUnload();
 	}*/
-	
-	onGot(tabInfo) {
-		rikaichanWebEx.tabInfo.id = tabInfo.id;
-		console.log(this.tabInfo);
-	}
-	
+
 	messageTab(tabs) {
 		browser.tabs.sendMessage(tabs[0].id, this.dataMessage);
 	}
 	
-	// processMessage(request, sender, sendResponse) {
 	processMessage(request) {
 		var icon;
-		// var g = this.onGot;
-		// var gettingCurrent = browser.tabs.getCurrent().then(this.onGot);		
-		//gettingCurrent.then(g, null);
-		// console.log(browser.storage);
 		this.toggle = !this.toggle;
-		icon = this.toggle ? "/img/toggle32on.png" : "/img/toggle32off.png";
+		icon = this.toggle ? "/img/Rikai_new_icon_on.png" : "/img/Rikai_new_icon_off.png";
 		browser.browserAction.setIcon({tabId: this.tabInfo.id, path: icon});
 		this.dataMessage.action = this.toggle ? "enable" : "disable";
 		var querying = browser.tabs.query({

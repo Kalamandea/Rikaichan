@@ -5,9 +5,9 @@
     "description": "Japanese dictionary",
     "author": "ffjon",
     "contributor": "Kalamandea",
-	"icons": {"16": "img/toggle32on.png", "48": "img/toggle32on.png", "128": "img/toggle32on.png"},
+	"icons": {"16": "img/Rikai_new_icon_on.png", "48": "img/Rikai_new_icon_on.png", "128": "img/Rikai_new_icon_on.png"},
 	"browser_action": {
-        "default_icon": {"19": "img/toggle32off.png", "38": "img/toggle32on.png"},
+        "default_icon": {"19": "img/Rikai_new_icon_off.png", "38": "img/Rikai_new_icon_off.png"},
 		"default_popup": "bg/popup.html"
     },
     "background": {"page": "bg/background.html"},
