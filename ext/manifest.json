@@ -1,0 +1,21 @@
+{
+    "manifest_version": 2,
+    "name": "Yomichan",
+    "version": "1.2.0",
+
+    "description": "Japanese dictionary with Anki integration",
+    "author": "Alex Yatskov",
+    "background": {"page": "bg/background.html"},
+    "minimum_chrome_version": "45.0.0.0",
+    "permissions": [
+        "<all_urls>",
+        "storage",
+        "clipboardWrite"
+    ],
+    "applications": {
+        "gecko": {
+            "id": "alex@foosoft.net",
+            "strict_min_version": "51.0"
+        }
+    }
+}
