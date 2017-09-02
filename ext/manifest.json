@@ -1,9 +1,10 @@
 {
     "manifest_version": 2,
     "name": "Rikaichan",
-    "version": "1.2.0",
+    "version": "4.0.0",
     "description": "Japanese dictionary",
-    "author": "Kalamandea",
+    "author": "ffjon",
+    "contributor": "Kalamandea",
 	"icons": {"16": "img/toggle32on.png", "48": "img/toggle32on.png", "128": "img/toggle32on.png"},
 	"browser_action": {
         "default_icon": {"19": "img/toggle32off.png", "38": "img/toggle32on.png"},

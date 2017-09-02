@@ -1,7 +1,4 @@
 /*
- * Copyright (C) 2017  Alex Yatskov <alex@foosoft.net>
- * Author: Alex Yatskov <alex@foosoft.net>
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,23 +13,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-/*$(document).ready(() => {
-    $('#open-search').click(() => commandExec('search'));
-    $('#open-options').click(() => commandExec('options'));
-    $('#open-help').click(() => commandExec('help'));
-
-    optionsLoad().then(options => {
-        const toggle = $('#enable-search');
-        toggle.prop('checked', options.general.enable).change();
-        toggle.bootstrapToggle();
-        toggle.change(() => commandExec('toggle'));
-    });
-});
-*/
-
-// browser.extension.getBackgroundPage().rikaichanWebEx.processMessage()
-
 let state = false;
 function rikaiToggle(){
 	state = !state;
@@ -46,5 +26,9 @@ function rikaiToggle(){
 	
 }
 
+function openOptions(){
+	browser.runtime.openOptionsPage();
+}
 
 document.getElementById('open').onclick = rikaiToggle;
+document.getElementById('open-options').onclick = openOptions;
