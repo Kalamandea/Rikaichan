@@ -76,42 +76,6 @@
             </div>
 
             <div>
-                <h3>Scanning Options</h3>
-
-                <div class="checkbox">
-                    <label><input type="checkbox" id="middle-mouse-button-scan"> Middle mouse button scans</label>
-                </div>
-
-                <div class="checkbox">
-                    <label><input type="checkbox" id="select-matched-text"> Select matched text</label>
-                </div>
-
-                <div class="checkbox">
-                    <label><input type="checkbox" id="search-alphanumeric"> Search alphanumeric text</label>
-                </div>
-
-                <div class="form-group options-advanced">
-                    <label for="scan-delay">Scan delay (in milliseconds)</label>
-                    <input type="number" min="1" id="scan-delay" class="form-control">
-                </div>
-
-                <div class="form-group options-advanced">
-                    <label for="scan-length">Scan length (in characters)</label>
-                    <input type="number" min="1" id="scan-length" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="scan-modifier-key">Scan modifier key</label>
-                    <select class="form-control" id="scan-modifier-key">
-                        <option value="none">None</option>
-                        <option value="alt">Alt</option>
-                        <option value="ctrl">Ctrl</option>
-                        <option value="shift">Shift</option>
-                    </select>
-                </div>
-            </div>
-
-            <div>
                 <div>
                     <img src="/mixed/img/spinner.gif" class="pull-right" id="dict-spinner" alt>
                     <h3>Dictionaries</h3>
@@ -151,132 +115,13 @@
                     <input type="file" id="dict-file">
                 </div>
             </div>
-
-            <div>
-                <div>
-                    <img src="/mixed/img/spinner.gif" class="pull-right" id="anki-spinner" alt>
-                    <h3>Anki Options</h3>
-                </div>
-
-                <p class="help-block">
-                    Yomichan supports automatic flashcard creation for <a href="http://ankisrs.net/" target="_blank">Anki</a>, a free application
-                    designed to help you remember. This feature requires installation of the
-                    <a href="https://foosoft.net/projects/anki-connect/" target="_blank">AnkiConnect</a> plugin.
-                </p>
-
-                <div class="alert alert-danger" id="anki-error">
-                    <strong>Error:</strong>
-                    <span></span>
-                </div>
-
-                <div class="checkbox">
-                    <label><input type="checkbox" id="anki-enable"> Enable Anki integration</label>
-                </div>
-
-                <div id="anki-general">
-                    <div class="checkbox options-advanced">
-                        <label><input type="checkbox" id="generate-html-cards"> Generate HTML cards</label>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="card-tags">Card tags (comma or space separated)</label>
-                        <input type="text" id="card-tags" class="form-control">
-                    </div>
-
-                    <div class="form-group options-advanced">
-                        <label for="sentence-detection-extent">Sentence detection extent (in characters)</label>
-                        <input type="number" min="1" id="sentence-detection-extent" class="form-control">
-                    </div>
-
-                    <div class="form-group options-advanced">
-                        <label for="interface-server">Interface server</label>
-                        <input type="text" id="interface-server" class="form-control">
-                    </div>
-
-                    <div id="anki-format">
-                        <p class="help-block">
-                            Specify the information you would like included in your flashcards in the field editor below.
-                            As Anki requires the first field in the model to be unique, it is recommended
-                            that you set it to <code>{expression}</code> for term flashcards and <code>{character}</code> for
-                            Kanji flashcards. You can use multiple markers per field by typing them in directly.
-                        </p>
-
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#terms" data-toggle="tab">Terms</a></li>
-                            <li><a href="#kanji" data-toggle="tab">Kanji</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                            <div id="terms" class="tab-pane fade in active">
-                                <div class="row">
-                                    <div class="form-group col-xs-6">
-                                        <label for="anki-terms-deck">Deck</label>
-                                        <select class="form-control anki-deck" id="anki-terms-deck"></select>
-                                    </div>
-
-                                    <div class="form-group col-xs-6">
-                                        <label for="anki-terms-model">Model</label>
-                                        <select class="form-control anki-model" id="anki-terms-model"></select>
-                                    </div>
-                                </div>
-
-                                <table class="table table-bordered anki-fields">
-                                    <thead><tr><th>Field</th><th>Value</th></tr></thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-
-                            <div id="kanji" class="tab-pane fade">
-                                <div class="row">
-                                    <div class="form-group col-xs-6">
-                                        <label for="anki-kanji-deck">Deck</label>
-                                        <select class="form-control anki-deck" id="anki-kanji-deck"></select>
-                                    </div>
-
-                                    <div class="form-group col-xs-6">
-                                        <label for="anki-kanji-model">Model</label>
-                                        <select class="form-control anki-model" id="anki-kanji-model"></select>
-                                    </div>
-                                </div>
-
-                                <table class="table table-bordered anki-fields">
-                                    <thead><tr><th>Field</th><th>Value</th></tr></thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h3>Support Development</h3>
-
-                    <p class="help-block">
-                        Yomichan is provided to you <em>completely free</em> of charge. Unlike numerous other "free" services, you are not
-                        shown ads, pestered with "offers", or have your browser usage information analyzed and sold to third parties.
-                    </p>
-                    <p class="help-block">
-                        If you find Yomichan useful, please consider making a small donation as a way to show your appreciation for the
-                        countless hours that I have devoted to this extension.
-                    </p>
-                    <p>
-                        <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4DBTN9A3CUAFN" target="_blank"><img src="/bg/img/paypal.gif" alt></a>
-                    </p>
-                </div>
-
-                <pre id="debug"></pre>
-            </div>
-
-            <div class="pull-right">
-                <small><a href="https://foosoft.net/projects/yomichan/" target="_blank">Homepage</a> &bull; <a href="legal.html">Legal</a></small>
-            </div>
         </div>
 
-        <script src="/mixed/lib/jquery.min.js"></script>
-        <script src="/mixed/lib/bootstrap/js/bootstrap.min.js"></script>
-        <script src="/mixed/lib/handlebars.min.js"></script>
-        <script src="/bg/js/templates.js"></script>
-        <script src="/bg/js/util.js"></script>
+        <!--<script src="/mixed/lib/jquery.min.js"></script>-->
+        <!--<script src="/mixed/lib/bootstrap/js/bootstrap.min.js"></script>-->
+        <!--<script src="/mixed/lib/handlebars.min.js"></script>-->
+        <!--<script src="/bg/js/templates.js"></script>-->
+        <!--<script src="/bg/js/util.js"></script>-->
         <script src="/bg/js/options.js"></script>
     </body>
 </html>

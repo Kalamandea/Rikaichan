@@ -1,20 +1,40 @@
 {
     "manifest_version": 2,
-    "name": "Yomichan",
+    "name": "Rikaichan",
     "version": "1.2.0",
-
-    "description": "Japanese dictionary with Anki integration",
-    "author": "Alex Yatskov",
+    "description": "Japanese dictionary",
+    "author": "Kalamandea",
+	"icons": {"16": "img/toggle32on.png", "48": "img/toggle32on.png", "128": "img/toggle32on.png"},
+	"browser_action": {
+        "default_icon": {"19": "img/toggle32off.png", "38": "img/toggle32on.png"},
+		"default_popup": "bg/popup.html"
+    },
     "background": {"page": "bg/background.html"},
     "minimum_chrome_version": "45.0.0.0",
+	"options_ui": {
+        "page": "bg/options.html"
+    },
     "permissions": [
         "<all_urls>",
         "storage",
         "clipboardWrite"
     ],
+	"content_scripts": [
+    {
+      "js": [
+        "fg/frame.js"
+      ],
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "all_frames": true
+    }
+  ],
     "applications": {
         "gecko": {
-            "id": "alex@foosoft.net",
+            "id": "rikaichan@mozilla.org",
             "strict_min_version": "51.0"
         }
     }
