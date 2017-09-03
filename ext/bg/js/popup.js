@@ -17,7 +17,7 @@ let state = false;
 
 function rikaiToggle(){
 	state = !state;
-	let btn = document.getElementById('open');
+	let btn = document.getElementById('toggle');
 	if (state){
 		btn.innerText = 'Off';
 		btn.setAttribute('class', 'btn btn btn-danger');

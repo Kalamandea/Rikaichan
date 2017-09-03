@@ -7,9 +7,36 @@ window.rikaichanWebEx = new class {
 		this.translator = new Translator();
 		this.processMessage = this.processMessage.bind(this);
 		this.messageTab = this.messageTab.bind(this);
+
+		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
+			//browser.commands.onCommand.addListener(this.onCommand.bind(this));
+			//browser.runtime.onMessage.addListener(this.onMessage.bind(this));
+			if (this.options.general.showGuide) {
+				browser.tabs.create({url: chrome.extension.getURL('/bg/guide.html')});
+			}
+		});
 		//window.addEventListener('load', this._onLoad, false);
 		//var f = this.processMessage;
 	}
+
+	optionsSet(options) {
+		// In Firefox, setting options from the options UI somehow carries references
+		// to the DOM across to the background page, causing the options object to
+		// become a "DeadObject" after the options page is closed. The workaround used
+		// here is to create a deep copy of the options object.
+		this.options = JSON.parse(JSON.stringify(options));
+
+		if (!this.options.general.enable) {
+			//browser.browserAction.setBadgeBackgroundColor({color: '#d9534f'});
+			//browser.browserAction.setBadgeText({text: 'off'});
+		} else if (!dictConfigured(this.options)) {
+			//browser.browserAction.setBadgeBackgroundColor({color: '#f0ad4e'});
+			//browser.browserAction.setBadgeText({text: '!'});
+		} else {
+			browser.browserAction.setBadgeText({text: ''});
+		}
+	}
+
 /*
 	onLoad(){
 		window.removeEventListener('load', this.onLoad, false);

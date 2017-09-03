@@ -55,7 +55,7 @@ function commandExec(command) {
  */
 
 function instRikai() {
-    return chrome.extension.getBackgroundPage().rikaichanWebEx;
+    return browser.extension.getBackgroundPage().rikaichanWebEx;
 }
 
 function instDb() {
@@ -67,9 +67,9 @@ function instDb() {
  */
 
 function fgBroadcast(action, params) {
-    chrome.tabs.query({}, tabs => {
+    browser.tabs.query({}, tabs => {
         for (const tab of tabs) {
-            chrome.tabs.sendMessage(tab.id, {action, params}, () => null);
+            browser.tabs.sendMessage(tab.id, {action, params}, () => null);
         }
     });
 }
@@ -178,7 +178,7 @@ function optionsVersion(options) {
 
 function optionsLoad() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get(null, store => resolve(store.options));
+        browser.storage.local.get(null, store => resolve(store.options));
     }).then(optionsStr => {
         return optionsStr ? JSON.parse(optionsStr) : {};
     }).catch(error => {
@@ -190,7 +190,7 @@ function optionsLoad() {
 
 function optionsSave(options) {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.set({options: JSON.stringify(options)}, resolve);
+        browser.storage.local.set({options: JSON.stringify(options)}, resolve);
     }).then(() => {
         instYomi().optionsSet(options);
         fgOptionsSet(options);
@@ -440,13 +440,13 @@ function jsonLoad(url) {
 }
 
 function jsonLoadInt(url) {
-    return jsonLoad(chrome.extension.getURL(url));
+    return jsonLoad(browser.extension.getURL(url));
 }
 
 /*
  * Zip
  */
-/*
+
 function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
     return JSZip.loadAsync(archive).then(files => files.files).then(files => {
         const indexFile = files['index.json'];
@@ -506,7 +506,7 @@ function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
         });
     });
 }
-*/
+
 /*
  * Helpers
  */

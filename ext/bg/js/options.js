@@ -40,7 +40,7 @@ function onOptionsChanged(e) {
     }
 }
 
-$(document).ready(() => {
+/*$(document).ready(() => {
     handlebarsRegister();
 
     optionsLoad().then(options => {
@@ -53,28 +53,28 @@ $(document).ready(() => {
         //updateVisibility(options);
     });
 });
-
+*/
 
 /*
  * Dictionary
  */
 
 function dictionaryErrorShow(error) {
-    const dialog = $('#dict-error');
+ /*   const dialog = $('#dict-error');
     if (error) {
         dialog.show().find('span').text(error);
     } else {
         dialog.hide();
-    }
+    }*/
 }
 
 function dictionarySpinnerShow(show) {
-    const spinner = document.getElementById('dict-spinner');
+    /*const spinner = document.getElementById('dict-spinner');
     if (show) {
         spinner.show();
     } else {
         spinner.hide();
-    }
+    }*/
 }
 
 function dictionaryGroupsSort() {
@@ -153,9 +153,12 @@ function onDictionaryImport(e) {
     dictionarySpinnerShow(true);
 
     const dictFile = document.getElementById('dict-file'); //$('#dict-file');
-    const dictImporter =  document.getElementById('dict-file').setAttribute('style', 'display:none');
-    const dictProgress = document.getElementById('dict-import-progress').setAttribute('class', '');
-    const setProgress = percent => dictProgress.find('.progress-bar').css('width', `${percent}%`);
+    const dictImporter =  document.getElementById('dict-file');
+    dictImporter.setAttribute('style', 'display:none');
+    const dictProgress = document.getElementById('dict-import-progress');
+    dictProgress.setAttribute('class', '');
+    const dictProgressBar = document.getElementById('dict-import-progress');
+    const setProgress = percent => dictProgressBar.setAttribute('style','width:'+percent+'%');// dictProgress.find('.progress-bar').css('width', `${percent}%`);
     const updateProgress = (total, current) => setProgress(current / total * 100.0);
 
     setProgress(0.0);
@@ -166,9 +169,20 @@ function onDictionaryImport(e) {
             return optionsSave(options);
         }).then(() => dictionaryGroupsPopulate(options));
     }).catch(dictionaryErrorShow).then(() => {
-        dictFile.val('');
+        dictFile.value = '';
         dictionarySpinnerShow(false);
         dictProgress.setAttribute('class', 'novisible');
         dictImporter.setAttribute('style', '');
     });
 }
+
+
+optionsLoad().then(options => {
+    document.getElementById('dict-file').onchange = onDictionaryImport;
+
+    //$('#dict-purge').click(onDictionaryPurge);
+    //$('#dict-file').change(onDictionaryImport);
+
+    dictionaryGroupsPopulate(options);
+    //updateVisibility(options);
+});
