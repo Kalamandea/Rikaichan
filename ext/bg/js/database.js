@@ -17,7 +17,7 @@
  */
 
 
-class Database {
+class DatabaseYomichan {
     constructor() {
         this.db = null;
         this.dbVersion = 2;

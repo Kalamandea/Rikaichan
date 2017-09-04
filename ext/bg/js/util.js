@@ -449,7 +449,7 @@ function jsonLoadInt(url) {
 
 function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
     return JSZip.loadAsync(archive).then(files => files.files).then(files => {
-        const indexFile = files['index.json'];
+        /*const indexFile = files['index.json'];
         if (!indexFile) {
             return Promise.reject('no dictionary index found in archive');
         }
@@ -460,7 +460,29 @@ function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
                 return Promise.reject('unrecognized dictionary format');
             }
 
-            return indexLoaded(
+
+        });*/
+
+        const dict = files['Dict.csv'];
+        if (!dict) {
+            return Promise.reject('missing Dictionary file');
+        }
+        const loaders = [];
+        loaders.push(() => dict.async('string').then(dictCsv => {
+            //const bank = JSON.parse(dictCsv);
+            //console.log('rec' + bank.columns.length);
+            const lines = dictCsv.split('>');
+            let banksLoaded = 0;
+            return termsLoaded('Dict_eng', lines, 1, banksLoaded++);
+        }));
+
+        let chain = Promise.resolve();
+        for (const loader of loaders) {
+            chain = chain.then(loader);
+        }
+        return chain;
+
+       /*     return indexLoaded(
                 index.title,
                 index.version,
                 index.revision,
@@ -503,8 +525,47 @@ function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
             }
 
             return chain;
-        });
+        });*/
     });
+}
+
+
+/*
+ * File
+ */
+
+class rcxFile {
+    read(uri) {
+        //TODO переделать на открытие файла
+        let sp = Components.classes['@mozilla.org/scriptsecuritymanager;1']
+            .getService(Components.interfaces.nsIScriptSecurityManager)
+            .getSystemPrincipal();
+        let inp = Components.classes['@mozilla.org/network/io-service;1']
+            .getService(Components.interfaces.nsIIOService)
+            .newChannel2(uri, null, null, null, sp, null,
+                Components.interfaces.nsILoadInfo.SEC_NORMAL,
+                Components.interfaces.nsIContentPolicyBase.TYPE_DOCUMENT)
+            .open();
+        let is = Components.classes['@mozilla.org/intl/converter-input-stream;1']
+            .createInstance(Components.interfaces.nsIConverterInputStream);
+        is.init(inp, 'UTF-8', 4 * 1024 * 1024,
+            Components.interfaces.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER);
+
+        let buffer = '';
+        let s = {};
+        while (is.readString(-1, s) > 0) {
+            buffer += s.value;
+        }
+        is.close();
+
+        return buffer;
+    }
+
+    readArray(name) {
+        let a = this.read(name).split('\n');
+        while ((a.length > 0) && (a[a.length - 1].length == 0)) a.pop();
+        return a;
+    }
 }
 
 /*
