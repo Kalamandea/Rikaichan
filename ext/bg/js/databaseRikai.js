@@ -4,13 +4,17 @@
 
 class Database {
     constructor() {
-        this.db = null;
+        this.db = {};
         this.dbVersion = 2;
         this.tagMetaCache = {};
+        this.importDictionary = this.importDictionary.bind(this);
     }
 
-    sanitize() {
-        const db = new Dexie('dict_en');
+    sanitize(title) {
+		if(!title){
+			title = 'eng'
+		}
+        const db = new Dexie(title);
         return db.open().then(() => {
             db.close();
             if (db.verno !== this.dbVersion) {
@@ -19,18 +23,21 @@ class Database {
         }).catch(() => {});
     }
 
-    prepare() {
-        if (this.db !== null) {
+    prepare(title) {
+        /*if (this.db !== null) {
             return Promise.reject('database already initialized');
-        }
+        }*/
+		if(!title){
+			title = 'eng'
+		}
 
-        return this.sanitize().then(() => {
-            this.db = new Dexie('dict_en');
-            this.db.version(this.dbVersion).stores({
+        return this.sanitize(title).then(() => {
+            this.db[title] = new Dexie(title);
+            this.db[title].version(this.dbVersion).stores({
                 terms: '++id,kanji,kana,entry'
             });
 
-            return this.db.open();
+            return this.db[title].open();
         });
     }
 
@@ -48,33 +55,36 @@ class Database {
     }
 
     findTerms(term, dictionaries) {
-        if (this.db === null) {
+        /*if (this.db[dictionaries] == null) {
             return Promise.reject('database not initialized');
-        }
+        }*/
         const results = [];
-        return this.db.terms.where('kanji').equals(term).or('kana').equals(term).each(row => {
+        return this.db[dictionaries].terms.where('kanji').equals(term).or('kana').equals(term).each(row => {
             results.push({
                 kanji: row.kanji,
                 kana: row.kana,
                 entry: row.entry
-            });
+            })
+        }).then(() => {
+            return results;
         });
     }
 
     importDictionary(archive, callback) {
-        if (this.db === null) {
+        /*if (this.db === null) {
             return Promise.reject('database not initialized');
-        }
+        }*/
+        let self = this;
 
         let summary = null;
         const indexLoaded = (title, version, revision, tagMeta, hasTerms, hasKanji) => {
             summary = {title, version, revision, hasTerms, hasKanji};
-            return this.db.dictionaries.where('title').equals(title).count().then(count => {
+            return this.db[title].dictionaries.where('title').equals(title).count().then(count => {
                 if (count > 0) {
                     return Promise.reject(`dictionary "${title}" is already imported`);
                 }
 
-                return this.db.dictionaries.add({title, version, revision, hasTerms, hasKanji}).then(() => {
+                return this.db[title].dictionaries.add({title, version, revision, hasTerms, hasKanji}).then(() => {
                     const rows = [];
                     for (const tag in tagMeta || {}) {
                         const meta = tagMeta[tag];
@@ -88,8 +98,7 @@ class Database {
 
                         rows.push(row);
                     }
-
-                    return this.db.tagMeta.bulkAdd(rows);
+                    return self.db[title].tagMeta.bulkAdd(rows);
                 });
             });
         };
@@ -104,8 +113,11 @@ class Database {
                     entry:arr[2]
                 });
             }
-
-            return this.db.terms.bulkAdd(rows).then(() => {
+			if(self.db[title] == null){
+				self.prepare(title);
+			}
+            setTimeout(1, 2000);
+            return self.db[title].terms.bulkAdd(rows).then(() => {
                 if (callback) {
                     callback(total, current);
                 }
@@ -146,7 +158,7 @@ class Database {
                 });
             }
 
-            return this.db.kanji.bulkAdd(rows).then(() => {
+            return this.db[title].kanji.bulkAdd(rows).then(() => {
                 if (callback) {
                     callback(total, current);
                 }

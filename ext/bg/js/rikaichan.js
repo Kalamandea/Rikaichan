@@ -52,10 +52,10 @@ window.rikaichanWebEx = new class {
 	}
 
 	testTranslate(){
-		var a;
-		this.translator.database.findTerms('嚔',1).then(definitions => this.tabInfo['testT'] = definitions);
-		console.log(this.tabInfo);
-		this.tabInfo.test= 'fgdsff';
-		return this.tabInfo;
+		let ent = {};
+		this.translator.database.findTerms('嚔','eng').then(definitions => {ent['testT'] = definitions});
+		ent.test= 'fgdsff';
+		console.log(ent);
+//		this.tabInfo;
 	}
 }

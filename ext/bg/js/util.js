@@ -449,38 +449,42 @@ function jsonLoadInt(url) {
 
 function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
     return JSZip.loadAsync(archive).then(files => files.files).then(files => {
-        /*const indexFile = files['index.json'];
+        const indexFile = files['index.json'];
         if (!indexFile) {
             return Promise.reject('no dictionary index found in archive');
         }
-
-        return indexFile.async('string').then(indexJson => {
-            const index = JSON.parse(indexJson);
-            if (!index.title || !index.version || !index.revision) {
+		let index = {};
+        indexFile.async('string').then(indexJson => {
+            index = JSON.parse(indexJson);
+            if (!index.title) {
                 return Promise.reject('unrecognized dictionary format');
             }
+            return index
+        }).then(index =>{
+            console.log(index);
+            const dict = files['Dict.csv'];
+            if (!dict) {
+                return Promise.reject('missing Dictionary file');
+            }
+            const loaders = [];
+            loaders.push(() => dict.async('string').then(dictCsv => {
+                //const bank = JSON.parse(dictCsv);
+                //console.log('rec' + bank.columns.length);
+                const lines = dictCsv.split('>');
+                let banksLoaded = 0;
+                return termsLoaded(index.title, lines, 1, banksLoaded++);
+            }));
+
+            let chain = Promise.resolve();
+            for (const loader of loaders) {
+                chain = chain.then(loader);
+            }
+            return chain;
+        });
 
 
-        });*/
 
-        const dict = files['Dict.csv'];
-        if (!dict) {
-            return Promise.reject('missing Dictionary file');
-        }
-        const loaders = [];
-        loaders.push(() => dict.async('string').then(dictCsv => {
-            //const bank = JSON.parse(dictCsv);
-            //console.log('rec' + bank.columns.length);
-            const lines = dictCsv.split('>');
-            let banksLoaded = 0;
-            return termsLoaded('Dict_eng', lines, 1, banksLoaded++);
-        }));
 
-        let chain = Promise.resolve();
-        for (const loader of loaders) {
-            chain = chain.then(loader);
-        }
-        return chain;
 
        /*     return indexLoaded(
                 index.title,
