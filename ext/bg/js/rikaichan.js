@@ -11,11 +11,13 @@ window.rikaichanWebEx = new class {
 
 		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
 			//browser.commands.onCommand.addListener(this.onCommand.bind(this));
-			//browser.runtime.onMessage.addListener(this.onMessage.bind(this));
+			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
 			if (this.options.general.showGuide) {
 				//browser.tabs.create({url: chrome.extension.getURL('/bg/guide.html')});
 			}
 		});
+
+		rcxConfig.load();
 	}
 
 	optionsSet(options) {
@@ -57,5 +59,41 @@ window.rikaichanWebEx = new class {
 		ent.test= 'fgdsff';
 		console.log(ent);
 //		this.tabInfo;
+	}
+
+
+
+	onMessage({action, params}, sender, callback) {
+		// TODO: allow setting index, return index
+		if (msg.data.action == 'word-search') {
+			let e = rcxData.wordSearch(msg.data.text);
+			if (e != null) {
+				e.html = rcxData.makeHtml(e);
+			}
+			return e;
+		}
+
+		// console.log('\nonContentMessage');
+		// console.log('name=' + msg.name);
+		// console.log('sync=' + msg.sync);
+		// console.log('data=', msg.data);
+		// console.log('target=', msg.target);
+		// console.log('objects=', msg.objects);
+
+		if (msg.data.action == 'translate') {
+			let e = rcxData.translate(msg.data.text);
+			if (e != null) {
+				e.title = msg.data.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) { return '&#' + c.charCodeAt(0) + ';' } );
+				if (msg.data.text.length > e.textLen) e.title += '...';
+				e.html = rcxData.makeHtml(e);
+			}
+			return e;
+		}
+
+		// TODO: allow setting index, return index
+		if (msg.data.action == 'lookup-search') {
+			return rcxData.lookupSearch(msg.data.text);
+		}
+
 	}
 }

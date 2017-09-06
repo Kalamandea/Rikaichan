@@ -418,8 +418,9 @@ function dictFieldFormat(field, definition, mode, options) {
 
 
 /*
- * Json
+ * Json/File
  */
+
 
 function jsonLoad(url) {
     return new Promise((resolve, reject) => {
@@ -441,6 +442,13 @@ function jsonLoad(url) {
 
 function jsonLoadInt(url) {
     return jsonLoad(browser.extension.getURL(url));
+}
+
+
+function readArray(name) {
+    let a = this.read(name).split('\n');
+    while ((a.length > 0) && (a[a.length - 1].length == 0)) a.pop();
+    return a;
 }
 
 /*
@@ -534,43 +542,7 @@ function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
 }
 
 
-/*
- * File
- */
 
-class rcxFile {
-    read(uri) {
-        //TODO переделать на открытие файла
-        let sp = Components.classes['@mozilla.org/scriptsecuritymanager;1']
-            .getService(Components.interfaces.nsIScriptSecurityManager)
-            .getSystemPrincipal();
-        let inp = Components.classes['@mozilla.org/network/io-service;1']
-            .getService(Components.interfaces.nsIIOService)
-            .newChannel2(uri, null, null, null, sp, null,
-                Components.interfaces.nsILoadInfo.SEC_NORMAL,
-                Components.interfaces.nsIContentPolicyBase.TYPE_DOCUMENT)
-            .open();
-        let is = Components.classes['@mozilla.org/intl/converter-input-stream;1']
-            .createInstance(Components.interfaces.nsIConverterInputStream);
-        is.init(inp, 'UTF-8', 4 * 1024 * 1024,
-            Components.interfaces.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER);
-
-        let buffer = '';
-        let s = {};
-        while (is.readString(-1, s) > 0) {
-            buffer += s.value;
-        }
-        is.close();
-
-        return buffer;
-    }
-
-    readArray(name) {
-        let a = this.read(name).split('\n');
-        while ((a.length > 0) && (a[a.length - 1].length == 0)) a.pop();
-        return a;
-    }
-}
 
 /*
  * Helpers
