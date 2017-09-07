@@ -6,12 +6,6 @@
         <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
         <style>
-            #anki-spinner, #anki-general, #anki-error,
-            #dict-spinner, #dict-error, #dict-warning, #dict-purge-progress,
-            #debug,
-            .options-advanced {
-                display: none;
-            }
             .novisible {
                 display: none;
             }
@@ -22,68 +16,100 @@
                 border-right: 1px #ddd solid;
                 padding: 10px;
             }
+            .input-opt{
+                width: 50%;
+            }
         </style>
     </head>
     <body>
-        <div class="container-fluid">
+        <div class="container-fluid col-md-5">
             <div>
                 <h3>General Options</h3>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-usage-guide"> Show usage guide on startup</label>
+                    <label><input type="checkbox" id="show-usage-guide">Highlight text</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="group-terms-results"> Group term results</label>
+                    <label><input type="checkbox" id="group-terms-results">Translate alt/title tags</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-advanced-options"> Show advanced options</label>
+                    <label><input type="checkbox" id="show-advanced-options">Automatically use selected text in Lookupbar</label>
                 </div>
 
-                <div class="checkbox options-advanced">
-                    <label><input type="checkbox" id="show-debug-info"> Show debug information</label>
+                <div class="checkbox">
+                    <label><input type="checkbox" id="show-debug-info2">Enlarge small documents</label>
                 </div>
 
-                <div class="form-group options-advanced">
-                    <label for="audio-playback-volume">Audio playback volume (percent)</label>
-                    <input type="number" min="0" max="100" id="audio-playback-volume" class="form-control">
+                <div class="checkbox">
+                    <label><input type="checkbox" id="show-debug-info3">Show icon in statusbar</label>
                 </div>
 
-                <div class="form-group options-advanced">
-                    <label for="max-displayed-results">Maximum displayed results</label>
-                    <input type="number" min="1" id="max-displayed-results" class="form-control">
+                <div class="checkbox">
+                    <label><input type="checkbox" id="show-debug-info4">Show mini help</label>
                 </div>
 
-                <div class="form-group options-advanced">
-                    <label>Popup size (width &times; height, in pixels)</label>
-                    <div class="row">
-                        <div class="col-xs-6"><input type="number" min="1" id="popup-width" class="form-control"></div>
-                        <div class="col-xs-6"><input type="number" min="1" id="popup-height" class="form-control"></div>
-                    </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" id="show-debug-info5">Use device pixel ratio (zoom adjustment / may not work on some systems)</label>
                 </div>
 
-                <div class="form-group options-advanced">
-                    <label for="popup-offset">Popup offset (in pixels)</label>
-                    <input type="number" min="0" id="popup-offset" class="form-control">
+                <div class="form-group">
+                    <label for="audio-playback-volume">Popup distance from pointer</label>
+                    <input type="number" min="0" max="100" id="audio-playback-volume" class="form-control input-opt">
                 </div>
             </div>
-
             <div>
-                <div>
-                    <img src="/mixed/img/spinner.gif" class="pull-right" id="dict-spinner" alt>
-                    <h3>Dictionaries</h3>
-                </div>
-
+                <h3>Menus</h3>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="col-form-legend col-sm-3">Context Menu</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="gridRadios1" checked>
+                                    Toggle
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="gridRadios2">
+                                    LookupBar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="col-form-legend col-sm-3">Tools Menu</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="gridRadios1" checked>
+                                    Toggle
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="gridRadios2">
+                                    LookupBar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div>
+                <h3>Keyboard</h3>
+            </div>
+            <div>
+                <img src="/mixed/img/spinner.gif" class="pull-right" id="dict-spinner" alt>
+                <h3>Dictionaries</h3>
                 <p class="help-block">
-                    Yomichan can import and use a variety of dictionary formats. Unneeded dictionaries can be disabled,
+                    Rikaichan can import and use a variety of dictionary formats. Unneeded dictionaries can be disabled,
                     or you can simply <a href="#" id="dict-purge">purge the database</a> to delete everything.
                 </p>
-                <p class="help-block">
-                    Please visit the <a href="https://foosoft.net/projects/yomichan" target="_blank">Yomichan</a> homepage to download free
-                    dictionaries that you can use with this extension.
-                </p>
-
                 <div id="dict-purge-progress" class="text-danger">Dictionary data is being purged, please be patient...</div>
 
                 <div class="alert alert-warning" id="dict-warning">
@@ -95,7 +121,6 @@
                     <strong>Error:</strong>
                     <span></span>
                 </div>
-
                 <div id="dict-groups"></div>
 
                 <div id="dict-import-progress" class="novisible">
@@ -108,6 +133,53 @@
                 <div id="dict-importer">
                     <input type="file" id="dict-file">
                 </div>
+            </div>
+            <div>
+                <h3>Kanji Dictionary</h3>
+                <fieldset class="form-group">
+                    <div class="row">
+                        <legend class="col-form-legend col-sm-3">Tools Menu</legend>
+                        <div class="col-sm-9">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="gridRadios1" checked>
+                                    Toggle
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" id="gridRadios2">
+                                    LookupBar
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div>
+                <h3>Clipboard &amp; Save</h3>
+                <label>Line ending</label>
+                <select class="form-control">
+                    <option value="0">Unix (\n)</option>
+                    <option value="1">DOS/Windows (\r\n)</option>
+                    <option value="2">Mac (\r)</option>
+                </select>
+
+                <label>Field separator</label>
+                <select class="form-control">
+                    <option value="0">Tab</option>
+                    <option value="1">Comma</option>
+                    <option value="2">Space</option>
+                </select>
+
+            </div>
+
+
+            <div>
+
+
+
+
             </div>
         </div>
         <!--<script src="/mixed/lib/handlebars.min.js"></script>-->

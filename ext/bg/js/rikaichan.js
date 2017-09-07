@@ -10,14 +10,12 @@ window.rikaichanWebEx = new class {
 		this.messageTab = this.messageTab.bind(this);
 
 		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
-			//browser.commands.onCommand.addListener(this.onCommand.bind(this));
+			browser.commands.onCommand.addListener(this.onCommand.bind(this));
 			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
 			if (this.options.general.showGuide) {
 				//browser.tabs.create({url: chrome.extension.getURL('/bg/guide.html')});
 			}
 		});
-
-		rcxConfig.load();
 	}
 
 	optionsSet(options) {
@@ -27,10 +25,9 @@ window.rikaichanWebEx = new class {
 		// here is to create a deep copy of the options object.
 		this.options = JSON.parse(JSON.stringify(options));
 
-		if (!this.options.general.enable) {
-			//browser.browserAction.setBadgeText({text: 'off'});
-		} else if (!dictConfigured(this.options)) {
-			//browser.browserAction.setBadgeText({text: '!'});
+		if (!dictConfigured(this.options)) {
+			browser.browserAction.setBadgeBackgroundColor({color: '#f0ad4e'});
+			browser.browserAction.setBadgeText({text: '!'});
 		} else {
 			browser.browserAction.setBadgeText({text: ''});
 		}
@@ -58,13 +55,20 @@ window.rikaichanWebEx = new class {
 		this.translator.database.findTerms('嚔','eng').then(definitions => {ent['testT'] = definitions});
 		ent.test= 'fgdsff';
 		console.log(ent);
-//		this.tabInfo;
 	}
 
-
+	onCommand(command) {
+		if(command == 'toggle'){
+			this.options.general.enable = !this.options.general.enable;
+			optionsSave(this.options).then(() => this.optionsSet(this.options));
+		}
+		if(command == 'options'){
+			browser.runtime.openOptionsPage();
+		}
+	}
 
 	onMessage({action, params}, sender, callback) {
-		// TODO: allow setting index, return index
+
 		if (msg.data.action == 'word-search') {
 			let e = rcxData.wordSearch(msg.data.text);
 			if (e != null) {
@@ -90,7 +94,6 @@ window.rikaichanWebEx = new class {
 			return e;
 		}
 
-		// TODO: allow setting index, return index
 		if (msg.data.action == 'lookup-search') {
 			return rcxData.lookupSearch(msg.data.text);
 		}

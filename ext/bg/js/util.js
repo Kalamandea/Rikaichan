@@ -87,38 +87,42 @@ function optionsSetDefaults(options) {
     const defaults = {
         general: {
             enable: true,
-            audioSource: 'jpod101',
-            audioVolume: 100,
-            groupResults: true,
-            debugInfo: false,
-            maxResults: 32,
-            showAdvanced: false,
-            popupWidth: 400,
-            popupHeight: 250,
-            popupOffset: 10,
-            showGuide: true
+            highlightText: true,
+            tranAltTitle: true,
+            selectedInLookupBar: true,
+            enlargeSmallDocuments: false,
+            showIconInStatusbar: true,
+
+            showMiniHelp: true,
+            useDPR: false,
+            PopDY: 20
         },
 
-        scanning: {
-            middleMouse: true,
-            selectText: true,
-            alphanumeric: true,
-            delay: 15,
-            length: 10,
-            modifier: 'shift'
+        menus: {
+            toggleContentMenu: true,
+            lookupBarContentMenu: false,
+            toggleToolsMenu: true,
+            lookupToolsMenu: true
         },
 
         dictionaries: {},
 
-        anki: {
-            enable: false,
-            server: 'http://127.0.0.1:8765',
-            tags: ['rikaichan'],
-            htmlCards: true,
-            sentenceExt: 200,
-            terms: {deck: '', model: '', fields: {}},
-            kanji: {deck: '', model: '', fields: {}}
+        kanjiDictionary:{
+            COMP:true,
+            H:true,
+            L:true,
+            E:true,
+            DK:true,
+            N:true,
+            V:true,
+            Y:true,
+            P:true,
+            IN:true,
+            I:true,
+            U:true
         }
+
+
     };
 
     const combine = (target, source) => {
@@ -547,7 +551,7 @@ function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
 /*
  * Helpers
  */
-
+/*
 function handlebarsEscape(text) {
     return Handlebars.Utils.escapeExpression(text);
 }
@@ -584,3 +588,4 @@ function handlebarsRegister() {
 function handlebarsRender(template, data) {
     return Handlebars.templates[template](data);
 }
+*/
