@@ -21,13 +21,13 @@ function rikaiToggle(){
 	if (state){
 		btn.innerText = 'Off';
 		btn.setAttribute('class', 'btn btn btn-danger');
-		browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
+		//browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
 	}else{
 		btn.innerText = 'On';
 		btn.setAttribute('class', 'btn btn btn-success');
-		browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
+		//browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
 	}
-	
+	commandExec('toggle');
 }
 
 function openOptions(){
@@ -39,6 +39,17 @@ function testSearch(){
 	browser.extension.getBackgroundPage().rikaichanWebEx.testTranslate();
 	//document.getElementById('open-search').value = a[0].entry;
 }
+
+optionsLoad().then(options => {
+	let btn = document.getElementById('toggle');
+	state = options.general.enable;
+	if (options.general.enable){
+		btn.innerText = 'Off';
+		btn.setAttribute('class', 'btn btn-danger');
+		//browser.extension.getBackgroundPage().rikaichanWebEx.processMessage;
+	}
+});
+
 
 document.getElementById('toggle').onclick = rikaiToggle;
 document.getElementById('open-options').onclick = openOptions;

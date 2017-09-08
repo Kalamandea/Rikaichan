@@ -19,8 +19,7 @@
         "storage",
         "clipboardWrite"
     ],
-	"content_scripts": [
-    {
+	"content_scripts": [{
       "js": [
         "fg/frame.js"
       ],
@@ -30,8 +29,16 @@
         "https://*/*"
       ],
       "all_frames": true
-    }
-  ],
+    }],
+    "commands": {
+      "toggle": {
+        "suggested_key": {
+          "default": "Alt+Insert"
+        },
+        "description": "Toggle text scanning"
+      }
+    },
+
     "applications": {
         "gecko": {
             "id": "rikaichan@mozilla.org",

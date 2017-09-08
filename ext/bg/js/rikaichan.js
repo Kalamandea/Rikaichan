@@ -61,6 +61,7 @@ window.rikaichanWebEx = new class {
 		if(command == 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
 			optionsSave(this.options).then(() => this.optionsSet(this.options));
+			//this.processMessage();
 		}
 		if(command == 'options'){
 			browser.runtime.openOptionsPage();

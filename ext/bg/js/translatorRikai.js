@@ -5,9 +5,13 @@
 class Translator {
     constructor() {
         if (this.ready) return;
+        this.dicList = {};
+        this.loaded = false;
+        this.database = new Database();
 
         this.kanjiShown = {};
-        let a = rcxConfig.kindex.split(',');
+        //TODO config
+        let a = "";//rcxConfig.kindex.split(',');
         for (let i = a.length - 1; i >= 0; --i) {
             this.kanjiShown[a[i]] = 1;
         }
@@ -57,6 +61,12 @@ class Translator {
             'I',	'Tuttle Kanji Dictionary',
             'U',	'Unicode'
         ]
+    }
+
+    prepare() {
+        return Promise.all([fileLoad('/bg/lang/deinflect.json')]).then(([reasons]) => {
+            this.loaded = true;
+        });
     }
 
     done() {
@@ -142,11 +152,12 @@ class Translator {
         let maxTrim;
 
         if (dic.isName) {
-            maxTrim = rcxConfig.namax;
+            //TODO config
+            maxTrim = 1;//rcxConfig.namax;
             result.names = 1;
         }
         else {
-            maxTrim = rcxConfig.wmax;
+            maxTrim = 1;//rcxConfig.wmax;
         }
 
 
@@ -190,7 +201,8 @@ class Translator {
                         }
                         ok = (z != -1);
                     }
-                    if ((ok) && (dic.hasType) && (rcxConfig.hidex)) {
+                    //TODO config
+                    if ((ok) && (dic.hasType)){ //&& (rcxConfig.hidex)) {
                         if (dentry.match(/\/\([^\)]*\bX\b.*?\)/)) ok = false;
                     }
                     if (ok) {
@@ -258,10 +270,11 @@ class Translator {
             } while (ds != this.selected);
 
             if (e != null) {
-                if (result.data.length >= rcxConfig.wmax) {
+                //TODO config
+                /*if (result.data.length >= rcxConfig.wmax) {
                     result.more = 1;
                     break;
-                }
+                }*/
                 result.data.push(e.data[0]);
                 text = text.substr(e.matchLen);
             }
@@ -311,7 +324,8 @@ class Translator {
                     list.push({ rank: d, text: r[i] });
                 }
 
-                let max = dic.isName ? rcxConfig.namax : rcxConfig.wmax;
+                //TODO config
+                let max = dic.isName; //? rcxConfig.namax : rcxConfig.wmax;
                 list.sort(function(a, b) { return a.rank - b.rank });
                 for (let i = 0; i < list.length; ++i) {
                     if (result.data.length >= max) {
@@ -493,7 +507,7 @@ class Translator {
             b.push('<table class="k-main-tb"><tr><td valign="top">');
             b.push(box);
             b.push('<span class="k-kanji">' + entry.kanji + '</span><br/>');
-            if (!rcxConfig.hidedef) b.push('<div class="k-eigo">' + entry.eigo + '</div>');
+            //if (!rcxConfig.hidedef) b.push('<div class="k-eigo">' + entry.eigo + '</div>');
             b.push('<div class="k-yomi">' + yomi + '</div>');
             b.push('</td></tr><tr><td>' + nums + '</td></tr></table>');
             return b.join('');
@@ -518,8 +532,8 @@ class Translator {
                 else c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
 
                 s = e[3];
-                if (rcxConfig.hidedef) t = '';
-                else t = '<span class="w-def">' + s.replace(/\//g, '; ').replace(/\n/g, '<br/>') + '</span><br/>';
+                /*if (rcxConfig.hidedef) t = '';
+                else t = '<span class="w-def">' + s.replace(/\//g, '; ').replace(/\n/g, '<br/>') + '</span><br/>';*/
             }
             c.push(t);
             if (c.length > 4) {
@@ -584,16 +598,16 @@ class Translator {
                 if (entry.data[i][1]) b.push(' <span class="w-conj">(' + entry.data[i][1] + ')</span>');
 
                 s = e[3];
-                if (rcxConfig.hidedef) {
+                /*if (rcxConfig.hidedef) {
                     t = '<br/>';
                 }
                 else {
-                    t = s.replace(/\//g, '; ');
-                    if (!rcxConfig.wpos) t = t.replace(/^\([^)]+\)\s*/, '');
-                    if (!rcxConfig.wpop) t = t.replace('; (P)', '');
+                    t = s.replace(/\//g, '; ');*/
+                  //  if (!rcxConfig.wpos) t = t.replace(/^\([^)]+\)\s*/, '');
+                 /*   if (!rcxConfig.wpop) t = t.replace('; (P)', '');
                     t = t.replace(/\n/g, '<br/>');
                     t = '<br/><span class="w-def">' + t + '</span><br/>';
-                }
+                }*/
             }
             b.push(t);
             if (entry.more) b.push('...<br/>');
@@ -647,8 +661,8 @@ class Translator {
                 }
 
                 t = e[3].replace(/\//g, '; ');
-                if (!rcxConfig.wpos) t = t.replace(/^\([^)]+\)\s*/, '');
-                if (!rcxConfig.wpop) t = t.replace('; (P)', '');
+                //if (!rcxConfig.wpos) t = t.replace(/^\([^)]+\)\s*/, '');
+                //if (!rcxConfig.wpop) t = t.replace('; (P)', '');
                 b.push('\t' + t + '\n');
             }
         }

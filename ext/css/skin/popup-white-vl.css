@@ -1,0 +1,217 @@
+/* this is to reset almost everything under the popup to a sane value */
+
+#rikaichan-window, #rikaichan-window * { 
+	width: auto;
+	height: auto;
+	background: transparent;
+	color: #000;
+	border: none !important;
+	border-spacing: 0px;
+	margin: 0px;
+	padding: 0px;
+	letter-spacing: normal;
+	text-align: left;
+	text-decoration: none;
+	text-indent: 0px;
+	text-transform: none;
+	white-space: normal;
+	word-spacing: normal;
+	font: normal 14px sans-serif;
+	visibility: visible;
+}
+
+#rikaichan-window { 
+	position: absolute;
+	z-index: 7777;
+	border: 1px solid #999 !important;
+	padding: 10px;
+	background: #FFF;
+	color: #000;
+	top: 5px; 
+	left: 5px;
+	min-width: 100px;
+	-moz-border-radius: 5px;
+	box-shadow: 0px 0px 10px #000;
+	cursor: default;
+}
+
+/* used for word definitions */
+
+#rikaichan-window .w-kanji {
+	font-size: 18px;
+	color: #000;
+	margin-right: 0.7em;
+}
+
+#rikaichan-window .w-kana {
+	font-size: 18px;
+	color: #000;
+}
+
+#rikaichan-window .w-conj {
+	color: #6696C5;
+	font-size: 12px;
+}
+
+#rikaichan-window .w-def {
+	font-size: 13px;
+	display: inline-block;
+	margin-bottom: 6px;
+	color: #777;
+}
+
+#rikaichan-window .w-title {
+	font-size: 10px;
+	padding: 4px 6px 5px;
+	margin-bottom: 8px;
+	background: #ddd;
+	color: #333;
+}
+
+#rikaichan-window .w-na-tb td {
+	vertical-align: top;
+	padding-right: 0.8em;
+}
+
+/* used for kanji information */
+
+#rikaichan-window .k-main-tb {
+	width: 320px;
+}
+
+#rikaichan-window .k-kanji {
+	font-family: serif;
+	font-size: 40px;
+	color: #333;
+}
+
+#rikaichan-window .k-eigo {
+	font-size: 12px;
+	color: #777;
+}
+
+/* kanji: readings */
+
+#rikaichan-window .k-yomi {
+	font-size: 14px;
+	color: #000;
+	margin: 4px 0px;
+}
+
+#rikaichan-window .k-yomi-hi {
+	color: #80B0DF;
+	border: 1px solid red;
+}
+
+#rikaichan-window .k-yomi-ti {
+	font-size: 14px;
+	color: #bbb;
+}
+
+#rikaichan-window .k-yomi-ti:before {
+	content: "";
+	display: block;
+	height: 5px;
+}
+
+#rikaichan-window .k-yomi-ti:after {
+	content: ":　";
+}
+
+/* kanji radical, grade, freq, strokes box */
+
+#rikaichan-window .k-abox-tb {
+	width: 150px;
+	margin-left: 3px;
+	margin-bottom: 0px;
+	padding-left: 3px;
+	padding-bottom: 4px;
+	border-left: 1px solid #bbb !important;
+	float: right;
+	clear: right;
+}
+
+#rikaichan-window .k-abox-r,
+#rikaichan-window .k-abox-g,
+#rikaichan-window .k-abox-f,
+#rikaichan-window .k-abox-s {
+	font-size: 12px;
+	padding: 1px 2px;
+	background: #fff;
+	color: #000;
+	text-align: center;
+}
+
+#rikaichan-window .k-abox-r,
+#rikaichan-window .k-abox-f {
+	border-right: 1px solid #bbb !important;
+}
+
+#rikaichan-window .k-abox-f,
+#rikaichan-window .k-abox-s {
+	border-top: 1px solid #bbb !important;
+}
+
+/* kanji components box */
+
+#rikaichan-window .k-bbox-tb {
+	width: 150px;
+	margin-left: 3px;
+	margin-bottom: 4px;
+	padding-left: 3px;
+	border-left: 1px solid #bbb !important;
+	float: right;
+	clear: right;
+}
+
+#rikaichan-window .k-bbox-0a,
+#rikaichan-window .k-bbox-0b,
+#rikaichan-window .k-bbox-1a,
+#rikaichan-window .k-bbox-1b {
+	vertical-align: top;
+	font-size: 11px;
+	padding: 1px 3px;
+	background: #fff;
+	color: #000;
+}
+
+/* kanji: misc index */
+
+#rikaichan-window .k-mix-tb {
+	width: 100%;
+	margin-top: 3px;
+}
+
+#rikaichan-window .k-mix-td0 {
+	font-size: 12px;
+	background: #f5f5f5;
+	color: #999;
+}
+
+#rikaichan-window .k-mix-td1 {
+	font-size: 12px;
+	background: #fff;
+	color: #999;
+}
+
+
+/* manual query */
+
+#rikaichan-window .q-tb {
+	margin: 0 -6px;
+}
+
+#rikaichan-window .q-w {
+	border-right: none !important;
+	padding: 0 6px;
+	vertical-align: top;
+	min-width: 300px;
+	max-width: 800px;
+	color: #000;	   
+}
+
+#rikaichan-window .q-k {
+	padding: 0 6px;
+	vertical-align: top;
+	border-left: 1px solid #bbb !important;
+}

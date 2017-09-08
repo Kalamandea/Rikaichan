@@ -86,7 +86,7 @@ function fgOptionsSet(options) {
 function optionsSetDefaults(options) {
     const defaults = {
         general: {
-            enable: true,
+            enable: false,
             highlightText: true,
             tranAltTitle: true,
             selectedInLookupBar: true,
@@ -135,10 +135,10 @@ function optionsSetDefaults(options) {
 
     combine(options, defaults);
     combine(options.general, defaults.general);
-    combine(options.scanning, defaults.scanning);
+    /*combine(options.scanning, defaults.scanning);
     combine(options.anki, defaults.anki);
     combine(options.anki.terms, defaults.anki.terms);
-    combine(options.anki.kanji, defaults.anki.kanji);
+    combine(options.anki.kanji, defaults.anki.kanji);*/
 
     return options;
 }
@@ -196,7 +196,7 @@ function optionsSave(options) {
     return new Promise((resolve, reject) => {
         browser.storage.local.set({options: JSON.stringify(options)}, resolve);
     }).then(() => {
-        instYomi().optionsSet(options);
+        instRikai().optionsSet(options);
         fgOptionsSet(options);
     });
 }
@@ -377,6 +377,7 @@ function dictTagsSort(tags) {
     });
 }
 
+
 function dictFieldSplit(field) {
     return field.length === 0 ? [] : field.split(' ');
 }
@@ -426,7 +427,7 @@ function dictFieldFormat(field, definition, mode, options) {
  */
 
 
-function jsonLoad(url) {
+function fileLoad(url) {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.overrideMimeType('application/json');
@@ -444,8 +445,8 @@ function jsonLoad(url) {
     });
 }
 
-function jsonLoadInt(url) {
-    return jsonLoad(browser.extension.getURL(url));
+function jsonLoad(url) {
+    return JSON.parse(fileLoad(browser.extension.getURL(url)));
 }
 
 
