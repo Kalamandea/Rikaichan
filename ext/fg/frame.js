@@ -804,7 +804,7 @@ var processMessage = function (request, sender, sendResponse) {
 	//console.log(request);
 	if (!request.action)
 		return;	
-	let action = request.action;
+	const action = request.action;
 	if (action == 'enable') {
 		enable();
 		if (request.action) showPopup('<div>Enable</div>');

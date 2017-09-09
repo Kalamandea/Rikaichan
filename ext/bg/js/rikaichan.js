@@ -8,15 +8,13 @@ window.rikaichanWebEx = new class {
 		this.processMessage = this.processMessage.bind(this);
 		this.testTranslate = this.testTranslate.bind(this);
 		this.messageTab = this.messageTab.bind(this);
+		this.onMessage = this.onMessage.bind(this);
 		//this.setIcon = this.setIcon.bind(this);
 
 		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
 			browser.commands.onCommand.addListener(this.onCommand.bind(this));
 			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
 			setIcon(this.options.general.enable);
-			if (this.options.general.showGuide) {
-				//browser.tabs.create({url: chrome.extension.getURL('/bg/guide.html')});
-			}
 		});
 	}
 
@@ -38,7 +36,8 @@ window.rikaichanWebEx = new class {
 	messageTab(tabs) {
 		browser.tabs.sendMessage(tabs[0].id, this.dataMessage);
 	}
-	
+
+	//TODO Deprecated
 	processMessage(request) {
 		this.dataMessage.action = this.options.general.enable ? "enable" : "disable";
 		var querying = browser.tabs.query({
@@ -60,6 +59,7 @@ window.rikaichanWebEx = new class {
 			this.options.general.enable = !this.options.general.enable;
 			optionsSave(this.options).then(() => this.optionsSet(this.options));
 			setIcon(this.options.general.enable);
+			fgBroadcast('toggle',options.general.enable);
 			//this.processMessage();
 		}
 		if(command == 'options'){
@@ -70,9 +70,9 @@ window.rikaichanWebEx = new class {
 	onMessage({action, params}, sender, callback) {
 
 		if (msg.data.action == 'word-search') {
-			let e = rcxData.wordSearch(msg.data.text);
+			let e = this.translator.wordSearch(msg.data.text);
 			if (e != null) {
-				e.html = rcxData.makeHtml(e);
+				e.html = this.translator.makeHtml(e);
 			}
 			return e;
 		}
@@ -85,17 +85,17 @@ window.rikaichanWebEx = new class {
 		// console.log('objects=', msg.objects);
 
 		if (msg.data.action == 'translate') {
-			let e = rcxData.translate(msg.data.text);
+			let e = this.translator.translate(msg.data.text);
 			if (e != null) {
 				e.title = msg.data.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) { return '&#' + c.charCodeAt(0) + ';' } );
 				if (msg.data.text.length > e.textLen) e.title += '...';
-				e.html = rcxData.makeHtml(e);
+				e.html = this.translator.makeHtml(e);
 			}
 			return e;
 		}
 
 		if (msg.data.action == 'lookup-search') {
-			return rcxData.lookupSearch(msg.data.text);
+			return this.translator.lookupSearch(msg.data.text);
 		}
 
 	}

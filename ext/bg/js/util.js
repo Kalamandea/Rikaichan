@@ -69,7 +69,7 @@ function instDb() {
 function fgBroadcast(action, params) {
     browser.tabs.query({}, tabs => {
         for (const tab of tabs) {
-            browser.tabs.sendMessage(tab.id, {action, params}, () => null);
+            browser.tabs.sendMessage(tab.id, {action: action, data: params}, () => null);
         }
     });
 }
@@ -112,8 +112,19 @@ function optionsSetDefaults(options) {
         },
 
         dictionaries: {},
+        dictOpt:{
+            hideDef: false,
+            hidEx: false,
+            wos: true,
+            wpop: true,
+            maxEntries:10,
+            maxName:20
+        },
+        kanjiDictionary:[
+            'COMP','H','L','E','DK','N','V','Y','P','IN','I','O'
+        ],
 
-        kanjiDictionary:{
+        kanjiDictionaryObj:{
             COMP:true,
             H:true,
             L:true,

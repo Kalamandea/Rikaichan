@@ -5,20 +5,25 @@
 class Translator {
     constructor() {
         if (this.ready) return;
+        //TODO list of new dict
         this.dicList = {};
         this.loaded = false;
         this.database = new Database();
+        this.deinflect = new Deinflector();
 
         this.kanjiShown = {};
-        //TODO config
-        let a = "";//rcxConfig.kindex.split(',');
-        for (let i = a.length - 1; i >= 0; --i) {
-            this.kanjiShown[a[i]] = 1;
-        }
-
+        //this.options = null;
+        optionsLoad().then(options =>{
+            this.options = options;
+            let a = options.kanjiDictionary.split(',');
+            for (let i = a.length - 1; i >= 0; --i) {
+                this.kanjiShown[a[i]] = 1;
+            }
+        });
         for (let i = this.dicList.length - 1; i >= 0; --i) {
             let dic = this.dicList[i];
             if (dic.isKanji) continue;
+            //TODO new dictioanary class
             if ((!dic.findWord) || (!dic.findText)) this.dicList[i] = dic = new RcxDic(dic);
             if (dic.open) dic.open();
         }
@@ -64,7 +69,7 @@ class Translator {
     }
 
     prepare() {
-        return Promise.all([jsonLoad('/bg/lang/deinflect.json')]).then(([reasons]) => {
+        return Promise.all([jsonLoad(browser.extension.getURL('/bg/lang/deinflect.json'))]).then(([reasons]) => {
             //console.log(reasons)
             this.loaded = true;
         });
@@ -153,12 +158,11 @@ class Translator {
         let maxTrim;
 
         if (dic.isName) {
-            //TODO config
-            maxTrim = 1;//rcxConfig.namax;
+            maxTrim = this.options.dictOpt.maxName;
             result.names = 1;
         }
         else {
-            maxTrim = 1;//rcxConfig.wmax;
+            maxTrim = this.options.dictOpt.maxEntries;
         }
 
 
@@ -202,8 +206,8 @@ class Translator {
                         }
                         ok = (z != -1);
                     }
-                    //TODO config
-                    if ((ok) && (dic.hasType)){ //&& (rcxConfig.hidex)) {
+
+                    if ((ok) && (dic.hasType) && (this.options.dictOpt.hidEx)) {
                         if (dentry.match(/\/\([^\)]*\bX\b.*?\)/)) ok = false;
                     }
                     if (ok) {
@@ -271,11 +275,10 @@ class Translator {
             } while (ds != this.selected);
 
             if (e != null) {
-                //TODO config
-                /*if (result.data.length >= rcxConfig.wmax) {
+                if (result.data.length >= this.options.dictOpt.maxEntries) {
                     result.more = 1;
                     break;
-                }*/
+                }
                 result.data.push(e.data[0]);
                 text = text.substr(e.matchLen);
             }
@@ -325,8 +328,7 @@ class Translator {
                     list.push({ rank: d, text: r[i] });
                 }
 
-                //TODO config
-                let max = dic.isName; //? rcxConfig.namax : rcxConfig.wmax;
+                let max = dic.isName ? this.options.dictOpt.maxName : this.options.dictOpt.maxEntries;
                 list.sort(function(a, b) { return a.rank - b.rank });
                 for (let i = 0; i < list.length; ++i) {
                     if (result.data.length >= max) {
@@ -358,7 +360,6 @@ class Translator {
         if (i < 0x3000) return null;
 
         if (!this.kanjiData) {
-            this.kanjiData =
             fileLoad(browser.extension.getURL('/bg/lang/kanji.dat')).then(kanji=>{
                 this.kanjiData = kanji;
             });
@@ -436,7 +437,11 @@ class Translator {
         if (entry == null) return '';
 
         if (!this.ready) this.init();
-        if (!this.radData) this.radData = rcxFile.readArray('chrome://rikaichan/content/radicals.dat');
+        if (!this.radData) {
+            jsonLoad(browser.extension.getURL('/bg/lang/radicals.json')).then(kanji=> {
+                this.radData = kanji;
+            });
+        }
 
         b = [];
 
@@ -469,23 +474,22 @@ class Translator {
                     break;
             }
             box = '<table class="k-abox-tb"><tr>' +
-                '<td class="k-abox-r">radical<br/>' + this.radData[bn].charAt(0) + ' ' + (bn + 1) + '</td>' +
+                '<td class="k-abox-r">radical<br/>' + this.radData[bn][0] + ' ' + (bn + 1) + '</td>' +
                 '<td class="k-abox-g">' + k + '</td>' +
                 '</tr><tr>' +
                 '<td class="k-abox-f">freq<br/>' + (entry.misc['F'] ? entry.misc['F'] : '-') + '</td>' +
                 '<td class="k-abox-s">strokes<br/>' + entry.misc['S'] + '</td>' +
                 '</tr></table>';
             if (this.kanjiShown['COMP']) {
-                k = this.radData[bn].split('\t');
+                k = this.radData[bn];
                 box += '<table class="k-bbox-tb">' +
                     '<tr><td class="k-bbox-1a">' + k[0] + '</td>' +
                     '<td class="k-bbox-1b">' + k[2] + '</td>' +
                     '<td class="k-bbox-1b">' + k[3] + '</td></tr>';
                 j = 1;
                 for (i = 0; i < this.radData.length; ++i) {
-                    s = this.radData[i];
-                    if ((bn != i) && (s.indexOf(entry.kanji) != -1)) {
-                        k = s.split('\t');
+                    k = this.radData[i];
+                    if ((bn != i) && (k.indexOf(entry.kanji) != -1)) {
                         c = ' class="k-bbox-' + (j ^= 1);
                         box += '<tr><td' + c + 'a">' + k[0] + '</td>' +
                             '<td' + c + 'b">' + k[2] + '</td>' +
@@ -511,7 +515,7 @@ class Translator {
             b.push('<table class="k-main-tb"><tr><td valign="top">');
             b.push(box);
             b.push('<span class="k-kanji">' + entry.kanji + '</span><br/>');
-            //if (!rcxConfig.hidedef) b.push('<div class="k-eigo">' + entry.eigo + '</div>');
+            if (!this.options.dictOpt.hideDef) b.push('<div class="k-eigo">' + entry.eigo + '</div>');
             b.push('<div class="k-yomi">' + yomi + '</div>');
             b.push('</td></tr><tr><td>' + nums + '</td></tr></table>');
             return b.join('');
@@ -536,8 +540,11 @@ class Translator {
                 else c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
 
                 s = e[3];
-                /*if (rcxConfig.hidedef) t = '';
-                else t = '<span class="w-def">' + s.replace(/\//g, '; ').replace(/\n/g, '<br/>') + '</span><br/>';*/
+                if (this.options.dictOpt.hideDef){
+                    t = '';
+                }else {
+                    t = '<span class="w-def">' + s.replace(/\//g, '; ').replace(/\n/g, '<br/>') + '</span><br/>';
+                }
             }
             c.push(t);
             if (c.length > 4) {
@@ -602,16 +609,20 @@ class Translator {
                 if (entry.data[i][1]) b.push(' <span class="w-conj">(' + entry.data[i][1] + ')</span>');
 
                 s = e[3];
-                /*if (rcxConfig.hidedef) {
+                if (this.options.dictOpt.hideDef) {
                     t = '<br/>';
                 }
                 else {
-                    t = s.replace(/\//g, '; ');*/
-                  //  if (!rcxConfig.wpos) t = t.replace(/^\([^)]+\)\s*/, '');
-                 /*   if (!rcxConfig.wpop) t = t.replace('; (P)', '');
+                    t = s.replace(/\//g, '; ');
+                    if (!this.options.dictOpt.wpos){
+                        t = t.replace(/^\([^)]+\)\s*/, '')
+                    };
+                    if (!this.options.dictOpt.wpop){
+                        t = t.replace('; (P)', '')
+                    };
                     t = t.replace(/\n/g, '<br/>');
                     t = '<br/><span class="w-def">' + t + '</span><br/>';
-                }*/
+                }
             }
             b.push(t);
             if (entry.more) b.push('...<br/>');
@@ -665,8 +676,12 @@ class Translator {
                 }
 
                 t = e[3].replace(/\//g, '; ');
-                //if (!rcxConfig.wpos) t = t.replace(/^\([^)]+\)\s*/, '');
-                //if (!rcxConfig.wpop) t = t.replace('; (P)', '');
+                if (!this.options.dictOpt.wpos){
+                    t = t.replace(/^\([^)]+\)\s*/, '')
+                }
+                if (!this.options.dictOpt.wpop) {
+                    t = t.replace('; (P)', '');
+                }
                 b.push('\t' + t + '\n');
             }
         }
