@@ -21,11 +21,9 @@ function rikaiToggle(){
 	if (state){
 		btn.innerText = 'Off';
 		btn.setAttribute('class', 'btn btn btn-danger');
-		//browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
 	}else{
 		btn.innerText = 'On';
 		btn.setAttribute('class', 'btn btn btn-success');
-		//browser.extension.getBackgroundPage().rikaichanWebEx.processMessage();
 	}
 	commandExec('toggle');
 }
@@ -46,7 +44,6 @@ optionsLoad().then(options => {
 	if (options.general.enable){
 		btn.innerText = 'Off';
 		btn.setAttribute('class', 'btn btn-danger');
-		//browser.extension.getBackgroundPage().rikaichanWebEx.processMessage;
 	}
 });
 

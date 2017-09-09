@@ -8,10 +8,12 @@ window.rikaichanWebEx = new class {
 		this.processMessage = this.processMessage.bind(this);
 		this.testTranslate = this.testTranslate.bind(this);
 		this.messageTab = this.messageTab.bind(this);
+		//this.setIcon = this.setIcon.bind(this);
 
 		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
 			browser.commands.onCommand.addListener(this.onCommand.bind(this));
 			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
+			setIcon(this.options.general.enable);
 			if (this.options.general.showGuide) {
 				//browser.tabs.create({url: chrome.extension.getURL('/bg/guide.html')});
 			}
@@ -38,11 +40,7 @@ window.rikaichanWebEx = new class {
 	}
 	
 	processMessage(request) {
-		let icon;
-		this.toggle = !this.toggle;
-		icon = this.toggle ? "/img/Rikai_new_icon_on.png" : "/img/Rikai_new_icon_off.png";
-		browser.browserAction.setIcon({tabId: this.tabInfo.id, path: icon});
-		this.dataMessage.action = this.toggle ? "enable" : "disable";
+		this.dataMessage.action = this.options.general.enable ? "enable" : "disable";
 		var querying = browser.tabs.query({
 			active: true,
 			currentWindow: true
@@ -61,6 +59,7 @@ window.rikaichanWebEx = new class {
 		if(command == 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
 			optionsSave(this.options).then(() => this.optionsSet(this.options));
+			setIcon(this.options.general.enable);
 			//this.processMessage();
 		}
 		if(command == 'options'){

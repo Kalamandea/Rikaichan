@@ -64,7 +64,8 @@ class Translator {
     }
 
     prepare() {
-        return Promise.all([fileLoad('/bg/lang/deinflect.json')]).then(([reasons]) => {
+        return Promise.all([jsonLoad('/bg/lang/deinflect.json')]).then(([reasons]) => {
+            //console.log(reasons)
             this.loaded = true;
         });
     }
@@ -357,7 +358,10 @@ class Translator {
         if (i < 0x3000) return null;
 
         if (!this.kanjiData) {
-            this.kanjiData = rcxFile.read((typeof(rcxKanjiURI) == 'string') ? rcxKanjiURI : 'chrome://rikaichan/content/kanji.dat');
+            this.kanjiData =
+            fileLoad(browser.extension.getURL('/bg/lang/kanji.dat')).then(kanji=>{
+                this.kanjiData = kanji;
+            });
         }
 
         kde = this.find(this.kanjiData, kanji);

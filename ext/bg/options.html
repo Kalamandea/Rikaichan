@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Yomichan Options</title>
+        <title>Rikaichan Options</title>
         <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
         <style>
@@ -22,20 +22,20 @@
         </style>
     </head>
     <body>
-        <div class="container-fluid col-md-5">
+        <div class="container-fluid col-md-8">
             <div>
                 <h3>General Options</h3>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-usage-guide">Highlight text</label>
+                    <label><input type="checkbox" id="show-usage-guide" checked>Highlight text</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="group-terms-results">Translate alt/title tags</label>
+                    <label><input type="checkbox" id="group-terms-results" checked>Translate alt/title tags</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-advanced-options">Automatically use selected text in Lookupbar</label>
+                    <label><input type="checkbox" id="show-advanced-options" checked>Automatically use selected text in Lookupbar</label>
                 </div>
 
                 <div class="checkbox">
@@ -43,11 +43,11 @@
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-debug-info3">Show icon in statusbar</label>
+                    <label><input type="checkbox" id="show-debug-info3" checked>Show icon in statusbar</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-debug-info4">Show mini help</label>
+                    <label><input type="checkbox" id="show-debug-info4" checked>Show mini help</label>
                 </div>
 
                 <div class="checkbox">
@@ -56,7 +56,7 @@
 
                 <div class="form-group">
                     <label for="audio-playback-volume">Popup distance from pointer</label>
-                    <input type="number" min="0" max="100" id="audio-playback-volume" class="form-control input-opt">
+                    <input type="number" min="0" max="100" id="audio-playback-volume" class="form-control input-opt" value="20">
                 </div>
             </div>
             <div>
@@ -86,13 +86,13 @@
                         <div class="col-sm-9">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="gridRadios1" checked>
+                                    <input class="form-check-input" type="checkbox" id="gridRadios3" checked>
                                     Toggle
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="gridRadios2">
+                                    <input class="form-check-input" type="checkbox" id="gridRadios4">
                                     LookupBar
                                 </label>
                             </div>
@@ -110,14 +110,14 @@
                     Rikaichan can import and use a variety of dictionary formats. Unneeded dictionaries can be disabled,
                     or you can simply <a href="#" id="dict-purge">purge the database</a> to delete everything.
                 </p>
-                <div id="dict-purge-progress" class="text-danger">Dictionary data is being purged, please be patient...</div>
+                <div id="dict-purge-progress" class="text-danger novisible">Dictionary data is being purged, please be patient...</div>
 
-                <div class="alert alert-warning" id="dict-warning">
+                <div class="alert alert-warning novisible" id="dict-warning">
                     <strong>Warning:</strong>
                     <span>no dictionaries found; please use the importer below to install packaged dictionaries</span>
                 </div>
 
-                <div class="alert alert-danger" id="dict-error">
+                <div class="alert alert-danger novisible" id="dict-error">
                     <strong>Error:</strong>
                     <span></span>
                 </div>
@@ -137,21 +137,80 @@
             <div>
                 <h3>Kanji Dictionary</h3>
                 <fieldset class="form-group">
-                    <div class="row">
-                        <legend class="col-form-legend col-sm-3">Tools Menu</legend>
-                        <div class="col-sm-9">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="gridRadios1" checked>
-                                    Toggle
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="gridRadios2">
-                                    LookupBar
-                                </label>
-                            </div>
+                    <div class="col-md-6">
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios51" checked>
+                                Kanji Components
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios52" checked>
+                                Halpern
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios53" checked>
+                                Heisig
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios54" checked>
+                                Henshall
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios55" checked>
+                                Kanji Learners Dictionary
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios56" checked>
+                                Nelson
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios57" checked>
+                                New Nelson
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios58" checked>
+                                PinYin
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios59" checked>
+                                Skip Pattern
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios60" checked>
+                                Tuttle Kanji &amp; Kana
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios61" checked>
+                                Tuttle Kanji Dictionary
+                            </label>
+                        </div>
+                        <div class="form-check-label">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="gridRadios62" checked>
+                                Unicode
+                            </label>
                         </div>
                     </div>
                 </fieldset>
@@ -159,31 +218,20 @@
             <div>
                 <h3>Clipboard &amp; Save</h3>
                 <label>Line ending</label>
-                <select class="form-control">
+                <select class="form-control input-opt">
                     <option value="0">Unix (\n)</option>
                     <option value="1">DOS/Windows (\r\n)</option>
                     <option value="2">Mac (\r)</option>
                 </select>
 
                 <label>Field separator</label>
-                <select class="form-control">
+                <select class="form-control input-opt">
                     <option value="0">Tab</option>
                     <option value="1">Comma</option>
                     <option value="2">Space</option>
                 </select>
-
-            </div>
-
-
-            <div>
-
-
-
-
             </div>
         </div>
-        <!--<script src="/mixed/lib/handlebars.min.js"></script>-->
-        <!--<script src="/bg/js/templates.js"></script>-->
         <script src="/bg/js/util.js"></script>
         <script src="/bg/js/options.js"></script>
     </body>

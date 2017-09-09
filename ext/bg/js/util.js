@@ -83,6 +83,12 @@ function fgOptionsSet(options) {
  * Options
  */
 
+
+function setIcon(toggle){
+    const icon = toggle ? "/img/Rikai_new_icon_on.png" : "/img/Rikai_new_icon_off.png";
+    browser.browserAction.setIcon({path: icon});
+}
+
 function optionsSetDefaults(options) {
     const defaults = {
         general: {
@@ -437,7 +443,8 @@ function fileLoad(url) {
         xhr.send();
     }).then(responseText => {
         try {
-            return JSON.parse(responseText);
+            //return JSON.parse(responseText);
+            return responseText;
         }
         catch (e) {
             return Promise.reject('invalid JSON response');
@@ -446,7 +453,10 @@ function fileLoad(url) {
 }
 
 function jsonLoad(url) {
-    return JSON.parse(fileLoad(browser.extension.getURL(url)));
+    return new Promise((resolve, reject) => {
+        resolve(fileLoad(browser.extension.getURL(url)).then(json=> {return json}));
+        reject('failed to execute network request');
+    }).then(file => {return JSON.parse(file)});D
 }
 
 
