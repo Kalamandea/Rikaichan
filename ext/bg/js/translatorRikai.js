@@ -20,6 +20,7 @@ class Translator {
                 this.kanjiShown[a[i]] = 1;
             }
         });
+
         for (let i = this.dicList.length - 1; i >= 0; --i) {
             let dic = this.dicList[i];
             if (dic.isKanji) continue;
@@ -66,6 +67,101 @@ class Translator {
             'I',	'Tuttle Kanji Dictionary',
             'U',	'Unicode'
         ]
+    }
+
+    loadConfig() {
+    let reinit = false;
+
+    if (this.ready) {
+        this.done();
+        reinit = true;
+    }
+
+    if (typeof(rcxDicList) == 'undefined') {
+        rcxDicList = {};
+        this.missing = true;
+    }
+    if (rcxDicList['kanji@local'] == null) {
+        rcxDicList['kanji@local'] = {
+            name: 'Kanji',
+            id: 'kanji@local',
+            isKanji: true
+        };
+    }
+
+    let prefs = new rcxPrefs();
+    let order = prefs.getString('dpriority');
+    if (order == '') order = 'rikaichan-jpen@polarcloud.com#|rikaichan-jpde@polarcloud.com#|rikaichan-jpfr@polarcloud.com#|rikaichan-jpru@polarcloud.com#|rikaichan-jpnames@polarcloud.com#|kanji@local#';
+
+    this.dicList = [];
+    this.kanjiPos = 0;
+
+    let done = {};
+
+    // arrange dicList based on user setting
+    let oa = order.split('|');
+    for (let i = 0; i < oa.length; ++i) {
+        if (oa[i].match(/^(.+?)#/)) {
+            let dic = rcxDicList[RegExp.$1];
+            if (dic) {
+                this.dicList.push(dic);
+                done[dic.id] = true;
+            }
+        }
+    }
+
+    // anything new is added at the end
+    let addedNew = false;
+    for (let id in rcxDicList) {
+        if (!done[id]) {
+            this.dicList.push(rcxDicList[id]);
+            addedNew = true;
+        }
+    }
+
+    let ids = [];
+
+    // rebuild dpriority string which is also used by Options
+    let order2 = [];
+    for (let i = 0; i < this.dicList.length; ++i) {
+        let dic = this.dicList[i];
+        let s = dic.id + '#' + dic.name;
+        if (dic.version) s += ' v' + dic.version;
+        order2.push(s)
+
+        if (dic.isKanji) this.kanjiPos = i;	// keep track of position
+        else ids.push(dic.id);
+    }
+    order2 = this.missing ? '' : order2.join('|');
+    if (order != order2) prefs.setString('dpriority', order2);
+
+    if (addedNew) {
+        // show dictionary tab if we have a new dictionary
+        window.openDialog('chrome://rikaichan/content/options.xul', '', 'chrome,centerscreen', 'dic');
+    }
+
+    if (!rcxData.dicPath) {
+        rcxData.dicPath = { ready: false };
+
+        Components.utils.import('resource://gre/modules/AddonManager.jsm');
+        // asynchronous
+        AddonManager.getAddonsByIDs(ids, function(addons) {
+            for (let i = 0; i < addons.length; ++i) {
+                let a = addons[i];
+                rcxData.dicPath[a.id] = a.getResourceURI('install.rdf')
+                    .QueryInterface(Components.interfaces.nsIFileURL)
+                    .file.parent.path;
+            }
+            rcxData.dicPath.ready = true;
+
+            Components.classes['@mozilla.org/observer-service;1']
+                .getService(Components.interfaces.nsIObserverService)
+                .notifyObservers(null, 'rikaichan', 'data-ready');
+        });
+        return;
+    }
+
+    if (reinit) this.init();
     }
 
     prepare() {

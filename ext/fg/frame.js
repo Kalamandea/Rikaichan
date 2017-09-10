@@ -6,7 +6,6 @@ let paused = false;
 let lbPop = false;
 let lbLast = '';
 let timer = null;
-// var ignoreMouseTime = 1504083514345;
 let ignoreMouseTime = 0;
 
 let data = { };
@@ -21,6 +20,21 @@ let config = {
 	usedpr: false,
 	popdy: 25
 };
+
+//TODO fucn send message
+function sendMessageRikai(){
+	try {
+		chrome.runtime.sendMessage({action, params}, ({result, error}) => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve(result);
+			}
+		});
+	}catch (e){
+
+	}
+}
 
 function cursorInPopup(pos) {
 	let popup = content.document.getElementById('rikaichan-window');
