@@ -2,9 +2,9 @@
  * Created by Kalamandea on 04.09.2017.
  */
 
-class Database {
+class DatabaseRikaichan {
     constructor() {
-        this.db = {};
+        this.dictionaries = {};
         this.dbVersion = 2;
         this.tagMetaCache = {};
         this.importDictionary = this.importDictionary.bind(this);
@@ -30,14 +30,15 @@ class Database {
 		if(!title){
 			title = 'eng'
 		}
+        this.dictionaries[title] = {}
 
         return this.sanitize(title).then(() => {
-            this.db[title] = new Dexie(title);
-            this.db[title].version(this.dbVersion).stores({
+            this.dictionaries[title].db = new Dexie(title);
+            this.dictionaries[title].db.version(this.dbVersion).stores({
                 terms: '++id,kanji,kana,entry'
             });
 
-            return this.db[title].open();
+            return this.dictionaries[title].db.open();
         });
     }
 
@@ -103,7 +104,7 @@ class Database {
             });
         };
 
-        const termsLoaded = (title, entries, total, current) => {
+        const termsLoaded = (index, entries, total, current) => {
             const rows = [];
             for (const line of entries) {
                 let arr = line.split('|');
@@ -113,38 +114,19 @@ class Database {
                     entry:arr[2]
                 });
             }
-			if(self.db[title] == null){
-				self.prepare(title);
+			if(self.dictionaries[index.title] == null){
+                self.dictionaries[index.title] = index;
+				self.prepare(index.title);
 			}
+            //TODO replace on then
             setTimeout(1, 2000);
-            return self.db[title].terms.bulkAdd(rows).then(() => {
+            return self.dictionaries[index.title].db.terms.bulkAdd(rows).then(() => {
                 if (callback) {
                     callback(total, current);
                 }
             });
         };
-/*
-        const termsLoaded = (title, entries, total, current) => {
-            const rows = [];
-            for (const [expression, reading, tags, rules, score, ...glossary] of entries) {
-                rows.push({
-                    expression,
-                    reading,
-                    tags,
-                    rules,
-                    score,
-                    glossary,
-                    dictionary: title
-                });
-            }
 
-            return this.db.terms.bulkAdd(rows).then(() => {
-                if (callback) {
-                    callback(total, current);
-                }
-            });
-        };
-*/
         const kanjiLoaded = (title, entries, total, current)  => {
             const rows = [];
             for (const [character, onyomi, kunyomi, tags, ...meanings] of entries) {

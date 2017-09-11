@@ -3,7 +3,7 @@
  */
 
 
-class Deinflector {
+class DeinflectorRikaichan {
     constructor() {
         this.reasons = [];
         this.rules = [];

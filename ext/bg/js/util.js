@@ -112,7 +112,8 @@ function optionsSetDefaults(options) {
         },
 
         dictionaries: {},
-        dictOpt:{
+        dictOrder:['rus','eng'],
+        dictOptions:{
             hideDef: false,
             hidEx: false,
             wos: true,
@@ -152,10 +153,11 @@ function optionsSetDefaults(options) {
 
     combine(options, defaults);
     combine(options.general, defaults.general);
-    /*combine(options.scanning, defaults.scanning);
-    combine(options.anki, defaults.anki);
-    combine(options.anki.terms, defaults.anki.terms);
-    combine(options.anki.kanji, defaults.anki.kanji);*/
+    combine(options.menus, defaults.menus);
+    combine(options.dictOrder, defaults.dictOrder);
+    combine(options.dictOptions, defaults.dictOptions);
+    combine(options.kanjiDictionary, defaults.kanjiDictionary);
+    combine(options.kanjiDictionaryObj, defaults.kanjiDictionaryObj);
 
     return options;
 }
@@ -467,7 +469,7 @@ function jsonLoad(url) {
     return new Promise((resolve, reject) => {
         resolve(fileLoad(browser.extension.getURL(url)).then(json=> {return json}));
         reject('failed to execute network request');
-    }).then(file => {return JSON.parse(file)});D
+    }).then(file => {return JSON.parse(file)});
 }
 
 

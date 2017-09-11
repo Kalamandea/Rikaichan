@@ -5,11 +5,9 @@
 class Translator {
     constructor() {
         if (this.ready) return;
-        //TODO list of new dict
-        this.dicList = {};
         this.loaded = false;
-        this.database = new Database();
-        this.deinflect = new Deinflector();
+        this.database = new DatabaseRikaichan();
+        this.deinflect = new DeinflectorRikaichan();
 
         this.kanjiShown = {};
         //this.options = null;
@@ -21,6 +19,8 @@ class Translator {
             }
         });
 
+        //TODO new order dict
+        this.dicList = this.options.dictOrder;
         for (let i = this.dicList.length - 1; i >= 0; --i) {
             let dic = this.dicList[i];
             if (dic.isKanji) continue;
@@ -70,98 +70,76 @@ class Translator {
     }
 
     loadConfig() {
-    let reinit = false;
+        let reinit = false;
 
-    if (this.ready) {
-        this.done();
-        reinit = true;
-    }
+        if (this.ready) {
+            this.done();
+            reinit = true;
+        }
 
-    if (typeof(rcxDicList) == 'undefined') {
-        rcxDicList = {};
-        this.missing = true;
-    }
-    if (rcxDicList['kanji@local'] == null) {
-        rcxDicList['kanji@local'] = {
-            name: 'Kanji',
-            id: 'kanji@local',
-            isKanji: true
-        };
-    }
+        if (typeof(rcxDicList) == 'undefined') {
+            rcxDicList = {};
+            this.missing = true;
+        }
+        if (rcxDicList['kanji@local'] == null) {
+            rcxDicList['kanji@local'] = {
+                name: 'Kanji',
+                id: 'kanji@local',
+                isKanji: true
+            };
+        }
+        //TODO new order
+        let prefs = new rcxPrefs();
+        let order = prefs.getString('dpriority');
+        if (order == '') order = 'rikaichan-jpen@polarcloud.com#|rikaichan-jpde@polarcloud.com#|rikaichan-jpfr@polarcloud.com#|rikaichan-jpru@polarcloud.com#|rikaichan-jpnames@polarcloud.com#|kanji@local#';
 
-    let prefs = new rcxPrefs();
-    let order = prefs.getString('dpriority');
-    if (order == '') order = 'rikaichan-jpen@polarcloud.com#|rikaichan-jpde@polarcloud.com#|rikaichan-jpfr@polarcloud.com#|rikaichan-jpru@polarcloud.com#|rikaichan-jpnames@polarcloud.com#|kanji@local#';
+        this.dicList = [];
+        this.kanjiPos = 0;
 
-    this.dicList = [];
-    this.kanjiPos = 0;
+        let done = {};
 
-    let done = {};
-
-    // arrange dicList based on user setting
-    let oa = order.split('|');
-    for (let i = 0; i < oa.length; ++i) {
-        if (oa[i].match(/^(.+?)#/)) {
-            let dic = rcxDicList[RegExp.$1];
-            if (dic) {
-                this.dicList.push(dic);
-                done[dic.id] = true;
+        // arrange dicList based on user setting
+        let oa = order.split('|');
+        for (let i = 0; i < oa.length; ++i) {
+            if (oa[i].match(/^(.+?)#/)) {
+                let dic = rcxDicList[RegExp.$1];
+                if (dic) {
+                    this.dicList.push(dic);
+                    done[dic.id] = true;
+                }
             }
         }
-    }
 
-    // anything new is added at the end
-    let addedNew = false;
-    for (let id in rcxDicList) {
-        if (!done[id]) {
-            this.dicList.push(rcxDicList[id]);
-            addedNew = true;
-        }
-    }
-
-    let ids = [];
-
-    // rebuild dpriority string which is also used by Options
-    let order2 = [];
-    for (let i = 0; i < this.dicList.length; ++i) {
-        let dic = this.dicList[i];
-        let s = dic.id + '#' + dic.name;
-        if (dic.version) s += ' v' + dic.version;
-        order2.push(s)
-
-        if (dic.isKanji) this.kanjiPos = i;	// keep track of position
-        else ids.push(dic.id);
-    }
-    order2 = this.missing ? '' : order2.join('|');
-    if (order != order2) prefs.setString('dpriority', order2);
-
-    if (addedNew) {
-        // show dictionary tab if we have a new dictionary
-        window.openDialog('chrome://rikaichan/content/options.xul', '', 'chrome,centerscreen', 'dic');
-    }
-
-    if (!rcxData.dicPath) {
-        rcxData.dicPath = { ready: false };
-
-        Components.utils.import('resource://gre/modules/AddonManager.jsm');
-        // asynchronous
-        AddonManager.getAddonsByIDs(ids, function(addons) {
-            for (let i = 0; i < addons.length; ++i) {
-                let a = addons[i];
-                rcxData.dicPath[a.id] = a.getResourceURI('install.rdf')
-                    .QueryInterface(Components.interfaces.nsIFileURL)
-                    .file.parent.path;
+        // anything new is added at the end
+        let addedNew = false;
+        for (let id in rcxDicList) {
+            if (!done[id]) {
+                this.dicList.push(rcxDicList[id]);
+                addedNew = true;
             }
-            rcxData.dicPath.ready = true;
+        }
 
-            Components.classes['@mozilla.org/observer-service;1']
-                .getService(Components.interfaces.nsIObserverService)
-                .notifyObservers(null, 'rikaichan', 'data-ready');
-        });
-        return;
-    }
+        let ids = [];
 
-    if (reinit) this.init();
+        // rebuild dpriority string which is also used by Options
+        let order2 = [];
+        for (let i = 0; i < this.dicList.length; ++i) {
+            let dic = this.dicList[i];
+            let s = dic.id + '#' + dic.name;
+            if (dic.version) s += ' v' + dic.version;
+            order2.push(s)
+
+            if (dic.isKanji) this.kanjiPos = i;	// keep track of position
+            else ids.push(dic.id);
+        }
+        order2 = this.missing ? '' : order2.join('|');
+        if (order != order2) prefs.setString('dpriority', order2);
+
+        if (addedNew) {
+            // show dictionary tab if we have a new dictionary
+            window.openDialog('chrome://rikaichan/content/options.xul', '', 'chrome,centerscreen', 'dic');
+        }
+        if (reinit) this.init();
     }
 
     prepare() {
@@ -254,11 +232,11 @@ class Translator {
         let maxTrim;
 
         if (dic.isName) {
-            maxTrim = this.options.dictOpt.maxName;
+            maxTrim = this.options.dictOptions.maxName;
             result.names = 1;
         }
         else {
-            maxTrim = this.options.dictOpt.maxEntries;
+            maxTrim = this.options.dictOptions.maxEntries;
         }
 
 
@@ -303,7 +281,7 @@ class Translator {
                         ok = (z != -1);
                     }
 
-                    if ((ok) && (dic.hasType) && (this.options.dictOpt.hidEx)) {
+                    if ((ok) && (dic.hasType) && (this.options.dictOptions.hidEx)) {
                         if (dentry.match(/\/\([^\)]*\bX\b.*?\)/)) ok = false;
                     }
                     if (ok) {
@@ -371,7 +349,7 @@ class Translator {
             } while (ds != this.selected);
 
             if (e != null) {
-                if (result.data.length >= this.options.dictOpt.maxEntries) {
+                if (result.data.length >= this.options.dictOptions.maxEntries) {
                     result.more = 1;
                     break;
                 }
@@ -424,7 +402,7 @@ class Translator {
                     list.push({ rank: d, text: r[i] });
                 }
 
-                let max = dic.isName ? this.options.dictOpt.maxName : this.options.dictOpt.maxEntries;
+                let max = dic.isName ? this.options.dictOptions.maxName : this.options.dictOptions.maxEntries;
                 list.sort(function(a, b) { return a.rank - b.rank });
                 for (let i = 0; i < list.length; ++i) {
                     if (result.data.length >= max) {
@@ -611,7 +589,7 @@ class Translator {
             b.push('<table class="k-main-tb"><tr><td valign="top">');
             b.push(box);
             b.push('<span class="k-kanji">' + entry.kanji + '</span><br/>');
-            if (!this.options.dictOpt.hideDef) b.push('<div class="k-eigo">' + entry.eigo + '</div>');
+            if (!this.options.dictOptions.hideDef) b.push('<div class="k-eigo">' + entry.eigo + '</div>');
             b.push('<div class="k-yomi">' + yomi + '</div>');
             b.push('</td></tr><tr><td>' + nums + '</td></tr></table>');
             return b.join('');
@@ -636,7 +614,7 @@ class Translator {
                 else c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
 
                 s = e[3];
-                if (this.options.dictOpt.hideDef){
+                if (this.options.dictOptions.hideDef){
                     t = '';
                 }else {
                     t = '<span class="w-def">' + s.replace(/\//g, '; ').replace(/\n/g, '<br/>') + '</span><br/>';
@@ -705,15 +683,15 @@ class Translator {
                 if (entry.data[i][1]) b.push(' <span class="w-conj">(' + entry.data[i][1] + ')</span>');
 
                 s = e[3];
-                if (this.options.dictOpt.hideDef) {
+                if (this.options.dictOptions.hideDef) {
                     t = '<br/>';
                 }
                 else {
                     t = s.replace(/\//g, '; ');
-                    if (!this.options.dictOpt.wpos){
+                    if (!this.options.dictOptions.wpos){
                         t = t.replace(/^\([^)]+\)\s*/, '')
                     };
-                    if (!this.options.dictOpt.wpop){
+                    if (!this.options.dictOptions.wpop){
                         t = t.replace('; (P)', '')
                     };
                     t = t.replace(/\n/g, '<br/>');
@@ -772,10 +750,10 @@ class Translator {
                 }
 
                 t = e[3].replace(/\//g, '; ');
-                if (!this.options.dictOpt.wpos){
+                if (!this.options.dictOptions.wpos){
                     t = t.replace(/^\([^)]+\)\s*/, '')
                 }
-                if (!this.options.dictOpt.wpop) {
+                if (!this.options.dictOptions.wpop) {
                     t = t.replace('; (P)', '');
                 }
                 b.push('\t' + t + '\n');
