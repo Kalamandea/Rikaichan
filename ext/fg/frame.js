@@ -21,19 +21,16 @@ let config = {
 	popdy: 25
 };
 
-//TODO fucn send message
-function sendMessageRikai(){
-	try {
-		chrome.runtime.sendMessage({action, params}, ({result, error}) => {
-			if (error) {
-				reject(error);
-			} else {
+function sendMessageRikai(msg){
+	return new Promise((resolve, reject) => {
+		try {
+			browser.runtime.sendMessage(msg, (result) => {
 				resolve(result);
-			}
-		});
-	}catch (e){
-
-	}
+			});
+		} catch (e) {
+			reject(e.message);
+		}
+	});
 }
 
 function cursorInPopup(pos) {
@@ -284,7 +281,7 @@ function highlightMatch(doc, rp, ro, matchLen, selEndList) {
 	data.selText = sel.toString();
 }
 
-function show() {
+async function show() {
 	let rp = data.prevRangeNode;
 	let ro = data.prevRangeOfs + data.uofs;
 
@@ -313,17 +310,14 @@ function show() {
 	//	console.log('text=' + text);
 
 	let e = {};
-	e.html = text;
-	// = sendSyncMessage('rcx@polarcloud.com:msg', {
-		// action: 'word-search',
-		// text: text
-	// })[0];
+	e = await sendMessageRikai({action:'word-search', text: text});
+	e = e[0];
 
-	// if (!e) {
-		// hidePopup();
-		// clearHi();
-		// return 0;
-	// }
+	 if (!e) {
+		 hidePopup();
+		 clearHi();
+		 return 0;
+	 }
 
 	lastFound = [e];
 
@@ -350,15 +344,15 @@ function show() {
 }
 
 function showTitle() {
-	let e; // = sendSyncMessage('rcx@polarcloud.com:msg', { action: 'translate', text: data.title })[0];
-	if (!e) {
-		hidePopup();
-		return;
-	}
-
-	lastFound = [e];
-	data.titleShown = true;
-	showPopup(e.html, data.prevTarget, data.pos, false);
+	sendMessageRikai({action: 'translate', text: data.title}).then(e =>{
+		if (!e[0]) {
+			hidePopup();
+			return;
+		}
+		lastFound = [e];
+		data.titleShown = true;
+		showPopup(e.html, data.prevTarget, data.pos, false);
+	});
 }
 
 function showPopup(text, elem, pos, _lbPop) {
@@ -593,14 +587,14 @@ function getNextTextNode(e, n) {
 	}
 }
 
-function showNext() {
+async function showNext() {
 	let n = 100;
 	while (n-- > 0) {
 		if (data.uofsNext <= 0) data.uofsNext = 1;
 		data.uofs += data.uofsNext;
 
 		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: 0 });	// !!
-		let r = show();
+		let r = await show();
 		if (r == 1) break;
 		if (r == -1) {
 			data.prevRangeNode = getNextTextNode(data.prevRangeNode, 0)
@@ -614,7 +608,7 @@ function showNext() {
 	}
 }
 
-function showPrev() {
+async function showPrev() {
 	let n = 100;
 	let ofs = data.uofs;
 	while (n-- > 0) {
@@ -631,7 +625,7 @@ function showPrev() {
 		}
 		data.uofs = ofs;
 		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: 0 });	// !!
-		if (show() != 0) break;
+		if (await show() != 0) break;
 	}
 }
 
@@ -819,12 +813,17 @@ var processMessage = function (request, sender, sendResponse) {
 	if (!request.action)
 		return;	
 	const action = request.action;
+	//TODO change
 	if (action == 'enable') {
 		enable();
 		if (request.action) showPopup('<div>Enable</div>');
 	}
 	else if (action == 'disable') {
 		disable();
+	}
+	if(action == 'show'){
+		ignoreMouseTime = (new Date()).getTime() + 2000;
+		showPopup(request.data);
 	}
 };
 

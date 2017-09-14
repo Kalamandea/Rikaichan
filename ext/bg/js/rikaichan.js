@@ -46,7 +46,7 @@ window.rikaichanWebEx = new class {
 		});
 		querying.then(this.messageTab);
 	}
-
+	//TODO Deprecated
 	testTranslate(){
 		let ent = {};
 		this.translator.database.findTerms('嚔','eng').then(definitions => {ent['testT'] = definitions});
@@ -59,7 +59,8 @@ window.rikaichanWebEx = new class {
 			this.options.general.enable = !this.options.general.enable;
 			optionsSave(this.options).then(() => this.optionsSet(this.options));
 			setIcon(this.options.general.enable);
-			fgBroadcast('toggle',options.general.enable);
+			//TODO change
+			fgBroadcast(this.options.general.enable ? "enable" : "disable", options.general.enable);
 			//this.processMessage();
 		}
 		if(command == 'options'){
@@ -67,9 +68,16 @@ window.rikaichanWebEx = new class {
 		}
 	}
 
-	onMessage({action, params}, sender, callback) {
+	onMessage(msg, sender, callback) {
 
-		if (msg.data.action == 'word-search') {
+		if (msg.action == 'word-search') {
+			this.translator.wordSearch(action.text).then(e =>{
+				if (e != null){
+					e.html = this.translator.makeHtml(e);
+				}
+				callback(e);
+			});
+
 			let e = this.translator.wordSearch(msg.data.text);
 			if (e != null) {
 				e.html = this.translator.makeHtml(e);
@@ -84,18 +92,21 @@ window.rikaichanWebEx = new class {
 		// console.log('target=', msg.target);
 		// console.log('objects=', msg.objects);
 
-		if (msg.data.action == 'translate') {
-			let e = this.translator.translate(msg.data.text);
-			if (e != null) {
-				e.title = msg.data.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) { return '&#' + c.charCodeAt(0) + ';' } );
-				if (msg.data.text.length > e.textLen) e.title += '...';
-				e.html = this.translator.makeHtml(e);
-			}
-			return e;
+		if (msg.action == 'translate') {
+			let e = this.translator.translate(msg.text).then(e => {
+				if (e != null) {
+					e.title = msg.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) {
+						callback('&#' + c.charCodeAt(0) + ';');
+					});
+					if (msg.text.length > e.textLen) e.title += '...';
+					e.html = this.translator.makeHtml(e);
+				}
+				callback(e);
+			});
 		}
 
-		if (msg.data.action == 'lookup-search') {
-			return this.translator.lookupSearch(msg.data.text);
+		if (msg.action == 'lookup-search') {
+			//return this.translator.lookupSearch(msg.text);
 		}
 
 	}

@@ -314,15 +314,15 @@ class Translator {
         return result;
     }
 
-    wordSearch(word, noKanji) {
+    async wordSearch(word, noKanji) {
         this.searchSkipped = 0;
         let ds = this.selected;
         do {
             let dic = this.dicList[ds];
             if ((!noKanji) || (!dic.isKanji)) {
                 let e;
-                if (dic.isKanji) e = this.kanjiSearch(word.charAt(0));
-                else e = this._wordSearch(word, dic, null);
+                if (dic.isKanji) e = await this.kanjiSearch(word.charAt(0));
+                else e = await this._wordSearch(word, dic, null);
                 if (e) {
                     if (ds != 0) e.title = dic.name;
                     return e;
@@ -335,7 +335,7 @@ class Translator {
     }
 
 
-    translate(text) {
+    async translate(text) {
         let result = { data: [], textLen: text.length };
         while (text.length > 0) {
             let e = null;
