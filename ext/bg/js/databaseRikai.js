@@ -7,6 +7,7 @@ class DatabaseRikaichan {
         this.dictionaries = {};
         this.dbVersion = 2;
         this.tagMetaCache = {};
+        this.findWord = this.findWord.bind(this);
         this.importDictionary = this.importDictionary.bind(this);
     }
 
@@ -55,12 +56,12 @@ class DatabaseRikaichan {
         });
     }
 
-    findTerms(term, dictionaries) {
-        /*if (this.db[dictionaries] == null) {
+    findWord(term, dic) {
+        if (this.dictionaries[dic] == null) {
             return Promise.reject('database not initialized');
-        }*/
+        }
         const results = [];
-        return this.db[dictionaries].terms.where('kanji').equals(term).or('kana').equals(term).each(row => {
+        return this.dictionaries[dic].db.terms.where('kanji').equals(term).or('kana').equals(term).each(row => {
             results.push({
                 kanji: row.kanji,
                 kana: row.kana,

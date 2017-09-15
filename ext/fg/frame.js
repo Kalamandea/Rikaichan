@@ -809,7 +809,7 @@ function lookup(text, checkSelected) {
 
 
 var processMessage = function (request, sender, sendResponse) {
-	//console.log(request);
+	//console.log(request.data);
 	if (!request.action)
 		return;	
 	const action = request.action;

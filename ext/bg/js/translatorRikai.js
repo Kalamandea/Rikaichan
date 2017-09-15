@@ -137,7 +137,8 @@ class Translator {
 
         if (addedNew) {
             // show dictionary tab if we have a new dictionary
-            window.openDialog('chrome://rikaichan/content/options.xul', '', 'chrome,centerscreen', 'dic');
+            browser.runtime.openOptionsPage();
+            //window.openDialog('chrome://rikaichan/content/options.xul', '', 'chrome,centerscreen', 'dic');
         }
         if (reinit) this.init();
     }
@@ -159,6 +160,7 @@ class Translator {
         for (let i = this.dicList.length - 1; i >= 0; --i) {
             try {
                 let dic = this.dicList[i];
+                //todo to new database
                 if (dic.close) dic.close();
             }
             catch (ex) { }
@@ -178,7 +180,7 @@ class Translator {
     }
 
 
-    _wordSearch(word, dic, max) {
+    async _wordSearch(word, dic, max) {
         if (!this.ready) this.init();
 
         // half & full-width katakana to hiragana conversion
@@ -231,7 +233,7 @@ class Translator {
         let result = { data: [] };
         let maxTrim;
 
-        if (dic.isName) {
+        if (this.database.dictionaries[dic].isName) {
             maxTrim = this.options.dictOptions.maxName;
             result.names = 1;
         }
@@ -248,16 +250,16 @@ class Translator {
 
         while (word.length > 0) {
             let showInf = (count != 0);
-            let variants = dic.isName ? [{word: word, type: 0xFF, reason: null}] : this.deinflect.go(word);
+            let variants = this.database.dictionaries[dic].isName ? [{word: word, type: 0xFF, reason: null}] : this.deinflect.go(word);
             for (let i = 0; i < variants.length; i++) {
                 let v = variants[i];
-                let entries = dic.findWord(v.word);
+                let entries = this.database.findWord(v.word, dic);
                 for (let j = 0; j < entries.length; ++j) {
                     let dentry = entries[j];
                     if (have[dentry]) continue;
 
                     let ok = true;
-                    if ((dic.hasType) && (i > 0)) {
+                    if ((this.database.dictionaries[dic].hasType) && (i > 0)) {
                         // i > 0 a de-inflected word
 
                         let gloss = dentry.split(/[,()]/);
@@ -281,7 +283,7 @@ class Translator {
                         ok = (z != -1);
                     }
 
-                    if ((ok) && (dic.hasType) && (this.options.dictOptions.hidEx)) {
+                    if ((ok) && (this.database.dictionaries[dic].hasType) && (this.options.dictOptions.hidEx)) {
                         if (dentry.match(/\/\([^\)]*\bX\b.*?\)/)) ok = false;
                     }
                     if (ok) {
@@ -319,12 +321,12 @@ class Translator {
         let ds = this.selected;
         do {
             let dic = this.dicList[ds];
-            if ((!noKanji) || (!dic.isKanji)) {
+            if ((!noKanji) || (!this.database.dictionaries[dic].isKanji)) {
                 let e;
-                if (dic.isKanji) e = await this.kanjiSearch(word.charAt(0));
+                if (this.database.dictionaries[dic].isKanji) e = await this.kanjiSearch(word.charAt(0));
                 else e = await this._wordSearch(word, dic, null);
                 if (e) {
-                    if (ds != 0) e.title = dic.name;
+                    if (ds != 0) e.title = this.database.dictionaries[dic].name;
                     return e;
                 }
             }
@@ -341,6 +343,7 @@ class Translator {
             let e = null;
             let ds = this.selected;
             do {
+                //TODO list
                 if (!this.dicList[ds].isKanji) {
                     e = this._wordSearch(text, this.dicList[ds], 1);
                     if (e != null) break;
@@ -373,8 +376,8 @@ class Translator {
         let ds = this.selected;
         do {
             let dic = this.dicList[ds];
-            if (!dic.isKanji) {
-                let result = { data: [], reason: [], kanji: 0, more: 0, names: dic.isName };
+            if (!this.database.dictionaries[dic].isKanji) {
+                let result = { data: [], reason: [], kanji: 0, more: 0, names: this.database.dictionaries[dic].isName };
 
                 let r = dic.findText(text);
 
@@ -402,7 +405,7 @@ class Translator {
                     list.push({ rank: d, text: r[i] });
                 }
 
-                let max = dic.isName ? this.options.dictOptions.maxName : this.options.dictOptions.maxEntries;
+                let max = this.database.dictionaries[dic].isName ? this.options.dictOptions.maxName : this.options.dictOptions.maxEntries;
                 list.sort(function(a, b) { return a.rank - b.rank });
                 for (let i = 0; i < list.length; ++i) {
                     if (result.data.length >= max) {
@@ -413,7 +416,7 @@ class Translator {
                 }
 
                 if (result.data.length) {
-                    if (ds != 0) result.title = dic.name;
+                    if (ds != 0) result.title = this.database.dictionaries[dic].name;
                     return result;
                 }
             }

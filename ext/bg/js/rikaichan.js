@@ -5,11 +5,7 @@ window.rikaichanWebEx = new class {
 		this.tabInfo = {};
 		this.dataMessage = {};
 		this.translator = new Translator();
-		this.processMessage = this.processMessage.bind(this);
-		this.testTranslate = this.testTranslate.bind(this);
-		this.messageTab = this.messageTab.bind(this);
 		this.onMessage = this.onMessage.bind(this);
-		//this.setIcon = this.setIcon.bind(this);
 
 		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
 			browser.commands.onCommand.addListener(this.onCommand.bind(this));
@@ -33,6 +29,7 @@ window.rikaichanWebEx = new class {
 		}
 	}
 
+	//TODO Deprecated
 	messageTab(tabs) {
 		browser.tabs.sendMessage(tabs[0].id, this.dataMessage);
 	}
@@ -49,7 +46,7 @@ window.rikaichanWebEx = new class {
 	//TODO Deprecated
 	testTranslate(){
 		let ent = {};
-		this.translator.database.findTerms('嚔','eng').then(definitions => {ent['testT'] = definitions});
+		this.translator.database.findWord('嚔','eng').then(definitions => {ent['testT'] = definitions});
 		ent.test= 'fgdsff';
 		console.log(ent);
 	}
