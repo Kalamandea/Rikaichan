@@ -82,6 +82,10 @@ window.rikaichanWebEx = new class {
 			return e;
 		}
 
+		if (msg.action == 'load-skin'){
+
+		}
+
 		// console.log('\nonContentMessage');
 		// console.log('name=' + msg.name);
 		// console.log('sync=' + msg.sync);

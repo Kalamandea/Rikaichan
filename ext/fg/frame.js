@@ -699,6 +699,16 @@ function enable() {
 	if (enabled) return;
 	enabled = true;
 	paused = false;
+    let root = content.document;
+    let style = root.getElementById('rikaichan-style');
+    if (!style){
+        style = root.createElementNS('style');
+        //TODO load from skin file
+		sendMessageRikai({action: 'load-skin'}).then(css => {
+            style.innerHTML = css;
+            root.head.appendChild(style);
+		});
+	}
 
 	addEventListener('mousemove', onMouseMove, false);
 	addEventListener('mousedown', onMouseDown, false);
