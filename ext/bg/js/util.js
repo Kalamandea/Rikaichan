@@ -98,7 +98,7 @@ function optionsSetDefaults(options) {
             selectedInLookupBar: true,
             enlargeSmallDocuments: false,
             showIconInStatusbar: true,
-
+            skin:'blue',
             showMiniHelp: true,
             useDPR: false,
             PopDY: 20

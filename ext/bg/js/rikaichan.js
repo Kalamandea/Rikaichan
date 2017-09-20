@@ -83,6 +83,9 @@ window.rikaichanWebEx = new class {
 		}
 
 		if (msg.action == 'load-skin'){
+			fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(css =>{
+                callback(css);
+			});
 
 		}
 

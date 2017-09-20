@@ -700,9 +700,10 @@ function enable() {
 	enabled = true;
 	paused = false;
     let root = content.document;
-    let style = root.getElementById('rikaichan-style');
+    let style = root.getElementById('rikaichan-skin');
     if (!style){
-        style = root.createElementNS('style');
+        style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
+        style.id = 'rikaichan-skin';
         //TODO load from skin file
 		sendMessageRikai({action: 'load-skin'}).then(css => {
             style.innerHTML = css;
