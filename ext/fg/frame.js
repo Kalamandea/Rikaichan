@@ -8,7 +8,7 @@ let lbLast = '';
 let timer = null;
 let ignoreMouseTime = 0;
 
-let data = { };
+let data = {};
 
 let config = {
 	popdelay: 40,
@@ -676,6 +676,7 @@ function onKeyDown(ev) {
 		break;
 	case 77:	// m (next character)
 		data.uofsNext = 1;
+        //break; ???
 	case 78:	// n
 		showNext();
 		break;
@@ -704,7 +705,6 @@ function enable() {
     if (!style){
         style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
         style.id = 'rikaichan-skin';
-        //TODO load from skin file
 		sendMessageRikai({action: 'load-skin'}).then(css => {
             style.innerHTML = css;
             root.head.appendChild(style);

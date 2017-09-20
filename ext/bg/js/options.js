@@ -157,7 +157,7 @@ function onDictionaryImport(e) {
     dictImporter.setAttribute('style', 'display:none');
     const dictProgress = document.getElementById('dict-import-progress');
     dictProgress.setAttribute('class', '');
-    const dictProgressBar = document.getElementById('dict-import-progress');
+    const dictProgressBar = document.getElementById('dict-progress-bar');
     const setProgress = percent => dictProgressBar.setAttribute('style','width:'+percent+'%');// dictProgress.find('.progress-bar').css('width', `${percent}%`);
     const updateProgress = (total, current) => setProgress(current / total * 100.0);
 
@@ -165,6 +165,7 @@ function onDictionaryImport(e) {
 
     optionsLoad().then(options => {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
+            //TODO set dict order
             options.dictionaries[summary.title] = {enabled: true, priority: 0};
             return optionsSave(options);
         }).then(() => dictionaryGroupsPopulate(options));
@@ -179,9 +180,8 @@ function onDictionaryImport(e) {
 
 optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
-
-    //$('#dict-purge').click(onDictionaryPurge);
-    //$('#dict-file').change(onDictionaryImport);
+    //TODO purge selec dict
+    document.getElementById('dict-purge').onclick = onDictionaryPurge;
 
     dictionaryGroupsPopulate(options);
     //updateVisibility(options);

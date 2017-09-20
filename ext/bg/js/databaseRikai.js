@@ -79,53 +79,30 @@ class DatabaseRikaichan {
         let self = this;
 
         let summary = null;
-        const indexLoaded = (title, version, revision, tagMeta, hasTerms, hasKanji) => {
-            summary = {title, version, revision, hasTerms, hasKanji};
-            return this.db[title].dictionaries.where('title').equals(title).count().then(count => {
-                if (count > 0) {
-                    return Promise.reject(`dictionary "${title}" is already imported`);
-                }
-
-                return this.db[title].dictionaries.add({title, version, revision, hasTerms, hasKanji}).then(() => {
-                    const rows = [];
-                    for (const tag in tagMeta || {}) {
-                        const meta = tagMeta[tag];
-                        const row = dictTagSanitize({
-                            name: tag,
-                            category: meta.category,
-                            notes: meta.notes,
-                            order: meta.order,
-                            dictionary: title
-                        });
-
-                        rows.push(row);
-                    }
-                    return self.db[title].tagMeta.bulkAdd(rows);
-                });
-            });
-        };
 
         const termsLoaded = (index, entries, total, current) => {
             const rows = [];
+            let ch = 0;
             for (const line of entries) {
+                ch++;
                 let arr = line.split('|');
                 rows.push({
                     kanji:arr[0],
                     kana:arr[1],
                     entry:arr[2]
                 });
+                if (callback) {
+                    callback(entries.length, ch);
+                }
             }
 			if(self.dictionaries[index.title] == null){
                 self.dictionaries[index.title] = index;
+                summary = index;
 				self.prepare(index.title);
 			}
             //TODO replace on then
             setTimeout(1, 2000);
-            return self.dictionaries[index.title].db.terms.bulkAdd(rows).then(() => {
-                if (callback) {
-                    callback(total, current);
-                }
-            });
+            return self.dictionaries[index.title].db.terms.bulkAdd(rows);
         };
 
         const kanjiLoaded = (title, entries, total, current)  => {
