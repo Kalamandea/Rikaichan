@@ -19,6 +19,10 @@
             .input-opt{
                 width: 30%;
             }
+			.row-group{
+			    margin-bottom: 15px;
+				display: flex;
+			}
         </style>
     </head>
     <body>
@@ -27,36 +31,36 @@
                 <h3>General Options</h3>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-usage-guide" checked>Highlight text</label>
+                    <label><input type="checkbox" id="highlight-text" checked>Highlight text</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="group-terms-results" checked>Translate alt/title tags</label>
+                    <label><input type="checkbox" id="translate-alt" checked>Translate alt/title tags</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-advanced-options" checked>Automatically use selected text in Lookupbar</label>
+                    <label><input type="checkbox" id="auto-use-text" checked>Automatically use selected text in Lookupbar</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-debug-info2">Enlarge small documents</label>
+                    <label><input type="checkbox" id="enlarge">Enlarge small documents</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-debug-info3" checked>Show icon in statusbar</label>
+                    <label><input type="checkbox" id="show-icon-statusbar" checked>Show icon in statusbar</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-debug-info4" checked>Show mini help</label>
+                    <label><input type="checkbox" id="show-help" checked>Show mini help</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-debug-info5">Use device pixel ratio (zoom adjustment / may not work on some systems)</label>
+                    <label><input type="checkbox" id="use-pixel-ratio">Use device pixel ratio (zoom adjustment / may not work on some systems)</label>
                 </div>
 
-                <div class="form-group">
-                    <label for="audio-playback-volume" class="col-md-3">Popup distance from pointer</label>
-                    <input type="number" min="0" max="100" id="audio-playback-volume" class="form-control input-opt" value="20">
+                <div class="row-group">
+                    <label for="distance-from-pointer" class="col-md-3">Popup distance from pointer</label>
+                    <input type="number" min="0" max="100" id="distance-from-pointer" class="form-control input-opt" value="20">
                 </div>
             </div>
             <div>
@@ -104,7 +108,7 @@
                 <h3>Keyboard</h3>
             </div>
             <div>
-                <img src="/mixed/img/spinner.gif" class="pull-right" id="dict-spinner" alt>
+                <img src="../img/spinner.gif" class="pull-right" id="dict-spinner" alt>
                 <h3>Dictionaries</h3>
                 <p class="help-block">
                     Rikaichan can import and use a variety of dictionary formats. Unneeded dictionaries can be disabled,
@@ -135,34 +139,34 @@
 
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="gridRadios71">
+                        <input class="form-check-input" type="checkbox" id="hide-def">
                         Hide definitions
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="gridRadios72">
+                        <input class="form-check-input" type="checkbox" id="hide-x-entries">
                         Hide (X)-rated entries
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="gridRadios73" checked>
+                        <input class="form-check-input" type="checkbox" id="show-word-type" checked>
                         Show word type indicators [example: (v1,n)]
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="gridRadios74" checked>
+                        <input class="form-check-input" type="checkbox" id="show-popular" checked>
                         Show &quot;popular&quot; indicator [example: (P)]
                     </label>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3">Maximum entries displayed</label>
+                <div class="row-group">
+                    <label class="col-md-3" for="max-entries-dict">Maximum entries displayed</label>
                     <input type="number" min="0" max="100" id="max-entries-dict" class="form-control input-opt" value="10">
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3">Maximum names displayed</label>
+                <div class="row-group">
+                    <label class="col-md-3" for="max-names-dict">Maximum names displayed</label>
                     <input type="number" min="0" max="100" id="max-names-dict" class="form-control input-opt" value="20">
                 </div>
             </div>
@@ -172,37 +176,37 @@
                     <div class="col-md-6">
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios51" checked>
+                                <input class="form-check-input" type="checkbox" id="kanji-components" checked>
                                 Kanji Components
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios52" checked>
+                                <input class="form-check-input" type="checkbox" id="halpern" checked>
                                 Halpern
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios53" checked>
+                                <input class="form-check-input" type="checkbox" id="heisig" checked>
                                 Heisig
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios54" checked>
+                                <input class="form-check-input" type="checkbox" id="henshall" checked>
                                 Henshall
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios55" checked>
+                                <input class="form-check-input" type="checkbox" id="kanji-learners-dict" checked>
                                 Kanji Learners Dictionary
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios56" checked>
+                                <input class="form-check-input" type="checkbox" id="nelson" checked>
                                 Nelson
                             </label>
                         </div>
@@ -210,37 +214,37 @@
                     <div class="col-md-6">
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios57" checked>
+                                <input class="form-check-input" type="checkbox" id="new-nelson" checked>
                                 New Nelson
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios58" checked>
+                                <input class="form-check-input" type="checkbox" id="pinYin" checked>
                                 PinYin
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios59" checked>
+                                <input class="form-check-input" type="checkbox" id="skip-pattern" checked>
                                 Skip Pattern
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios60" checked>
+                                <input class="form-check-input" type="checkbox" id="tuttle-kana" checked>
                                 Tuttle Kanji &amp; Kana
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios61" checked>
+                                <input class="form-check-input" type="checkbox" id="tuttle-kanji" checked>
                                 Tuttle Kanji Dictionary
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="gridRadios62" checked>
+                                <input class="form-check-input" type="checkbox" id="unicode" checked>
                                 Unicode
                             </label>
                         </div>
@@ -250,16 +254,16 @@
             <div>
                 <h3>Clipboard &amp; Save</h3>
                 <div class="form-group">
-                    <label class="col-md-2">Line ending</label>
-                    <select class="form-control input-opt">
+                    <label class="col-md-2" for="line-ending">Line ending</label>
+                    <select class="form-control input-opt" id="line-ending">
                         <option value="0">Unix (\n)</option>
                         <option value="1">DOS/Windows (\r\n)</option>
                         <option value="2">Mac (\r)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="col-md-2">Field separator</label>
-                    <select class="form-control input-opt">
+                    <label class="col-md-2" for="field-separator">Field separator</label>
+                    <select class="form-control input-opt" id="field-separator">
                         <option value="0">Tab</option>
                         <option value="1">Comma</option>
                         <option value="2">Space</option>
