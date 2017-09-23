@@ -490,7 +490,7 @@ function zipLoadDb(archive, termsLoaded, kanjiLoaded) {
             return Promise.reject('no dictionary index found in archive');
         }
 		let index = {};
-        indexFile.async('string').then(indexJson => {
+        return indexFile.async('string').then(indexJson => {
             index = JSON.parse(indexJson);
             if (!index.title) {
                 return Promise.reject('unrecognized dictionary format');
@@ -518,99 +518,5 @@ function zipLoadDb(archive, termsLoaded, kanjiLoaded) {
             }
             return chain;
         });
-
-
-
-
-
-       /*     return indexLoaded(
-                index.title,
-                index.version,
-                index.revision,
-                index.tagMeta || {},
-                index.termBanks > 0,
-                index.kanjiBanks > 0
-            ).then(() => index);
-        }).then(index => {
-            const loaders = [];
-            const banksTotal = index.termBanks + index.kanjiBanks;
-            let banksLoaded = 0;
-
-            for (let i = 1; i <= index.termBanks; ++i) {
-                const bankFile = files[`term_bank_${i}.json`];
-                if (!bankFile) {
-                    return Promise.reject('missing term bank file');
-                }
-
-                loaders.push(() => bankFile.async('string').then(bankJson => {
-                    const bank = JSON.parse(bankJson);
-                    return termsLoaded(index.title, bank, banksTotal, banksLoaded++);
-                }));
-            }
-
-            for (let i = 1; i <= index.kanjiBanks; ++i) {
-                const bankFile = files[`kanji_bank_${i}.json`];
-                if (!bankFile) {
-                    return Promise.reject('missing kanji bank file');
-                }
-
-                loaders.push(() => bankFile.async('string').then(bankJson => {
-                    const bank = JSON.parse(bankJson);
-                    return kanjiLoaded(index.title, bank, banksTotal, banksLoaded++);
-                }));
-            }
-
-            let chain = Promise.resolve();
-            for (const loader of loaders) {
-                chain = chain.then(loader);
-            }
-
-            return chain;
-        });*/
     });
 }
-
-
-
-
-/*
- * Helpers
- */
-/*
-function handlebarsEscape(text) {
-    return Handlebars.Utils.escapeExpression(text);
-}
-
-function handlebarsDumpObject(options) {
-    const dump = JSON.stringify(options.fn(this), null, 4);
-    return handlebarsEscape(dump);
-}
-
-function handlebarsKanjiLinks(options) {
-    let result = '';
-    for (const c of options.fn(this)) {
-        if (jpIsKanji(c)) {
-            result += `<a href="#" class="kanji-link">${c}</a>`;
-        } else {
-            result += c;
-        }
-    }
-
-    return result;
-}
-
-function handlebarsMultiLine(options) {
-    return options.fn(this).split('\n').join('<br>');
-}
-
-function handlebarsRegister() {
-    Handlebars.partials = Handlebars.templates;
-    Handlebars.registerHelper('dumpObject', handlebarsDumpObject);
-    Handlebars.registerHelper('kanjiLinks', handlebarsKanjiLinks);
-    Handlebars.registerHelper('multiLine', handlebarsMultiLine);
-}
-
-function handlebarsRender(template, data) {
-    return Handlebars.templates[template](data);
-}
-*/

@@ -24,22 +24,23 @@ class DatabaseRikaichan {
         }).catch(() => {});
     }
 
-    prepare(title) {
-        if (title == null) {
+    prepare(index) {
+        if (index.title == null) {
             return Promise.reject('Unknown title');
         }
+        this.dictionaries[index.title] = index;
 		/*if(!title){
 			title = 'eng'
 		}*/
-        this.dictionaries[title] = {}
+        this.dictionaries[index.title] = index;
 
-        return this.sanitize(title).then(() => {
-            this.dictionaries[title].db = new Dexie(title);
-            this.dictionaries[title].db.version(this.dbVersion).stores({
+        return this.sanitize(index.title).then(() => {
+            this.dictionaries[index.title].db = new Dexie(index.title);
+            this.dictionaries[index.title].db.version(this.dbVersion).stores({
                 terms: '++id,kanji,kana,entry'
             });
 
-            return this.dictionaries[title].db.open();
+            return this.dictionaries[index.title].db.open();
         });
     }
 
@@ -77,15 +78,12 @@ class DatabaseRikaichan {
             return Promise.reject('database not initialized');
         }*/
         let self = this;
-
         let summary = null;
-
         const termsLoaded = (index, entries, total, current) => {
             const rows = [];
             let ch = 0;
             for (const line of entries) {
                 ch++;
-                //let arr = line.split('|');
                 rows.push({
                     kanji:line[0],
                     kana:line[1],
@@ -96,18 +94,9 @@ class DatabaseRikaichan {
                 }
             }
             summary = index;
-			/*if(self.dictionaries[index.title] == null){
-                self.dictionaries[index.title] = index;
-				self.prepare(index.title).then(
-                );
-			}*/
-            self.dictionaries[index.title] = index;
-            return self.prepare(index.title).then(()=> {
+            return self.prepare(index).then(()=> {
                 self.dictionaries[index.title].db.terms.bulkAdd(rows);
             });
-            //TODO replace on then
-            //setTimeout(1, 3000);
-            //return self.dictionaries[index.title].db.terms.bulkAdd(rows);
         };
 
         const kanjiLoaded = (title, entries, total, current)  => {

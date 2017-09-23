@@ -177,7 +177,7 @@ function onDictionaryImport(e) {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
             //TODO set dict order
             options.dictionaries[summary.title] = summary;
-            options.dictionaries[summary.title] = {enabled: true, priority: 0};
+            options.dictionaries[summary.title].enable = true;
             return optionsSave(options);
         }).then(() => dictionaryGroupsPopulate(options));
     }).catch(dictionaryErrorShow).then(() => {

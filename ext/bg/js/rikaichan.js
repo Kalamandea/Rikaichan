@@ -53,11 +53,11 @@ window.rikaichanWebEx = new class {
 	onCommand(command) {
 		if(command == 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
-			optionsSave(this.options).then(() => this.optionsSet(this.options));
+			//optionsSave(this.options).then(() => this.optionsSet(this.options));
+            //fgBroadcast('enable', options.general.enable);
+            //TODO change
+            fgBroadcast(this.options.general.enable ? "enable" : "disable", this.options.general.enable);
 			setIcon(this.options.general.enable);
-			//TODO change
-			fgBroadcast(this.options.general.enable ? "enable" : "disable", options.general.enable);
-			//this.processMessage();
 		}
 		if(command == 'options'){
 			browser.runtime.openOptionsPage();
