@@ -60,21 +60,22 @@ function onOptionsChanged(e) {
  */
 
 function dictionaryErrorShow(error) {
- /*   const dialog = $('#dict-error');
-    if (error) {
-        dialog.show().find('span').text(error);
-    } else {
-        dialog.hide();
-    }*/
+        let errorBar = document.getElementById('dict-error');
+    if(error){
+        errorBar.setAttribute('class', 'alert alert-danger');
+        errorBar.getElementsByTagName('span')[0].innerHTML = error;
+    }else{
+        errorBar.setAttribute('class', 'alert alert-danger novisible');
+    }
 }
 
 function dictionarySpinnerShow(show) {
-    /*const spinner = document.getElementById('dict-spinner');
+    const spinner = document.getElementById('dict-spinner');
     if (show) {
-        spinner.show();
+        spinner.setAttribute('class', 'pull-right novisible');
     } else {
-        spinner.hide();
-    }*/
+        spinner.setAttribute('class', 'pull-right novisible');
+    }
 }
 
 function dictionaryGroupsSort() {
@@ -166,6 +167,7 @@ function onDictionaryImport(e) {
     optionsLoad().then(options => {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
             //TODO set dict order
+            options.dictionaries[summary.title] = summary;
             options.dictionaries[summary.title] = {enabled: true, priority: 0};
             return optionsSave(options);
         }).then(() => dictionaryGroupsPopulate(options));
