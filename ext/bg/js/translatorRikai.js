@@ -13,7 +13,7 @@ class Translator {
         //this.options = null;
         optionsLoad().then(options =>{
             this.options = options;
-            let a = options.kanjiDictionary.split(',');
+            let a = options.kanjiDictionary;
             for (let i = a.length - 1; i >= 0; --i) {
                 this.kanjiShown[a[i]] = 1;
             }

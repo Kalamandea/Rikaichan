@@ -1,0 +1,26 @@
+.novisible {
+    display: none;
+}
+
+.tab-content {
+    border-bottom: 1px #ddd solid;
+    border-left: 1px #ddd solid;
+    border-right: 1px #ddd solid;
+    padding: 10px;
+}
+.input-opt{
+    width: 30%;
+}
+.row-group{
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.dict-groups{
+    background-color: #939393;
+    padding: 5px;
+}
+
+.dict{
+    margin-bottom: 5px;
+}

@@ -25,12 +25,12 @@ class DatabaseRikaichan {
     }
 
     prepare(title) {
-        /*if (this.db !== null) {
-            return Promise.reject('database already initialized');
-        }*/
-		if(!title){
+        if (title == null) {
+            return Promise.reject('Unknown title');
+        }
+		/*if(!title){
 			title = 'eng'
-		}
+		}*/
         this.dictionaries[title] = {}
 
         return this.sanitize(title).then(() => {
@@ -85,24 +85,29 @@ class DatabaseRikaichan {
             let ch = 0;
             for (const line of entries) {
                 ch++;
-                let arr = line.split('|');
+                //let arr = line.split('|');
                 rows.push({
-                    kanji:arr[0],
-                    kana:arr[1],
-                    entry:arr[2]
+                    kanji:line[0],
+                    kana:line[1],
+                    entry:line[2]
                 });
                 if (callback) {
                     callback(entries.length, ch);
                 }
             }
-			if(self.dictionaries[index.title] == null){
+            summary = index;
+			/*if(self.dictionaries[index.title] == null){
                 self.dictionaries[index.title] = index;
-                summary = index;
-				self.prepare(index.title);
-			}
+				self.prepare(index.title).then(
+                );
+			}*/
+            self.dictionaries[index.title] = index;
+            return self.prepare(index.title).then(()=> {
+                self.dictionaries[index.title].db.terms.bulkAdd(rows);
+            });
             //TODO replace on then
-            setTimeout(1, 2000);
-            return self.dictionaries[index.title].db.terms.bulkAdd(rows);
+            //setTimeout(1, 3000);
+            //return self.dictionaries[index.title].db.terms.bulkAdd(rows);
         };
 
         const kanjiLoaded = (title, entries, total, current)  => {
@@ -125,6 +130,6 @@ class DatabaseRikaichan {
             });
         };
 
-        return zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded).then(() => summary);
+        return zipLoadDb(archive, termsLoaded, kanjiLoaded).then(() => summary);
     }
 }

@@ -98,10 +98,19 @@ function dictionaryGroupsSort() {
 function dictionaryGroupsPopulate(options) {
     dictionaryErrorShow(null);
     dictionarySpinnerShow(true);
-/*
-    const dictGroups = $('#dict-groups').empty();
-    const dictWarning = $('#dict-warning').hide();
 
+    const dictGroups = document.getElementById('dict-groups');
+    const dictWarning = document.getElementById('dict-warning');
+    dictWarning.setAttribute('class','alert alert-warning');
+    const dictList = options.dictionaries;
+    for(dic in dictList){
+        let dict = document.createElement('div');
+        dict.innerHTML = dictList[dic].name;
+        dict.setAttribute('class','panel dict');
+        dictGroups.appendChild(dict);
+    }
+
+    /*
     return instDb().getDictionaries().then(rows => {
         if (rows.length === 0) {
             dictWarning.show();

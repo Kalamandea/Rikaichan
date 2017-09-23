@@ -11,7 +11,7 @@ class DeinflectorRikaichan {
         ruleGroup.fromLen = -1;
 
         jsonLoad(browser.extension.getURL('/bg/lang/deinflect.json')).then(deinflect=> {
-            for(line of deinflect){
+            for(const line of deinflect){
                 if (line.length == 1) {
                     this.reasons.push(line[0]);
                 }else if (line.length == 4) {

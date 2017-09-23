@@ -483,7 +483,7 @@ function readArray(name) {
  * Zip
  */
 
-function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
+function zipLoadDb(archive, termsLoaded, kanjiLoaded) {
     return JSZip.loadAsync(archive).then(files => files.files).then(files => {
         const indexFile = files['index.json'];
         if (!indexFile) {
@@ -498,7 +498,7 @@ function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
             return index
         }).then(index =>{
             console.log(index);
-            const dict = files['Dict.csv'];
+            const dict = files['Dict.json'];
             if (!dict) {
                 return Promise.reject('missing Dictionary file');
             }
@@ -506,9 +506,10 @@ function zipLoadDb(archive, indexLoaded, termsLoaded, kanjiLoaded) {
             loaders.push(() => dict.async('string').then(dictCsv => {
                 //const bank = JSON.parse(dictCsv);
                 //console.log('rec' + bank.columns.length);
-                const lines = dictCsv.split('>');
+                // const lines = dictCsv.split('>');
+                const lines = JSON.parse(dictCsv); //dictCsv.split('>');
                 let banksLoaded = 0;
-                return termsLoaded(index.title, lines, 1, banksLoaded++);
+                return termsLoaded(index, lines, 1, banksLoaded++);
             }));
 
             let chain = Promise.resolve();
