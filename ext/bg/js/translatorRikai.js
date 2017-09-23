@@ -17,17 +17,19 @@ class Translator {
             for (let i = a.length - 1; i >= 0; --i) {
                 this.kanjiShown[a[i]] = 1;
             }
+            //TODO new order dict
+            this.dicList = options.dictOrder;
         });
+        this.kanjiPos = 0;
 
-        //TODO new order dict
-        this.dicList = this.options.dictOrder;
-        for (let i = this.dicList.length - 1; i >= 0; --i) {
+
+        /*for (let i = this.dicList.length - 1; i >= 0; --i) {
             let dic = this.dicList[i];
             if (dic.isKanji) continue;
             //TODO new dictioanary class
             if ((!dic.findWord) || (!dic.findText)) this.dicList[i] = dic = new RcxDic(dic);
             if (dic.open) dic.open();
-        }
+        }*/
         this.selected = 0;
         this.ready = true;
 
@@ -68,7 +70,7 @@ class Translator {
             'U',	'Unicode'
         ]
     }
-
+/*
     loadConfig() {
         let reinit = false;
 
@@ -94,7 +96,7 @@ class Translator {
         if (order == '') order = 'rikaichan-jpen@polarcloud.com#|rikaichan-jpde@polarcloud.com#|rikaichan-jpfr@polarcloud.com#|rikaichan-jpru@polarcloud.com#|rikaichan-jpnames@polarcloud.com#|kanji@local#';
 
         this.dicList = [];
-        this.kanjiPos = 0;
+
 
         let done = {};
 
@@ -141,7 +143,7 @@ class Translator {
             //window.openDialog('chrome://rikaichan/content/options.xul', '', 'chrome,centerscreen', 'dic');
         }
         if (reinit) this.init();
-    }
+    }*/
 
     prepare() {
         return Promise.all([jsonLoad(browser.extension.getURL('/bg/lang/deinflect.json'))]).then(([reasons]) => {
@@ -156,15 +158,6 @@ class Translator {
         this.kanjiShown = null;
         this.radData = null;
         this.deinflect.done();
-
-        for (let i = this.dicList.length - 1; i >= 0; --i) {
-            try {
-                let dic = this.dicList[i];
-                //todo to new database
-                if (dic.close) dic.close();
-            }
-            catch (ex) { }
-        }
     }
 
     selectNext() {

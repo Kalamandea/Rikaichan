@@ -2,7 +2,6 @@ window.rikaichanWebEx = new class {
 	constructor() {
 		this.options = null;
 		this.toggle = false;
-		this.tabInfo = {};
 		this.dataMessage = {};
 		this.translator = new Translator();
 		this.onMessage = this.onMessage.bind(this);
