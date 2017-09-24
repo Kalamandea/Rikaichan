@@ -112,7 +112,9 @@ function optionsSetDefaults(options) {
         },
 
         dictionaries: {},
-        dictOrder:['rus','eng'],
+        // dictOrder:['rus','eng'],
+        //TODO order
+        dictOrder:['eng'],
         dictOptions:{
             hideDef: false,
             hidEx: false,

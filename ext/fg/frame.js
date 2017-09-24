@@ -45,8 +45,10 @@ function cursorInPopup(pos) {
 function onMouseMove(ev) {
 	//	console.log('onMouseMove: sX=' + ev.screenX + ', sY=' + ev.screenY + ', target=' + ev.target.nodeName);
 
+	//TODO check set ignoreMouseTime
 	if (ignoreMouseTime > 0) {
-		if ((new Date()).getTime() <= ignoreMouseTime) return;
+		if ((new Date()).getTime() <= ignoreMouseTime)
+			return;
 		ignoreMouseTime = 0;
 	}
 

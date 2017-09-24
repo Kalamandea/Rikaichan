@@ -29,20 +29,6 @@ window.rikaichanWebEx = new class {
 	}
 
 	//TODO Deprecated
-	messageTab(tabs) {
-		browser.tabs.sendMessage(tabs[0].id, this.dataMessage);
-	}
-
-	//TODO Deprecated
-	processMessage(request) {
-		this.dataMessage.action = this.options.general.enable ? "enable" : "disable";
-		var querying = browser.tabs.query({
-			active: true,
-			currentWindow: true
-		});
-		querying.then(this.messageTab);
-	}
-	//TODO Deprecated
 	testTranslate(){
 		let ent = {};
 		this.translator.database.findWord('嚔','eng').then(definitions => {ent['testT'] = definitions});
@@ -50,11 +36,14 @@ window.rikaichanWebEx = new class {
 		console.log(ent);
 	}
 
-	onCommand(command) {
+    showText(text) {
+        fgBroadcast("show", text);
+    }
+
+	onCommand(command, data) {
 		if(command == 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
-			//optionsSave(this.options).then(() => this.optionsSet(this.options));
-            //fgBroadcast('enable', options.general.enable);
+			optionsSave(this.options).then(() => this.optionsSet(this.options));
             //TODO change
             fgBroadcast(this.options.general.enable ? "enable" : "disable", this.options.general.enable);
 			setIcon(this.options.general.enable);
@@ -62,28 +51,32 @@ window.rikaichanWebEx = new class {
 		if(command == 'options'){
 			browser.runtime.openOptionsPage();
 		}
+		if(command == 'show-text'){
+            fgBroadcast("show", data);
+        }
 	}
 
 	onMessage(msg, sender, callback) {
 
 		if (msg.action == 'word-search') {
-			this.translator.wordSearch(action.text).then(e =>{
+			return this.translator.wordSearch(msg.text).then(e =>{
 				if (e != null){
 					e.html = this.translator.makeHtml(e);
 				}
-				callback(e);
+				e.test = 'test';
+				return e;
 			});
 
-			let e = this.translator.wordSearch(msg.data.text);
+			/*let e = this.translator.wordSearch(msg.data.text);
 			if (e != null) {
 				e.html = this.translator.makeHtml(e);
 			}
-			return e;
+			return e;*/
 		}
 
 		if (msg.action == 'load-skin'){
-			fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(css =>{
-                callback(css);
+			return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(css =>{
+               return css;
 			});
 
 		}
@@ -99,12 +92,12 @@ window.rikaichanWebEx = new class {
 			let e = this.translator.translate(msg.text).then(e => {
 				if (e != null) {
 					e.title = msg.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) {
-						callback('&#' + c.charCodeAt(0) + ';');
+						return ('&#' + c.charCodeAt(0) + ';');
 					});
 					if (msg.text.length > e.textLen) e.title += '...';
 					e.html = this.translator.makeHtml(e);
 				}
-				callback(e);
+                return e;
 			});
 		}
 
