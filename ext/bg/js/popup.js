@@ -34,7 +34,7 @@ function openOptions(){
 
 function testSearch(){
 	let a = [{entry:"test"}];
-	browser.extension.getBackgroundPage().rikaichanWebEx.testTranslate();
+	//browser.extension.getBackgroundPage().rikaichanWebEx.testTranslate();
 	//document.getElementById('open-search').value = a[0].entry;
 }
 

@@ -313,7 +313,7 @@ async function show() {
 
 	let e = {};
 	e = await sendMessageRikai({action:'word-search', text: text});
-	e = e[0];
+	//e = e[0];
 
 	 if (!e) {
 		 hidePopup();

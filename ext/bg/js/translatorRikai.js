@@ -8,7 +8,8 @@ class Translator {
         this.loaded = false;
         this.database = new DatabaseRikaichan();
         this.deinflect = new DeinflectorRikaichan();
-
+        this.wordSearch = this.wordSearch.bind(this);
+        this._wordSearch = this._wordSearch.bind(this);
         this.kanjiShown = {};
         //this.options = null;
         optionsLoad().then(options =>{
@@ -246,7 +247,7 @@ class Translator {
             let variants = this.database.dictionaries[dic].isName ? [{word: word, type: 0xFF, reason: null}] : this.deinflect.go(word);
             for (let i = 0; i < variants.length; i++) {
                 let v = variants[i];
-                let entries = this.database.findWord(v.word, dic);
+                let entries = await this.database.findWord(v.word, dic);
                 for (let j = 0; j < entries.length; ++j) {
                     let dentry = entries[j];
                     if (have[dentry]) continue;
@@ -316,10 +317,12 @@ class Translator {
             let dic = this.dicList[ds];
             if ((!noKanji) || (!this.database.dictionaries[dic].isKanji)) {
                 let e;
-                if (this.database.dictionaries[dic].isKanji) e = await this.kanjiSearch(word.charAt(0));
+                if (this.database.dictionaries[dic].isKanji)
+                    e = await this.kanjiSearch(word.charAt(0));
                 else e = await this._wordSearch(word, dic, null);
                 if (e) {
-                    if (ds != 0) e.title = this.database.dictionaries[dic].name;
+                    if (ds != 0)
+                        e.title = this.database.dictionaries[dic].name;
                     return e;
                 }
             }
@@ -601,15 +604,15 @@ class Translator {
                 e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/([\S\s]+)\//);
                 if (!e) continue;
 
-                if (s != e[3]) {
+                if (s != e.entry) {
                     c.push(t);
                     t = '';
                 }
 
-                if (e[2]) c.push('<span class="w-kanji">' + e[1] + '</span> &#32; <span class="w-kana">' + e[2] + '</span><br/> ');
-                else c.push('<span class="w-kana">' + e[1] + '</span><br/> ');
+                if (e.kana) c.push('<span class="w-kanji">' + e.kanji + '</span> &#32; <span class="w-kana">' + e.kana + '</span><br/> ');
+                else c.push('<span class="w-kana">' + e.kanji + '</span><br/> ');
 
-                s = e[3];
+                s = e.entry;
                 if (this.options.dictOptions.hideDef){
                     t = '';
                 }else {
@@ -649,15 +652,19 @@ class Translator {
             let k;
 
             for (i = 0; i < entry.data.length; ++i) {
-                e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/([\S\s]+)\//);
-                if (!e) continue;
+                //e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/([\S\s]+)\//);
+                e = entry.data[i][0];
+                if (!entry) continue;
 
                 /*
                  e[1] = kanji/kana
+                 e.kanji = kanji/kana
                  e[2] = kana
+                 e.kana = kana
                  e[3] = definition
+                 e.entry = definition
                  */
-                if (s != e[3]) {
+                if (s != e.entry) {
                     b.push(t);
                     pK = k = '';
                 }
@@ -665,20 +672,20 @@ class Translator {
                     k = t.length ? '<br/>' : '';
                 }
 
-                if (e[2]) {
-                    if (pK == e[1]) k = '\u3001 <span class="w-kana">' + e[2] + '</span>';
-                    else k += '<span class="w-kanji">' + e[1] + '</span> &#32; <span class="w-kana">' + e[2] + '</span>';
-                    pK = e[1];
+                if (e.kana) {
+                    if (pK == e.kanji) k = '\u3001 <span class="w-kana">' + e.kana + '</span>';
+                    else k += '<span class="w-kanji">' + e.kanji + '</span> &#32; <span class="w-kana">' + e.kana + '</span>';
+                    pK = e.kanji;
                 }
                 else {
-                    k += '<span class="w-kana">' + e[1] + '</span>';
+                    k += '<span class="w-kana">' + e.kanji + '</span>';
                     pK = '';
                 }
                 b.push(k);
 
                 if (entry.data[i][1]) b.push(' <span class="w-conj">(' + entry.data[i][1] + ')</span>');
 
-                s = e[3];
+                s = e.entry;
                 if (this.options.dictOptions.hideDef) {
                     t = '<br/>';
                 }
@@ -686,10 +693,10 @@ class Translator {
                     t = s.replace(/\//g, '; ');
                     if (!this.options.dictOptions.wpos){
                         t = t.replace(/^\([^)]+\)\s*/, '')
-                    };
+                    }
                     if (!this.options.dictOptions.wpop){
                         t = t.replace('; (P)', '')
-                    };
+                    }
                     t = t.replace(/\n/g, '<br/>');
                     t = '<br/><span class="w-def">' + t + '</span><br/>';
                 }

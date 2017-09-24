@@ -28,14 +28,6 @@ window.rikaichanWebEx = new class {
 		}
 	}
 
-	//TODO Deprecated
-	testTranslate(){
-		let ent = {};
-		this.translator.database.findWord('嚔','eng').then(definitions => {ent['testT'] = definitions});
-		ent.test= 'fgdsff';
-		console.log(ent);
-	}
-
     showText(text) {
         fgBroadcast("show", text);
     }
@@ -66,12 +58,6 @@ window.rikaichanWebEx = new class {
 				e.test = 'test';
 				return e;
 			});
-
-			/*let e = this.translator.wordSearch(msg.data.text);
-			if (e != null) {
-				e.html = this.translator.makeHtml(e);
-			}
-			return e;*/
 		}
 
 		if (msg.action == 'load-skin'){

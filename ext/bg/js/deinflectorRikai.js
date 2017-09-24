@@ -25,6 +25,7 @@ class DeinflectorRikaichan {
                 }
             }
         });
+        //TODO check
 
         /*let buffer = jsonLoad('/bg/lang/radicals.json') rcxFile.readArray('chrome://rikaichan/content/deinflect.dat');
          i = 1: skip header

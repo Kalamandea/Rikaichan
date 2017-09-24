@@ -29,9 +29,6 @@ class DatabaseRikaichan {
             return Promise.reject('Unknown title');
         }
         this.dictionaries[index.title] = index;
-		/*if(!title){
-			title = 'eng'
-		}*/
         this.dictionaries[index.title] = index;
 
         return this.sanitize(index.title).then(() => {
@@ -74,9 +71,6 @@ class DatabaseRikaichan {
     }
 
     importDictionary(archive, callback) {
-        /*if (this.db === null) {
-            return Promise.reject('database not initialized');
-        }*/
         let self = this;
         let summary = null;
         const termsLoaded = (index, entries, total, current) => {
