@@ -110,9 +110,7 @@ function optionsSetDefaults(options) {
         },
 
         dictionaries: {},
-        // dictOrder:['rus','eng'],
-        //TODO order
-        dictOrder:['eng'],
+        dictOrder:[],
         dictOptions:{
             hideDef: false,
             hidEx: false,
