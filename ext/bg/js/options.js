@@ -188,14 +188,24 @@ function onDictionaryImport(e) {
     });
 }
 
+function upDictOrder(e) {
+    console.log(e.target);
+}
+
 function test(e) {
     const dictGroups = document.getElementById('dict-groups');
     dictGroups.setAttribute('class','dict-groups');
     const dictList = [{name:'jp-eng',version:'2.01.170301'},{name:'jp-rus',version:'2.01.170301'},{name:'jp-deu',version:'2.01.170301'},{name:'jp-ita',version:'2.01.170301'}];
+    let i = 0;
     for(dic in dictList){
         let dict = document.createElement('div');
-        dict.innerHTML = '<h4>' +dictList[dic].name + '\t<small>' + dictList[dic].version + '</small></h4>';
+        dict.innerHTML = '<h4>' + dictList[dic].name + '\t<small>' + dictList[dic].version + '</small></h4>';
+        let up = document.createElement('button');
+        up.innerHTML='Up';
+        up.onclick = upDictOrder;
+        dict.appendChild(up);
         dict.setAttribute('class','panel dict');
+        dict.setAttribute('data-order',i++);
         dictGroups.appendChild(dict);
     }
 }
