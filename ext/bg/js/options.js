@@ -19,6 +19,9 @@
  * General
  */
 
+let dictList = {};
+let dictOrder = [];
+
 function formRead() {
     return optionsLoad().then(optionsOld => {
         const optionsNew = {}; /*= $.extend(true, {}, optionsOld);
@@ -49,7 +52,7 @@ function onOptionsChanged(e) {
         //$('#dict-purge').click(onDictionaryPurge);
         //$('#dict-file').change(onDictionaryImport);
 
-        dictionaryGroupsPopulate(options);
+        dictionaryDrawGroups(options);
         //updateVisibility(options);
     });
 });
@@ -95,18 +98,34 @@ function dictionaryGroupsSort() {
     dictGroups.append(dictGroupChildren);*/
 }
 
-function dictionaryGroupsPopulate(options) {
+function dictionaryDrawGroups(options) {
     dictionaryErrorShow(null);
     dictionarySpinnerShow(true);
     //TODO change order dict & add style to dict bar
     const dictGroups = document.getElementById('dict-groups');
     const dictWarning = document.getElementById('dict-warning');
     dictWarning.setAttribute('class','alert alert-warning');
-    const dictList = options.dictionaries;
-    for(dic in dictList){
+    dictOrder = options.dictOrder;
+    dictList = options.dictionaries;
+
+    dictGroups.setAttribute('class','dict-groups');
+    dictGroups.innerHTML = '';
+    let i = 0;
+    for(const dic of dictOrder){
         let dict = document.createElement('div');
-        dict.innerHTML = dictList[dic].name;
+        dict.innerHTML = '<div class="col-md-5" style="padding:5px 0"><h4>' + dictList[dic].name + '\t<small>' + dictList[dic].version + '</small></h4></div>';
         dict.setAttribute('class','panel dict');
+        dict.setAttribute('data-order',i++);
+        let up = document.createElement('button');
+        up.innerHTML='&#8896;';
+        up.setAttribute('class','btn');
+        up.onclick = upDictOrder;
+        let down = document.createElement('button');
+        down.innerHTML='&#8897;';
+        down.setAttribute('class','btn');
+        down.onclick = downDictOrder;
+        dict.appendChild(up);
+        dict.appendChild(down);
         dictGroups.appendChild(dict);
     }
 
@@ -154,7 +173,7 @@ function onDictionaryPurge(e) {
         return optionsLoad();
     }).then(options => {
         options.dictionaries = {};
-        optionsSave(options).then(() => dictionaryGroupsPopulate(options));
+        optionsSave(options).then(() => dictionaryDrawGroups(options));
     });*/
 }
 
@@ -180,7 +199,7 @@ function onDictionaryImport(e) {
             options.dictionaries[summary.title] = summary;
             options.dictionaries[summary.title].enable = true;
             return optionsSave(options);
-        }).then(() => dictionaryGroupsPopulate(options));
+        }).then(() => dictionaryDrawGroups(options));
     }).catch(dictionaryErrorShow).then(() => {
         dictFile.value = '';
         dictionarySpinnerShow(false);
@@ -190,34 +209,30 @@ function onDictionaryImport(e) {
 }
 
 function upDictOrder(e) {
-    console.log(e.target);
+    let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
+    if(orderNum == 0)
+        return;
+    let p = order[orderNum-1];
+    dictOrder [orderNum-1] = order[orderNum];
+    dictOrder[orderNum] = p;
+    dictionaryDrawGroups();
 }
 
-function test(e) {
-    const dictGroups = document.getElementById('dict-groups');
-    dictGroups.setAttribute('class','dict-groups');
-    const dictList = [{name:'jp-eng',version:'2.01.170301'},{name:'jp-rus',version:'2.01.170301'},{name:'jp-deu',version:'2.01.170301'},{name:'jp-ita',version:'2.01.170301'}];
-    let i = 0;
-    for(dic in dictList){
-        let dict = document.createElement('div');
-        dict.innerHTML = '<h4>' + dictList[dic].name + '\t<small>' + dictList[dic].version + '</small></h4>';
-        let up = document.createElement('button');
-        up.innerHTML='Up';
-        up.onclick = upDictOrder;
-        dict.appendChild(up);
-        dict.setAttribute('class','panel dict');
-        dict.setAttribute('data-order',i++);
-        dictGroups.appendChild(dict);
-    }
+function downDictOrder(e) {
+    let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
+    if(orderNum == order.length-1)
+        return;
+    let p = order[orderNum+1];
+    dictOrder[orderNum+1] = order[orderNum];
+    dictOrder[orderNum] = p;
+    dictionaryDrawGroups()
 }
 
-
-document.getElementById('test').onclick = test;
 optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
     //TODO purge selec dict
     document.getElementById('dict-purge').onclick = onDictionaryPurge;
 
-    dictionaryGroupsPopulate(options);
+    dictionaryDrawGroups(options);
     //updateVisibility(options);
 });

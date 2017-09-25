@@ -19,10 +19,10 @@ function rikaiToggle(){
 	state = !state;
 	let btn = document.getElementById('toggle');
 	if (state){
-		btn.innerText = 'Off';
+		btn.innerHTML = 'Off';
 		btn.setAttribute('class', 'btn btn btn-danger');
 	}else{
-		btn.innerText = 'On';
+		btn.innerHTML = 'On';
 		btn.setAttribute('class', 'btn btn btn-success');
 	}
 	commandExec('toggle');
@@ -42,7 +42,7 @@ optionsLoad().then(options => {
 	let btn = document.getElementById('toggle');
 	state = options.general.enable;
 	if (options.general.enable){
-		btn.innerText = 'Off';
+		btn.innerHTML = 'Off';
 		btn.setAttribute('class', 'btn btn-danger');
 	}
 });
