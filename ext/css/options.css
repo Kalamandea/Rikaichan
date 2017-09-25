@@ -23,4 +23,10 @@
 
 .dict{
     margin-bottom: 5px;
+    padding: 5px;
+    display: flex;
+}
+
+h4{
+    margin: 0;
 }
