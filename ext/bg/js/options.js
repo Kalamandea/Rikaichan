@@ -188,7 +188,20 @@ function onDictionaryImport(e) {
     });
 }
 
+function test(e) {
+    const dictGroups = document.getElementById('dict-groups');
+    dictGroups.setAttribute('class','dict-groups');
+    const dictList = [{name:'jp-eng',version:'2.01.170301'},{name:'jp-rus',version:'2.01.170301'},{name:'jp-deu',version:'2.01.170301'},{name:'jp-ita',version:'2.01.170301'}];
+    for(dic in dictList){
+        let dict = document.createElement('div');
+        dict.innerHTML = '<h4>' +dictList[dic].name + '\t<small>' + dictList[dic].version + '</small></h4>';
+        dict.setAttribute('class','panel dict');
+        dictGroups.appendChild(dict);
+    }
+}
 
+
+document.getElementById('test').onclick = test;
 optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
     //TODO purge selec dict
