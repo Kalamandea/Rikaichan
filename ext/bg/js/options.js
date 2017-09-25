@@ -98,7 +98,7 @@ function dictionaryGroupsSort() {
 function dictionaryGroupsPopulate(options) {
     dictionaryErrorShow(null);
     dictionarySpinnerShow(true);
-
+    //TODO change order dict & add style to dict bar
     const dictGroups = document.getElementById('dict-groups');
     const dictWarning = document.getElementById('dict-warning');
     dictWarning.setAttribute('class','alert alert-warning');
@@ -176,6 +176,7 @@ function onDictionaryImport(e) {
     optionsLoad().then(options => {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
             //TODO set dict order
+            options.dictOrder.push(summary.title);
             options.dictionaries[summary.title] = summary;
             options.dictionaries[summary.title].enable = true;
             return optionsSave(options);

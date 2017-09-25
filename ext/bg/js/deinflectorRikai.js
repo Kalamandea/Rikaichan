@@ -25,25 +25,6 @@ class DeinflectorRikaichan {
                 }
             }
         });
-        //TODO check
-
-        /*let buffer = jsonLoad('/bg/lang/radicals.json') rcxFile.readArray('chrome://rikaichan/content/deinflect.dat');
-         i = 1: skip header
-        for (let i = 1; i < buffer.length; ++i) {
-            let f = buffer[i].split('\t');
-
-            if (f.length == 1) {
-                this.reasons.push(f[0]);
-            }else if (f.length == 4) {
-                let r = { from: f[0], to: f[1], type: f[2], reason: f[3] };
-                if (ruleGroup.fromLen != r.from.length) {
-                    ruleGroup = [];
-                    ruleGroup.fromLen = r.from.length;
-                    this.rules.push(ruleGroup);
-                }
-                ruleGroup.push(r);
-            }
-        }*/
         this.ready = true;
     }
 
@@ -54,7 +35,8 @@ class DeinflectorRikaichan {
     }
 
     go(word) {
-        if (!this.ready) this.init();
+        //if (!this.ready) this.init();
+        //TODO check
 
         let have = [];
         have[word] = 0;
@@ -76,7 +58,7 @@ class DeinflectorRikaichan {
                             let newWord = word.substr(0, word.length - rule.from.length) + rule.to;
                             if (newWord.length <= 1) continue;
                             let o = {};
-                            if ((typeof(have[newWord])) != 'undefined') {
+                            if (typeof(have[newWord]) != 'undefined') {
                                 o = r[have[newWord]];
                                 o.type |= (rule.type >> 8);
                                 continue;
