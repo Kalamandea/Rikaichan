@@ -11,6 +11,8 @@ class Translator {
         this.wordSearch = this.wordSearch.bind(this);
         this._wordSearch = this._wordSearch.bind(this);
         this.kanjiShown = {};
+        //TODO check work kanji dict
+        this.kanjiData = null;
         //this.options = null;
         optionsLoad().then(options =>{
             this.options = options;

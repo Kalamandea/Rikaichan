@@ -230,7 +230,8 @@ function downDictOrder(e) {
 
 optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
-    //TODO purge selec dict
+    //TODO load & save all options
+    //TODO purge select dict
     document.getElementById('dict-purge').onclick = onDictionaryPurge;
 
     dictionaryDrawGroups(options);

@@ -87,6 +87,7 @@ window.rikaichanWebEx = new class {
 			});
 		}
 
+		//TODO add Lookup bar
 		if (msg.action == 'lookup-search') {
 			//return this.translator.lookupSearch(msg.text);
 		}
