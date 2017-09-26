@@ -75,7 +75,7 @@ function fgBroadcast(action, params) {
 }
 
 function fgOptionsSet(options) {
-    fgBroadcast('optionsSet', options);
+    //fgBroadcast('optionsSet', options);
 }
 
 function setIcon(toggle){
@@ -211,9 +211,9 @@ function optionsLoad() {
 
 function optionsSave(options) {
     return new Promise((resolve, reject) => {
-        browser.storage.local.set({options: JSON.stringify(options)}, resolve);
+        //browser.storage.local.set({options: JSON.stringify(options)}, resolve);
     }).then(() => {
-        instRikai().optionsSet(options);
+        //instRikai().optionsSet(options);
         fgOptionsSet(options);
     });
 }
@@ -301,7 +301,6 @@ function zipLoadDb(archive, termsLoaded, kanjiLoaded) {
             }
             return index
         }).then(index =>{
-            console.log(index);
             const dict = files['Dict.json'];
             if (!dict) {
                 return Promise.reject('missing Dictionary file');

@@ -5,6 +5,7 @@ window.rikaichanWebEx = new class {
 		this.dataMessage = {};
 		this.translator = new Translator();
 		this.onMessage = this.onMessage.bind(this);
+		this.onCommand = this.onCommand.bind(this);
 
 		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
 			browser.commands.onCommand.addListener(this.onCommand.bind(this));

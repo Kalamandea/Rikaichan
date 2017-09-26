@@ -24,39 +24,24 @@ let dictOrder = [];
 
 function formRead() {
     return optionsLoad().then(optionsOld => {
-        const optionsNew = {}; /*= $.extend(true, {}, optionsOld);
-        $('.dict-group').each((index, element) => {
-            const dictionary = $(element);
-            const title = dictionary.data('title');
-            const priority = parseInt(dictionary.find('.dict-priority').val(), 10);
-            const enabled = dictionary.find('.dict-enabled').prop('checked');
-            optionsNew.dictionaries[title] = {priority, enabled};
-        });*/
+        const optionsNew = Object.assign({}, optionsOld);
+        optionsNew.dictOrder = dictOrder.splice(0);
+        console.log(optionsOld);
+        console.log(optionsNew);
         return {optionsNew, optionsOld};
     });
 }
 
 
 function onOptionsChanged(e) {
-    if (!e.originalEvent && !e.isTrigger) {
+    /*if (!e.originalEvent && !e.isTrigger) {
         return;
-    }
-}
+    }*/
 
-/*$(document).ready(() => {
-    handlebarsRegister();
-
-    optionsLoad().then(options => {
-        document.getElementById('dict-file').onchange = onDictionaryImport;
-
-        //$('#dict-purge').click(onDictionaryPurge);
-        //$('#dict-file').change(onDictionaryImport);
-
-        dictionaryDrawGroups(options);
-        //updateVisibility(options);
+    formRead().then(({optionsNew, optionsOld}) => {
+        return optionsSave(optionsNew);
     });
-});
-*/
+}
 
 /*
  * Dictionary
@@ -81,34 +66,21 @@ function dictionarySpinnerShow(show) {
     }
 }
 
-function dictionaryGroupsSort() {
-    const dictGroups = document.getElementById('dict-groups');
-/*    const dictGroupChildren = dictGroups.children('.dict-group').sort((ca, cb) => {
-        const pa = parseInt($(ca).find('.dict-priority').val(), 10);
-        const pb = parseInt($(cb).find('.dict-priority').val(), 10);
-        if (pa < pb) {
-            return 1;
-        } else if (pa > pb) {
-            return -1;
-        } else {
-            return 0;
-        }
-    });
-
-    dictGroups.append(dictGroupChildren);*/
-}
-
 function dictionaryDrawGroups(options) {
     dictionaryErrorShow(null);
     dictionarySpinnerShow(true);
     //TODO change order dict & add style to dict bar
     const dictGroups = document.getElementById('dict-groups');
     const dictWarning = document.getElementById('dict-warning');
-    dictWarning.setAttribute('class','alert alert-warning');
-    dictOrder = options.dictOrder;
-    dictList = options.dictionaries;
 
-    dictGroups.setAttribute('class','dict-groups');
+
+    if (dictOrder.length > 0) {
+        dictGroups.setAttribute('class', 'dict-groups');
+        dictWarning.setAttribute('class','alert alert-warning novisible');
+    }else{
+        dictGroups.setAttribute('class', 'dict-groups novisible');
+        dictWarning.setAttribute('class','alert alert-warning');
+    }
     dictGroups.innerHTML = '';
     let i = 0;
     for(const dic of dictOrder){
@@ -128,33 +100,7 @@ function dictionaryDrawGroups(options) {
         dict.appendChild(down);
         dictGroups.appendChild(dict);
     }
-
-    /*
-    return instDb().getDictionaries().then(rows => {
-        if (rows.length === 0) {
-            dictWarning.show();
-        }
-
-        for (const row of dictRowsSort(rows, options)) {
-            const dictOptions = options.dictionaries[row.title] || {enabled: false, priority: 0};
-            const dictHtml = handlebarsRender('dictionary.html', {
-                title: row.title,
-                version: row.version,
-                revision: row.revision,
-                priority: dictOptions.priority,
-                enabled: dictOptions.enabled
-            });
-
-            dictGroups.append($(dictHtml));
-        }
-
-        //updateVisibility(options);
-
-        $('.dict-enabled, .dict-priority').change(e => {
-            dictionaryGroupsSort();
-            onOptionsChanged(e);
-        });
-    }).catch(dictionaryErrorShow).then(() => dictionarySpinnerShow(false));*/
+    dictionarySpinnerShow(false);
 }
 
 function onDictionaryPurge(e) {
@@ -198,8 +144,13 @@ function onDictionaryImport(e) {
             options.dictOrder.push(summary.title);
             options.dictionaries[summary.title] = summary;
             options.dictionaries[summary.title].enable = true;
+            dictOrder = options.dictOrder.splice(0);
+            dictList = Object.assign({}, options.dictionaries);
             return optionsSave(options);
-        }).then(() => dictionaryDrawGroups(options));
+        }).then(() => {
+            dictionaryDrawGroups(options);
+            onOptionsChanged();
+        });
     }).catch(dictionaryErrorShow).then(() => {
         dictFile.value = '';
         dictionarySpinnerShow(false);
@@ -216,6 +167,7 @@ function upDictOrder(e) {
     dictOrder [orderNum-1] = order[orderNum];
     dictOrder[orderNum] = p;
     dictionaryDrawGroups();
+    onOptionsChanged(e);
 }
 
 function downDictOrder(e) {
@@ -225,13 +177,16 @@ function downDictOrder(e) {
     let p = order[orderNum+1];
     dictOrder[orderNum+1] = order[orderNum];
     dictOrder[orderNum] = p;
-    dictionaryDrawGroups()
+    dictionaryDrawGroups();
+    onOptionsChanged(e);
 }
 
 optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
     //TODO load & save all options
     //TODO purge select dict
+    dictOrder = options.dictOrder.splice(0);
+    dictList = Object.assign({},options.dictionaries);
     document.getElementById('dict-purge').onclick = onDictionaryPurge;
 
     dictionaryDrawGroups(options);
