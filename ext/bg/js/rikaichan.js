@@ -6,8 +6,9 @@ window.rikaichanWebEx = new class {
 		this.translator = new Translator();
 		this.onMessage = this.onMessage.bind(this);
 		this.onCommand = this.onCommand.bind(this);
+		this.optionsSet = this.optionsSet.bind(this);
 
-		this.translator.prepare().then(optionsLoad).then(this.optionsSet.bind(this)).then(() => {
+		this.translator.prepare().then(optionsLoad).then(this.optionsSet()).then(() => {
 			browser.commands.onCommand.addListener(this.onCommand.bind(this));
 			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
 			setIcon(this.options.general.enable);

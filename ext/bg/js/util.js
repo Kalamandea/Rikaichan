@@ -211,9 +211,9 @@ function optionsLoad() {
 
 function optionsSave(options) {
     return new Promise((resolve, reject) => {
-        //browser.storage.local.set({options: JSON.stringify(options)}, resolve);
+        browser.storage.local.set({options: JSON.stringify(options)}, resolve);
     }).then(() => {
-        //instRikai().optionsSet(options);
+        instRikai().optionsSet(options);
         fgOptionsSet(options);
     });
 }

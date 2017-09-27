@@ -5,6 +5,7 @@
 class DatabaseRikaichan {
     constructor() {
         this.dictionaries = {};
+        this.dbList = {};
         this.dbVersion = 2;
         this.tagMetaCache = {};
         this.findWord = this.findWord.bind(this);
@@ -32,12 +33,12 @@ class DatabaseRikaichan {
         this.dictionaries[index.title] = index;
 
         return this.sanitize(index.title).then(() => {
-            this.dictionaries[index.title].db = new Dexie(index.title);
-            this.dictionaries[index.title].db.version(this.dbVersion).stores({
+            this.dbList[index.title] = new Dexie(index.title);
+            this.dbList[index.title].version(this.dbVersion).stores({
                 terms: '++id,kanji,kana,entry'
             });
 
-            return this.dictionaries[index.title].db.open();
+            return this.dbList[index.title].open();
         });
     }
 
@@ -59,7 +60,7 @@ class DatabaseRikaichan {
             return Promise.reject('database not initialized');
         }
         const results = [];
-        return this.dictionaries[dic].db.terms.where('kanji').equals(term).or('kana').equals(term).each(row => {
+        return this.dbList[dic].terms.where('kanji').equals(term).or('kana').equals(term).each(row => {
             results.push({
                 kanji: row.kanji,
                 kana: row.kana,
@@ -89,7 +90,7 @@ class DatabaseRikaichan {
             }
             summary = index;
             return self.prepare(index).then(()=> {
-                self.dictionaries[index.title].db.terms.bulkAdd(rows);
+                self.dbList[index.title].terms.bulkAdd(rows);
             });
         };
 
@@ -106,7 +107,7 @@ class DatabaseRikaichan {
                 });
             }
 
-            return this.db[title].kanji.bulkAdd(rows).then(() => {
+            return this.dbList[title].kanji.bulkAdd(rows).then(() => {
                 if (callback) {
                     callback(total, current);
                 }
