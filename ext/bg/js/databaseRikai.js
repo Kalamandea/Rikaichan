@@ -26,6 +26,7 @@ class DatabaseRikaichan {
     }
 
     prepare(index) {
+        //TODO load dbList and dictionaries on start
         if (index.title == null) {
             return Promise.reject('Unknown title');
         }
@@ -88,7 +89,7 @@ class DatabaseRikaichan {
                     callback(entries.length, ch);
                 }
             }
-            summary = index;
+            summary = Object.assign({},index);
             return self.prepare(index).then(()=> {
                 self.dbList[index.title].terms.bulkAdd(rows);
             });

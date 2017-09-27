@@ -8,7 +8,8 @@ window.rikaichanWebEx = new class {
 		this.onCommand = this.onCommand.bind(this);
 		this.optionsSet = this.optionsSet.bind(this);
 
-		this.translator.prepare().then(optionsLoad).then(this.optionsSet()).then(() => {
+		//TODO load options before translator.prepare
+		this.translator.prepare().then(optionsLoad).then(options => this.optionsSet(options)).then(() => {
 			browser.commands.onCommand.addListener(this.onCommand.bind(this));
 			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
 			setIcon(this.options.general.enable);
@@ -20,7 +21,10 @@ window.rikaichanWebEx = new class {
 		// to the DOM across to the background page, causing the options object to
 		// become a "DeadObject" after the options page is closed. The workaround used
 		// here is to create a deep copy of the options object.
-		this.options = JSON.parse(JSON.stringify(options));
+		this.options = Object.assign({}, options); //JSON.parse(JSON.stringify(options));
+        if(this.translator){
+            this.translator.dicList = options.dictOrder;
+		}
 
 		if (!dictConfigured(this.options)) {
 			browser.browserAction.setBadgeBackgroundColor({color: '#f0ad4e'});
@@ -53,6 +57,7 @@ window.rikaichanWebEx = new class {
 	onMessage(msg, sender, callback) {
 
 		if (msg.action == 'word-search') {
+			//console.log(msg.text);
 			return this.translator.wordSearch(msg.text).then(e =>{
 				if (e != null){
 					e.html = this.translator.makeHtml(e);

@@ -211,6 +211,7 @@ function optionsLoad() {
 
 function optionsSave(options) {
     return new Promise((resolve, reject) => {
+        localStorage.setItem('options',JSON.stringify(options));
         browser.storage.local.set({options: JSON.stringify(options)}, resolve);
     }).then(() => {
         instRikai().optionsSet(options);

@@ -26,8 +26,6 @@ function formRead() {
     return optionsLoad().then(optionsOld => {
         const optionsNew = Object.assign({}, optionsOld);
         optionsNew.dictOrder = dictOrder.splice(0);
-        console.log(optionsOld);
-        console.log(optionsNew);
         return {optionsNew, optionsOld};
     });
 }
