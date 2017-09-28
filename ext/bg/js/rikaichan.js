@@ -9,18 +9,26 @@ window.rikaichanWebEx = new class {
 		this.optionsSet = this.optionsSet.bind(this);
 
 		//TODO load options before translator.prepare
-		this.translator.prepare().then(optionsLoad).then(options => this.optionsSet(options)).then(() => {
+        optionsLoad().then(options =>{
+        	this.translator.prepare();
+        	this.optionsSet(options);
+            browser.commands.onCommand.addListener(this.onCommand.bind(this));
+            browser.runtime.onMessage.addListener(this.onMessage.bind(this));
+            setIcon(options.general.enable);
+		});
+		/*this.translator.prepare().then(optionsLoad).then(options => this.optionsSet(options)).then(() => {
 			browser.commands.onCommand.addListener(this.onCommand.bind(this));
 			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
 			setIcon(this.options.general.enable);
-		});
+		});*/
 	}
 
 	optionsSet(options) {
 		console.log(options);
 		this.options = Object.assign({}, options); //JSON.parse(JSON.stringify(options));
         if(this.translator){
-            this.translator.dicList = options.dictOrder;
+            this.translator.dicList = this.options.dictOrder;
+            this.translator.options = this.options;
 		}
 
 		if (!dictConfigured(this.options)) {
@@ -69,6 +77,9 @@ window.rikaichanWebEx = new class {
                return css;
 			});
 
+		}
+		if((msg.action == 'insert-frame') && this.options.general.enable){
+            fgBroadcast("enable", this.options.general.enable);
 		}
 
 		// console.log('\nonContentMessage');

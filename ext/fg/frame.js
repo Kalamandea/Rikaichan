@@ -840,3 +840,5 @@ var processMessage = function (request, sender, sendResponse) {
 };
 
 browser.runtime.onMessage.addListener(processMessage);
+
+sendMessageRikai({action:'insert-frame'});
