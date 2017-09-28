@@ -10,8 +10,8 @@ window.rikaichanWebEx = new class {
 
 		//TODO load options before translator.prepare
         optionsLoad().then(options =>{
-        	this.translator.prepare();
         	this.optionsSet(options);
+            this.translator.prepare();
             browser.commands.onCommand.addListener(this.onCommand.bind(this));
             browser.runtime.onMessage.addListener(this.onMessage.bind(this));
             setIcon(options.general.enable);
@@ -24,7 +24,6 @@ window.rikaichanWebEx = new class {
 	}
 
 	optionsSet(options) {
-		console.log(options);
 		this.options = Object.assign({}, options); //JSON.parse(JSON.stringify(options));
         if(this.translator){
             this.translator.dicList = this.options.dictOrder;
@@ -62,7 +61,6 @@ window.rikaichanWebEx = new class {
 	onMessage(msg, sender, callback) {
 
 		if (msg.action == 'word-search') {
-			//console.log(msg.text);
 			return this.translator.wordSearch(msg.text).then(e =>{
 				if (e != null){
 					e.html = this.translator.makeHtml(e);
@@ -82,6 +80,7 @@ window.rikaichanWebEx = new class {
             fgBroadcast("enable", this.options.general.enable);
 		}
 
+        // console.log('text=', msg.text);
 		// console.log('\nonContentMessage');
 		// console.log('name=' + msg.name);
 		// console.log('sync=' + msg.sync);

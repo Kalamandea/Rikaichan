@@ -83,7 +83,7 @@ function dictionaryDrawGroups(options) {
     let i = 0;
     for(const dic of dictOrder){
         let dict = document.createElement('div');
-        dict.innerHTML = '<div class="col-md-5" style="padding:5px 0"><h4>' + dictList[dic].name + '\t<small>' + dictList[dic].version + '</small></h4></div>';
+        dict.innerHTML = '<div class="col-md-5" style="padding:5px 0"><h4>' + dictList[dic].name + '\t<small>&nbsp v' + dictList[dic].version + '</small></h4></div>';
         dict.setAttribute('class','panel dict');
         dict.setAttribute('data-order',i++);
         let up = document.createElement('button');
@@ -161,8 +161,8 @@ function upDictOrder(e) {
     let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
     if(orderNum == 0)
         return;
-    let p = order[orderNum-1];
-    dictOrder [orderNum-1] = order[orderNum];
+    let p = dictOrder[orderNum-1];
+    dictOrder[orderNum-1] = dictOrder[orderNum];
     dictOrder[orderNum] = p;
     dictionaryDrawGroups();
     onOptionsChanged(e);
@@ -172,8 +172,8 @@ function downDictOrder(e) {
     let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
     if(orderNum == order.length-1)
         return;
-    let p = order[orderNum+1];
-    dictOrder[orderNum+1] = order[orderNum];
+    let p = dictOrder[orderNum+1];
+    dictOrder[orderNum+1] = dictOrder[orderNum];
     dictOrder[orderNum] = p;
     dictionaryDrawGroups();
     onOptionsChanged(e);

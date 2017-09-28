@@ -4,7 +4,7 @@
 
 class DatabaseRikaichan {
     constructor() {
-        this.dictionaries = {};
+        //this.dictionaries = {};
         this.dbList = {};
         this.dbVersion = 2;
         this.tagMetaCache = {};
@@ -13,9 +13,6 @@ class DatabaseRikaichan {
     }
 
     sanitize(title) {
-		if(!title){
-			title = 'eng'
-		}
         const db = new Dexie(title);
         return db.open().then(() => {
             db.close();
@@ -25,21 +22,20 @@ class DatabaseRikaichan {
         }).catch(() => {});
     }
 
-    prepare(index) {
+    prepare(title) {
         //TODO load dbList and dictionaries on start
-        if (index.title == null) {
+        if (title == null) {
             return Promise.reject('Unknown title');
         }
-        this.dictionaries[index.title] = index;
-        this.dictionaries[index.title] = index;
+        //this.dictionaries[index.title] = index;
 
-        return this.sanitize(index.title).then(() => {
-            this.dbList[index.title] = new Dexie(index.title);
-            this.dbList[index.title].version(this.dbVersion).stores({
+        return this.sanitize(title).then(() => {
+            this.dbList[title] = new Dexie(title);
+            this.dbList[title].version(this.dbVersion).stores({
                 terms: '++id,kanji,kana,entry'
             });
 
-            return this.dbList[index.title].open();
+            return this.dbList[title].open();
         });
     }
 
@@ -57,7 +53,7 @@ class DatabaseRikaichan {
     }
 
     findWord(term, dic) {
-        if (this.dictionaries[dic] == null) {
+        if (this.dbList[dic] == null) {
             return Promise.reject('database not initialized');
         }
         const results = [];
@@ -90,7 +86,7 @@ class DatabaseRikaichan {
                 }
             }
             summary = Object.assign({},index);
-            return self.prepare(index).then(()=> {
+            return self.prepare(index.title).then(()=> {
                 self.dbList[index.title].terms.bulkAdd(rows);
             });
         };

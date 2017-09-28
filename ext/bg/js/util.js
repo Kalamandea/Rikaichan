@@ -109,8 +109,8 @@ function optionsSetDefaults(options) {
             lookupToolsMenu: true
         },
 
-        dictionaries: {},
-        dictOrder:[],
+        dictionaries: {'kanji':{"title":"kanji","name":"Kanji","version":"2.01.170301",isKanji: true,enabled:true}},
+        dictOrder:['kanji'],
         dictOptions:{
             hideDef: false,
             hidEx: false,
