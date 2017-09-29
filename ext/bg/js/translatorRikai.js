@@ -11,6 +11,7 @@ class Translator {
         this.wordSearch = this.wordSearch.bind(this);
         this._wordSearch = this._wordSearch.bind(this);
         this.kanjiShown = {};
+        this.dicList = [];
         this.kanjiData = null;
         this.options = null;
         this.kanjiPos = 0;
@@ -57,6 +58,7 @@ class Translator {
 
     async prepare() {
         this.kanjiShown = this.options.kanjiDictionaryObj;
+        //this.dicList = this.options.dictOrder;
         for(const dic of this.options.dictOrder){
             await this.database.prepare(dic);
         }

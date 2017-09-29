@@ -45,10 +45,12 @@ window.rikaichanWebEx = new class {
 	onCommand(command, data) {
 		if(command == 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
-			optionsSave(this.options).then(() => this.optionsSet(this.options));
-            //TODO change
-            fgBroadcast(this.options.general.enable ? "enable" : "disable", this.options.general.enable);
-			setIcon(this.options.general.enable);
+			optionsSave(this.options).then(() => {
+				this.optionsSet(this.options);
+                //TODO change
+                fgBroadcast(this.options.general.enable ? "enable" : "disable", this.options.general.enable);
+                setIcon(this.options.general.enable);
+			});
 		}
 		if(command == 'options'){
 			browser.runtime.openOptionsPage();
@@ -65,7 +67,6 @@ window.rikaichanWebEx = new class {
 				if (e != null){
 					e.html = this.translator.makeHtml(e);
 				}
-				e.test = 'test';
 				return e;
 			});
 		}
@@ -80,6 +81,14 @@ window.rikaichanWebEx = new class {
             fgBroadcast("enable", this.options.general.enable);
 		}
 
+        if (msg.action == 'data-next') {
+            this.translator.selectNext();
+            return {};
+        }
+        if (msg.action == 'data-select') {
+            this.translator.select(msg.index);
+            return {};
+        }
         // console.log('text=', msg.text);
 		// console.log('\nonContentMessage');
 		// console.log('name=' + msg.name);

@@ -86,9 +86,11 @@ function onMouseMove(ev) {
 
 	if ((rp) && (rp.data) && (ro < rp.data.length)) {
 		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: ev.shiftKey ? -1 : 0 });	// !!
-		data.pos = { screenX: ev.screenX, screenY: ev.screenY, pageX: ev.pageX, pageY: ev.pageY, clientX: ev.clientX, clientY: ev.clientY };
-		timer = content.setTimeout(show, config.popdelay);
-		return;
+        //sendMessageRikai({action:'data-select', index: ev.shiftKey ? -1 : 0 }).then(() =>{
+            data.pos = { screenX: ev.screenX, screenY: ev.screenY, pageX: ev.pageX, pageY: ev.pageY, clientX: ev.clientX, clientY: ev.clientY };
+            timer = content.setTimeout(show, config.popdelay);
+            return;
+		//});
 	}
 
 	if (config.title) {
@@ -595,6 +597,7 @@ async function showNext() {
 		data.uofs += data.uofsNext;
 
 		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: 0 });	// !!
+        await sendMessageRikai({action:'data-select', index: 0});
 		let r = await show();
 		if (r == 1) break;
 		if (r == -1) {
@@ -626,6 +629,7 @@ async function showPrev() {
 		}
 		data.uofs = ofs;
 		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: 0 });	// !!
+        await sendMessageRikai({action:'data-select', index: 0});
 		if (await show() != 0) break;
 	}
 }
@@ -645,10 +649,16 @@ function onKeyDown(ev) {
 		clearHi();
 		// continues...
 	case 16:	// shift
+        sendMessageRikai({action:'data-next'}).then(e =>{
+            if (data.titleShown) {
+                showTitle();
+            }else {
+                show();
+            }
+            //break;
+		});
+        break;
 		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-next' });
-		if (data.titleShown) showTitle();
-			else show();
-		break;
 	case 27:	// esc
 		hidePopup();
 		clearHi();
@@ -683,8 +693,10 @@ function onKeyDown(ev) {
 		break;
 	default:
 		if ((ev.keyCode >= 49) && (ev.keyCode <= 57)) {	// 1-9
+            sendMessageRikai({action:'data-select', index:(ev.keyCode - 49)}).then(
+                show()
+			);
 			// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: (ev.keyCode - 49) });	// !!
-			show();
 			break;
 		}
 		return;
