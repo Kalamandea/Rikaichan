@@ -168,13 +168,13 @@ class Translator {
                 let entries = await this.database.findWord(v.word, dic);
                 for (let j = 0; j < entries.length; ++j) {
                     let dentry = entries[j];
-                    if (have[dentry]) continue;
+                    if (have[dentry.entry]) continue;
 
                     let ok = true;
                     if ((dictionaries[dic].hasType) && (i > 0)) {
                         // i > 0 a de-inflected word
 
-                        let gloss = dentry.split(/[,()]/);
+                        let gloss = dentry.entry.split(/[,()]/);
                         let y = v.type;
                         let z;
                         for (z = gloss.length - 1; z >= 0; --z) {
@@ -196,7 +196,7 @@ class Translator {
                     }
 
                     if ((ok) && (dictionaries[dic].hasType) && (this.options.dictOptions.hidEx)) {
-                        if (dentry.match(/\/\([^\)]*\bX\b.*?\)/)) ok = false;
+                        if (dentry.entry.match(/\/\([^\)]*\bX\b.*?\)/)) ok = false;
                     }
                     if (ok) {
                         if (count >= maxTrim) {
@@ -204,7 +204,7 @@ class Translator {
                             break;
                         }
 
-                        have[dentry] = 1;
+                        have[dentry.entry] = 1;
                         ++count;
                         if (maxLen == 0) maxLen = trueLen[word.length];
 
