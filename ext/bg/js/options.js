@@ -22,13 +22,26 @@
 let dictList = {};
 let dictOrder = [];
 
-function formRead() {
+function formRead(e) {
     document.getElementById("highlight-text")
-    /*return optionsLoad().then(optionsOld => {
+    return optionsLoad().then(optionsOld => {
         const optionsNew = Object.assign({}, optionsOld);
         optionsNew.dictOrder = dictOrder.splice(0);
+
+
+        let gr = e.target.id.split(".");
+        console.log(gr);
+        switch (e.target.type){
+            case "checkbox":
+                optionsNew[gr[0]][gr[1]] = e.target.checked;
+                break;
+            case "number":
+            case "select-one":
+                optionsNew[gr[0]][gr[1]] = e.target.value;
+                break;
+        }
         return {optionsNew, optionsOld};
-    });*/
+    });
 }
 
 
@@ -37,9 +50,7 @@ function onOptionsChanged(e) {
         return;
     }*/
 
-    if (e.target.type)
-
-    formRead().then(({optionsNew, optionsOld}) => {
+    formRead(e).then(({optionsNew, optionsOld}) => {
         return optionsSave(optionsNew);
     });
 }
@@ -139,7 +150,7 @@ function onDictionaryImport(e) {
 
     setProgress(0.0);
 
-    /*optionsLoad().then(options => {
+    optionsLoad().then(options => {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
             //TODO set dict order
             options.dictOrder.push(summary.title);
@@ -157,7 +168,7 @@ function onDictionaryImport(e) {
         dictionarySpinnerShow(false);
         dictProgress.setAttribute('class', 'novisible');
         dictImporter.setAttribute('style', '');
-    });*/
+    });
 }
 
 function upDictOrder(e) {
@@ -182,32 +193,43 @@ function downDictOrder(e) {
     onOptionsChanged(e);
 }
 
-/*optionsLoad().then(options => {
+optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
     //TODO load & save all options
     //TODO purge select dict
     dictOrder = options.dictOrder.splice(0);
     dictList = Object.assign({},options.dictionaries);
-    document.getElementById('dict-purge').onclick = onDictionaryPurge;
-
-    dictionaryDrawGroups(options);
-    //updateVisibility(options);
-});*/
-
-function change(e) {
-    let d = {general: {},kanjiDictionaryObj:{}};
-    let gr = e.target.id.split(".");
-    console.log(gr);
-    switch (e.target.type){
-        case "checkbox":
-            d[gr[0]][gr[1]] = e.target.checked;
-            break;
-        case "number":
-            d[gr[0]][gr[1]] = e.target.value;
+    for(const group in options){
+        if (group == 'general' || group == 'dictOptions' || group == 'kanjiDictionary'){
+            for (const pref in options[group]){
+                let el = document.getElementById(group+'.'+pref);
+                if(el==null){
+                    continue;
+                }
+                switch (typeof(options[group][pref])){
+                    case "boolean":
+                        el.checked = options[group][pref];
+                        break;
+                    case "number":
+                        el.value = options[group][pref];
+                        break;
+                }
+            }
+        }
     }
 
+    document.getElementById('dict-purge').onclick = onDictionaryPurge;
+    document.getElementById('options-form').onchange = onOptionsChanged;
+    dictionaryDrawGroups(options);
+    //updateVisibility(options);
+});
+
+function change(e) {
+    let d = {general: {},kanjiDictionary:{},dictOptions:{},clipboardAndSave:{}};
+    let s = document.querySelector('.test');
+    document.execCommand('copy',false, 'tretreter');
     console.log(d);
 }
 
-// document.getElementById('options-form').onchange = onOptionsChanged;
-document.getElementById('options-form').onchange = change;
+
+//document.getElementById('options-form').onchange = change;

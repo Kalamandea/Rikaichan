@@ -57,7 +57,7 @@ class Translator {
     }
 
     async prepare() {
-        this.kanjiShown = this.options.kanjiDictionaryObj;
+        this.kanjiShown = this.options.kanjiDictionary;
         //this.dicList = this.options.dictOrder;
         for(const dic of this.options.dictOrder){
             await this.database.prepare(dic);

@@ -35,9 +35,6 @@ class DeinflectorRikaichan {
     }
 
     go(word) {
-        //if (!this.ready) this.init();
-        //TODO check
-
         let have = [];
         have[word] = 0;
 

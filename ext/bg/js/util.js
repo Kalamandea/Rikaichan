@@ -101,14 +101,12 @@ function optionsSetDefaults(options) {
             useDPR: false,
             PopDY: 20
         },
-
         menus: {
             toggleContentMenu: true,
             lookupBarContentMenu: false,
             toggleToolsMenu: true,
             lookupToolsMenu: true
         },
-
         dictionaries: {'kanji':{"title":"kanji","name":"Kanji","version":"2.01.170301",isKanji: true,enabled:true}},
         dictOrder:['kanji'],
         dictOptions:{
@@ -119,11 +117,7 @@ function optionsSetDefaults(options) {
             maxEntries:10,
             maxName:20
         },
-        kanjiDictionary:[
-            'COMP','H','L','E','DK','N','V','Y','P','IN','I','O'
-        ],
-
-        kanjiDictionaryObj:{
+        kanjiDictionary:{
             COMP:true,
             H:true,
             L:true,
@@ -136,9 +130,13 @@ function optionsSetDefaults(options) {
             IN:true,
             I:true,
             U:true
+        },
+        clipboardAndSave:{
+            snlf: 0,
+            ssep: 0,
+            smaxce: 0,
+            smaxck: 0
         }
-
-
     };
 
     const combine = (target, source) => {
@@ -155,7 +153,6 @@ function optionsSetDefaults(options) {
     combine(options.dictOrder, defaults.dictOrder);
     combine(options.dictOptions, defaults.dictOptions);
     combine(options.kanjiDictionary, defaults.kanjiDictionary);
-    combine(options.kanjiDictionaryObj, defaults.kanjiDictionaryObj);
 
     return options;
 }

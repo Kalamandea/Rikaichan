@@ -45,7 +45,7 @@
                     <input type="number" min="0" max="100" id="general.PopDY" class="form-control input-opt" value="20">
                 </div>
             </div>
-            <div>
+            <div class="novisible">
                 <h3>Menus</h3>
                 <fieldset class="form-group">
                     <div class="row">
@@ -86,7 +86,7 @@
                     </div>
                 </fieldset>
             </div>
-            <div>
+            <div class="novisible">
                 <h3>Keyboard</h3>
             </div>
             <div>
@@ -120,35 +120,35 @@
 
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="hide-def">
+                        <input class="form-check-input" type="checkbox" id="dictOptions.hideDef">
                         Hide definitions
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="hide-x-entries">
+                        <input class="form-check-input" type="checkbox" id="dictOptions.hidEx">
                         Hide (X)-rated entries
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="show-word-type" checked>
+                        <input class="form-check-input" type="checkbox" id="dictOptions.wos" checked>
                         Show word type indicators [example: (v1,n)]
                     </label>
                 </div>
                 <div class="form-group">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" id="show-popular" checked>
+                        <input class="form-check-input" type="checkbox" id="dictOptions.wpop" checked>
                         Show &quot;popular&quot; indicator [example: (P)]
                     </label>
                 </div>
                 <div class="row-group">
-                    <label class="col-md-3" for="max-entries-dict">Maximum entries displayed</label>
-                    <input type="number" min="0" max="100" id="max-entries-dict" class="form-control input-opt" value="10">
+                    <label class="col-md-3" for="dictOptions.maxEntries">Maximum entries displayed</label>
+                    <input type="number" min="0" max="100" id="dictOptions.maxEntries" class="form-control input-opt" value="10">
                 </div>
                 <div class="row-group">
-                    <label class="col-md-3" for="max-names-dict">Maximum names displayed</label>
-                    <input type="number" min="0" max="100" id="max-names-dict" class="form-control input-opt" value="20">
+                    <label class="col-md-3" for="dictOptions.maxName">Maximum names displayed</label>
+                    <input type="number" min="0" max="100" id="dictOptions.maxName" class="form-control input-opt" value="20">
                 </div>
             </div>
             <div>
@@ -157,37 +157,37 @@
                     <div class="col-md-6">
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="kanjiDictionaryObj.COMP" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.COMP" checked>
                                 Kanji Components
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="halpern" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.H" checked>
                                 Halpern
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="heisig" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.L" checked>
                                 Heisig
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="henshall" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.E" checked>
                                 Henshall
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="kanji-learners-dict" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.DK" checked>
                                 Kanji Learners Dictionary
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="nelson" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.N" checked>
                                 Nelson
                             </label>
                         </div>
@@ -195,65 +195,91 @@
                     <div class="col-md-6">
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="new-nelson" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.V" checked>
                                 New Nelson
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="pinYin" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.Y" checked>
                                 PinYin
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="skip-pattern" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.P" checked>
                                 Skip Pattern
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="tuttle-kana" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.IN" checked>
                                 Tuttle Kanji &amp; Kana
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="tuttle-kanji" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.I" checked>
                                 Tuttle Kanji Dictionary
                             </label>
                         </div>
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="unicode" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionary.U" checked>
                                 Unicode
                             </label>
                         </div>
                     </div>
                 </fieldset>
             </div>
-            <div>
+            <div class="novisible">
                 <h3>Clipboard &amp; Save</h3>
                 <div class="form-group">
-                    <label class="col-md-2" for="line-ending">Line ending</label>
-                    <select class="form-control input-opt" id="line-ending">
+                    <label class="col-md-2" for="clipboardAndSave.snlf">Line ending</label>
+                    <select class="form-control input-opt" id="clipboardAndSave.snlf">
                         <option value="0">Unix (\n)</option>
                         <option value="1">DOS/Windows (\r\n)</option>
                         <option value="2">Mac (\r)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="col-md-2" for="field-separator">Field separator</label>
-                    <select class="form-control input-opt" id="field-separator">
+                    <label class="col-md-2" for="clipboardAndSave.ssep">Field separator</label>
+                    <select class="form-control input-opt" id="clipboardAndSave.ssep">
                         <option value="0">Tab</option>
                         <option value="1">Comma</option>
                         <option value="2">Space</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label class="col-md-2" for="clipboardAndSave.smaxce">Entries</label>
+                    <select class="form-control input-opt" id="clipboardAndSave.smaxce">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2" for="clipboardAndSave.smaxck">Kanji (LookupBar)</label>
+                    <select class="form-control input-opt" id="clipboardAndSave.smaxck">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
             </div>
         </form>
         <script src="/bg/js/util.js"></script>
-        <!--<script src="/bg/js/options.js"></script>-->
-        <script src="./js/options.js"></script>
+        <script src="/bg/js/options.js"></script>
     </body>
 </html>
