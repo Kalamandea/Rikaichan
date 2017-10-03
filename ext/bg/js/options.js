@@ -23,11 +23,12 @@ let dictList = {};
 let dictOrder = [];
 
 function formRead() {
-    return optionsLoad().then(optionsOld => {
+    document.getElementById("highlight-text")
+    /*return optionsLoad().then(optionsOld => {
         const optionsNew = Object.assign({}, optionsOld);
         optionsNew.dictOrder = dictOrder.splice(0);
         return {optionsNew, optionsOld};
-    });
+    });*/
 }
 
 
@@ -35,6 +36,8 @@ function onOptionsChanged(e) {
     /*if (!e.originalEvent && !e.isTrigger) {
         return;
     }*/
+
+    if (e.target.type)
 
     formRead().then(({optionsNew, optionsOld}) => {
         return optionsSave(optionsNew);
@@ -136,7 +139,7 @@ function onDictionaryImport(e) {
 
     setProgress(0.0);
 
-    optionsLoad().then(options => {
+    /*optionsLoad().then(options => {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
             //TODO set dict order
             options.dictOrder.push(summary.title);
@@ -154,7 +157,7 @@ function onDictionaryImport(e) {
         dictionarySpinnerShow(false);
         dictProgress.setAttribute('class', 'novisible');
         dictImporter.setAttribute('style', '');
-    });
+    });*/
 }
 
 function upDictOrder(e) {
@@ -179,7 +182,7 @@ function downDictOrder(e) {
     onOptionsChanged(e);
 }
 
-optionsLoad().then(options => {
+/*optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
     //TODO load & save all options
     //TODO purge select dict
@@ -189,4 +192,22 @@ optionsLoad().then(options => {
 
     dictionaryDrawGroups(options);
     //updateVisibility(options);
-});
+});*/
+
+function change(e) {
+    let d = {general: {},kanjiDictionaryObj:{}};
+    let gr = e.target.id.split(".");
+    console.log(gr);
+    switch (e.target.type){
+        case "checkbox":
+            d[gr[0]][gr[1]] = e.target.checked;
+            break;
+        case "number":
+            d[gr[0]][gr[1]] = e.target.value;
+    }
+
+    console.log(d);
+}
+
+// document.getElementById('options-form').onchange = onOptionsChanged;
+document.getElementById('options-form').onchange = change;

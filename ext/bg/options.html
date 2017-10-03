@@ -8,41 +8,41 @@
         <link rel="stylesheet" type="text/css" href="../css/options.css">
     </head>
     <body>
-        <div class="container-fluid col-md-8">
+        <form id="options-form" class="container-fluid col-md-8">
             <div>
                 <h3>General Options</h3>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="highlight-text" checked>Highlight text</label>
+                    <label><input type="checkbox" id="general.highlightText" checked>Highlight text</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="translate-alt" checked>Translate alt/title tags</label>
+                    <label><input type="checkbox" id="general.tranAltTitle" checked>Translate alt/title tags</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="auto-use-text" checked>Automatically use selected text in Lookupbar</label>
+                    <label><input type="checkbox" id="general.selectedInLookupBar" checked>Automatically use selected text in Lookupbar</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="enlarge">Enlarge small documents</label>
+                    <label><input type="checkbox" id="general.enlargeSmallDocuments">Enlarge small documents</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-icon-statusbar" checked>Show icon in statusbar</label>
+                    <label><input type="checkbox" id="general.showIconInStatusbar" checked>Show icon in statusbar</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="show-help" checked>Show mini help</label>
+                    <label><input type="checkbox" id="general.showMiniHelp" checked>Show mini help</label>
                 </div>
 
                 <div class="checkbox">
-                    <label><input type="checkbox" id="use-pixel-ratio">Use device pixel ratio (zoom adjustment / may not work on some systems)</label>
+                    <label><input type="checkbox" id="general.useDPR">Use device pixel ratio (zoom adjustment / may not work on some systems)</label>
                 </div>
 
                 <div class="row-group">
-                    <label for="distance-from-pointer" class="col-md-3">Popup distance from pointer</label>
-                    <input type="number" min="0" max="100" id="distance-from-pointer" class="form-control input-opt" value="20">
+                    <label for="general.PopDY" class="col-md-3">Popup distance from pointer</label>
+                    <input type="number" min="0" max="100" id="general.PopDY" class="form-control input-opt" value="20">
                 </div>
             </div>
             <div>
@@ -157,7 +157,7 @@
                     <div class="col-md-6">
                         <div class="form-check-label">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="kanji-components" checked>
+                                <input class="form-check-input" type="checkbox" id="kanjiDictionaryObj.COMP" checked>
                                 Kanji Components
                             </label>
                         </div>
@@ -251,8 +251,9 @@
                     </select>
                 </div>
             </div>
-        </div>
+        </form>
         <script src="/bg/js/util.js"></script>
-        <script src="/bg/js/options.js"></script>
+        <!--<script src="/bg/js/options.js"></script>-->
+        <script src="./js/options.js"></script>
     </body>
 </html>
