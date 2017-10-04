@@ -57,10 +57,10 @@ class Translator {
     }
 
     async prepare() {
-        this.kanjiShown = this.options.kanjiDictionary;
         //this.dicList = this.options.dictOrder;
         for(const dic of this.options.dictOrder){
-            await this.database.prepare(dic);
+            if (dic != "kanji")
+                await this.database.prepare(dic);
         }
         const promises = [
             fileLoad(browser.extension.getURL('/bg/lang/kanji.dat')),
@@ -70,6 +70,13 @@ class Translator {
             this.kanjiData = kanji;
             this.radData = radicals;
         });
+    }
+
+    optionsSet(options) {
+        this.options = JSON.parse(JSON.stringify(options));
+        this.dicList = options.dictOrder.slice(0);
+        this.selected = 0;
+        this.kanjiShown =  JSON.parse(JSON.stringify(options.kanjiDictionary));
     }
 
     done() {

@@ -32,12 +32,6 @@ function openOptions(){
 	browser.runtime.openOptionsPage();
 }
 
-function testSearch(){
-	let a = [{entry:"test"}];
-	//browser.extension.getBackgroundPage().rikaichanWebEx.testTranslate();
-	//document.getElementById('open-search').value = a[0].entry;
-}
-
 optionsLoad().then(options => {
 	let btn = document.getElementById('toggle');
 	state = options.general.enable;
@@ -50,4 +44,3 @@ optionsLoad().then(options => {
 
 document.getElementById('toggle').onclick = rikaiToggle;
 document.getElementById('open-options').onclick = openOptions;
-document.getElementById('open-search').onclick = testSearch;

@@ -23,10 +23,10 @@ let dictList = {};
 let dictOrder = [];
 
 function formRead(e) {
-    document.getElementById("highlight-text")
     return optionsLoad().then(optionsOld => {
-        const optionsNew = Object.assign({}, optionsOld);
-        optionsNew.dictOrder = dictOrder.splice(0);
+        // const optionsNew = Object.assign({}, optionsOld);
+        const optionsNew = JSON.parse(JSON.stringify(optionsOld));
+        optionsNew.dictOrder = dictOrder.slice(0);
 
 
         let gr = e.target.id.split(".");
@@ -97,7 +97,7 @@ function dictionaryDrawGroups(options) {
     let i = 0;
     for(const dic of dictOrder){
         let dict = document.createElement('div');
-        dict.innerHTML = '<div class="col-md-5" style="padding:5px 0"><h4>' + dictList[dic].name + '\t<small>&nbsp v' + dictList[dic].version + '</small></h4></div>';
+        dict.innerHTML = '<div class="col-md-5" style="padding:5px 0"><h4>' + dictList[dic].title + '\t<small>&nbsp v' + dictList[dic].version + '</small></h4></div>';
         dict.setAttribute('class','panel dict');
         dict.setAttribute('data-order',i++);
         let up = document.createElement('button');
@@ -153,10 +153,10 @@ function onDictionaryImport(e) {
     optionsLoad().then(options => {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
             //TODO set dict order
-            options.dictOrder.push(summary.title);
-            options.dictionaries[summary.title] = summary;
-            options.dictionaries[summary.title].enable = true;
-            dictOrder = options.dictOrder.splice(0);
+            options.dictOrder.push(summary.name);
+            options.dictionaries[summary.name] = summary;
+            options.dictionaries[summary.name].enable = true;
+            dictOrder = options.dictOrder.slice(0);
             dictList = Object.assign({}, options.dictionaries);
             return optionsSave(options);
         }).then(() => {
@@ -184,7 +184,7 @@ function upDictOrder(e) {
 
 function downDictOrder(e) {
     let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
-    if(orderNum == order.length-1)
+    if(orderNum == dictOrder.length-1)
         return;
     let p = dictOrder[orderNum+1];
     dictOrder[orderNum+1] = dictOrder[orderNum];
@@ -197,7 +197,7 @@ optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
     //TODO load & save all options
     //TODO purge select dict
-    dictOrder = options.dictOrder.splice(0);
+    dictOrder = options.dictOrder.slice(0);
     dictList = Object.assign({},options.dictionaries);
     for(const group in options){
         if (group == 'general' || group == 'dictOptions' || group == 'kanjiDictionary'){

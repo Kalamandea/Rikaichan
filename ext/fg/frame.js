@@ -752,6 +752,8 @@ function disable() {
 
 	let popup = content.document.getElementById('rikaichan-window');
 	if (popup) popup.parentNode.removeChild(popup);
+    let style = content.document.getElementById('rikaichan-skin');
+	if (style) style.parentNode.removeChild(style);
 
 	enabled = false;
 }

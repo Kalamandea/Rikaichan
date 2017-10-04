@@ -1,41 +1,29 @@
 window.rikaichanWebEx = new class {
 	constructor() {
 		this.options = null;
-		this.toggle = false;
-		this.dataMessage = {};
+		// this.toggle = false;
+		// this.dataMessage = {};
 		this.translator = new Translator();
 		this.onMessage = this.onMessage.bind(this);
 		this.onCommand = this.onCommand.bind(this);
 		this.optionsSet = this.optionsSet.bind(this);
 
-		//TODO load options before translator.prepare
         optionsLoad().then(options =>{
         	this.optionsSet(options);
-            this.translator.prepare();
+            this.translator.prepare().then(
+                setIcon(options.general.enable)
+			);
             browser.commands.onCommand.addListener(this.onCommand.bind(this));
             browser.runtime.onMessage.addListener(this.onMessage.bind(this));
-            setIcon(options.general.enable);
+
 		});
-		/*this.translator.prepare().then(optionsLoad).then(options => this.optionsSet(options)).then(() => {
-			browser.commands.onCommand.addListener(this.onCommand.bind(this));
-			browser.runtime.onMessage.addListener(this.onMessage.bind(this));
-			setIcon(this.options.general.enable);
-		});*/
 	}
 
 	optionsSet(options) {
-		this.options = Object.assign({}, options); //JSON.parse(JSON.stringify(options));
+        this.options = JSON.parse(JSON.stringify(options));
         if(this.translator){
-            this.translator.dicList = this.options.dictOrder;
-            this.translator.options = this.options;
-		}
-
-		if (!dictConfigured(this.options)) {
-			browser.browserAction.setBadgeBackgroundColor({color: '#f0ad4e'});
-			browser.browserAction.setBadgeText({text: '!'});
-		} else {
-			browser.browserAction.setBadgeText({text: ''});
-		}
+            this.translator.optionsSet(this.options);
+        }
 	}
 
     showText(text) {
@@ -75,8 +63,8 @@ window.rikaichanWebEx = new class {
 			return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(css =>{
                return css;
 			});
-
 		}
+
 		if((msg.action == 'insert-frame') && this.options.general.enable){
             fgBroadcast("enable", this.options.general.enable);
 		}

@@ -107,7 +107,7 @@ function optionsSetDefaults(options) {
             toggleToolsMenu: true,
             lookupToolsMenu: true
         },
-        dictionaries: {'kanji':{"title":"kanji","name":"Kanji","version":"2.01.170301",isKanji: true,enabled:true}},
+        dictionaries: {'kanji':{"name":"kanji","title":"Kanji","version":"2.01.170301",isKanji: true,enabled:true}},
         dictOrder:['kanji'],
         dictOptions:{
             hideDef: false,
@@ -150,46 +150,12 @@ function optionsSetDefaults(options) {
     combine(options, defaults);
     combine(options.general, defaults.general);
     combine(options.menus, defaults.menus);
-    combine(options.dictOrder, defaults.dictOrder);
+    if(!options.dictOrder){
+        options.dictOrder = defaults.dictOrder.slice(0);
+    }
+    //combine(options.dictOrder, defaults.dictOrder);
     combine(options.dictOptions, defaults.dictOptions);
     combine(options.kanjiDictionary, defaults.kanjiDictionary);
-
-    return options;
-}
-
-function optionsVersion(options) {
-    const fixups = [
-        () => {},
-        () => {},
-        () => {},
-        () => {},
-        () => {
-            if (options.general.audioPlayback) {
-                options.general.audioSource = 'jpod101';
-            } else {
-                options.general.audioSource = 'disabled';
-            }
-        },
-        () => {
-            options.general.showGuide = false;
-        },
-        () => {
-            if (options.scanning.requireShift) {
-                options.scanning.modifier = 'shift';
-            } else {
-                options.scanning.modifier = 'none';
-            }
-        }
-    ];
-
-    optionsSetDefaults(options);
-    if (!options.hasOwnProperty('version')) {
-        options.version = fixups.length;
-    }
-
-    while (options.version < fixups.length) {
-        fixups[options.version++]();
-    }
 
     return options;
 }
@@ -202,7 +168,7 @@ function optionsLoad() {
     }).catch(error => {
         return {};
     }).then(options => {
-        return optionsVersion(options);
+        return optionsSetDefaults(options);
     });
 }
 
@@ -285,7 +251,7 @@ function readArray(name) {
  * Zip
  */
 
-function zipLoadDb(archive, termsLoaded, kanjiLoaded) {
+function zipLoadDb(archive, termsLoaded) {
     return JSZip.loadAsync(archive).then(files => files.files).then(files => {
         const indexFile = files['index.json'];
         if (!indexFile) {

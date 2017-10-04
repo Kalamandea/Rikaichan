@@ -12,8 +12,8 @@ class DatabaseRikaichan {
         this.importDictionary = this.importDictionary.bind(this);
     }
 
-    sanitize(title) {
-        const db = new Dexie(title);
+    sanitize(name) {
+        const db = new Dexie(name);
         return db.open().then(() => {
             db.close();
             if (db.verno !== this.dbVersion) {
@@ -22,20 +22,20 @@ class DatabaseRikaichan {
         }).catch(() => {});
     }
 
-    prepare(title) {
+    prepare(name) {
         //TODO load dbList and dictionaries on start
-        if (title == null) {
+        if (name == null) {
             return Promise.reject('Unknown title');
         }
         //this.dictionaries[index.title] = index;
 
-        return this.sanitize(title).then(() => {
-            this.dbList[title] = new Dexie(title);
-            this.dbList[title].version(this.dbVersion).stores({
+        return this.sanitize(name).then(() => {
+            this.dbList[name] = new Dexie(name);
+            this.dbList[name].version(this.dbVersion).stores({
                 terms: '++id,kanji,kana,entry'
             });
 
-            return this.dbList[title].open();
+            return this.dbList[name].open();
         });
     }
 
@@ -86,31 +86,11 @@ class DatabaseRikaichan {
                 }
             }
             summary = Object.assign({},index);
-            return self.prepare(index.title).then(()=> {
-                self.dbList[index.title].terms.bulkAdd(rows);
+            return self.prepare(index.name).then(()=> {
+                return self.dbList[index.name].terms.bulkAdd(rows);
             });
         };
 
-        const kanjiLoaded = (title, entries, total, current)  => {
-            const rows = [];
-            for (const [character, onyomi, kunyomi, tags, ...meanings] of entries) {
-                rows.push({
-                    character,
-                    onyomi,
-                    kunyomi,
-                    tags,
-                    meanings,
-                    dictionary: title
-                });
-            }
-
-            return this.dbList[title].kanji.bulkAdd(rows).then(() => {
-                if (callback) {
-                    callback(total, current);
-                }
-            });
-        };
-
-        return zipLoadDb(archive, termsLoaded, kanjiLoaded).then(() => summary);
+        return zipLoadDb(archive, termsLoaded).then(() => summary);
     }
 }
