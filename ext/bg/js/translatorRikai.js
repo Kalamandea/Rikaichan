@@ -57,7 +57,6 @@ class Translator {
     }
 
     async prepare() {
-        //this.dicList = this.options.dictOrder;
         for(const dic of this.options.dictOrder){
             if (dic != "kanji")
                 await this.database.prepare(dic);

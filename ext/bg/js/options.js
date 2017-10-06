@@ -221,15 +221,4 @@ optionsLoad().then(options => {
     document.getElementById('dict-purge').onclick = onDictionaryPurge;
     document.getElementById('options-form').onchange = onOptionsChanged;
     dictionaryDrawGroups(options);
-    //updateVisibility(options);
 });
-
-function change(e) {
-    let d = {general: {},kanjiDictionary:{},dictOptions:{},clipboardAndSave:{}};
-    let s = document.querySelector('.test');
-    document.execCommand('copy',false, 'tretreter');
-    console.log(d);
-}
-
-
-//document.getElementById('options-form').onchange = change;

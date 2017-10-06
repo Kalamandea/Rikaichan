@@ -23,7 +23,6 @@ class DatabaseRikaichan {
     }
 
     prepare(name) {
-        //TODO load dbList and dictionaries on start
         if (name == null) {
             return Promise.reject('Unknown title');
         }

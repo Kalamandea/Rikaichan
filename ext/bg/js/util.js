@@ -13,46 +13,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-/*
- * Promise
- */
-
-function promiseCallback(promise, callback) {
-    return promise.then(result => {
-        callback({result});
-    }).catch(error => {
-        callback({error});
-    });
-}
-
-
-/*
- * Japanese
- */
-
-function jpIsKanji(c) {
-    const code = c.charCodeAt(0);
-    return code >= 0x4e00 && code < 0x9fb0 || code >= 0x3400 && code < 0x4dc0;
-}
-
-function jpIsKana(c) {
-    return wanakana.isKana(c);
-}
-
-
-/*
- * Commands
- */
-
 function commandExec(command) {
     instRikai().onCommand(command);
 }
-
-
-/*
- * Instance
- */
 
 function instRikai() {
     return browser.extension.getBackgroundPage().rikaichanWebEx;
@@ -61,10 +24,6 @@ function instRikai() {
 function instDb() {
     return instRikai().translator.database;
 }
-
-/*
- * Foreground
- */
 
 function fgBroadcast(action, params) {
     browser.tabs.query({}, tabs => {
@@ -75,7 +34,7 @@ function fgBroadcast(action, params) {
 }
 
 function fgOptionsSet(options) {
-    //fgBroadcast('optionsSet', options);
+    fgBroadcast('optionsSet', options);
 }
 
 function setIcon(toggle){
@@ -180,33 +139,6 @@ function optionsSave(options) {
         instRikai().optionsSet(options);
         fgOptionsSet(options);
     });
-}
-
-
-/*
- * Dictionary
- */
-
-function dictEnabledSet(options) {
-    const dictionaries = {};
-    for (const title in options.dictionaries) {
-        const dictionary = options.dictionaries[title];
-        if (dictionary.enabled) {
-            dictionaries[title] = dictionary;
-        }
-    }
-
-    return dictionaries;
-}
-
-function dictConfigured(options) {
-    for (const title in options.dictionaries) {
-        if (options.dictionaries[title].enabled) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 /*

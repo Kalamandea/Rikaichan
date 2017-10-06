@@ -18,7 +18,8 @@ let config = {
 	nopopkeys: false,
 	hidedef: false,
 	usedpr: false,
-	popdy: 25
+	popdy: 25,
+	skin:""
 };
 
 function sendMessageRikai(msg){
@@ -709,6 +710,22 @@ function onKeyDown(ev) {
 	}
 }
 
+function updateOptions(options) {
+	if(options.general.skin != config.skin){
+        let style = content.document.getElementById('rikaichan-skin');
+        if (!style){
+            style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
+            style.id = 'rikaichan-skin';
+            content.document.head.appendChild(style);
+        }
+		sendMessageRikai({action: 'load-skin'}).then(result => {
+			config.skin = result.skin;
+			style.innerHTML = result.css;
+            content.document.head.appendChild(style);
+		});
+	}
+}
+
 function enable() {
 	if (enabled) return;
 	enabled = true;
@@ -718,8 +735,9 @@ function enable() {
     if (!style){
         style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
         style.id = 'rikaichan-skin';
-		sendMessageRikai({action: 'load-skin'}).then(css => {
-            style.innerHTML = css;
+		sendMessageRikai({action: 'load-skin'}).then(result => {
+            config.skin = result.skin;
+            style.innerHTML = result.css;
             root.head.appendChild(style);
 		});
 	}
@@ -760,7 +778,7 @@ function disable() {
 
 function getSelected(win) {
 	let text;
-	let s = win.getSelection()
+	let s = win.getSelection();
 	if (s) {
 		text = s.toString();
 		if (text.search(/[^\s]/) != -1) return text;
@@ -834,8 +852,7 @@ function lookup(text, checkSelected) {
 
 
 
-var processMessage = function (request, sender, sendResponse) {
-	//console.log(request.data);
+function processMessage (request, sender, sendResponse) {
 	if (!request.action)
 		return;	
 	const action = request.action;
@@ -850,6 +867,9 @@ var processMessage = function (request, sender, sendResponse) {
 	if(action == 'show'){
 		ignoreMouseTime = (new Date()).getTime() + 2000;
 		showPopup(request.data);
+	}
+	if(action == 'optionsSet'){
+		updateOptions(request.data);
 	}
 };
 

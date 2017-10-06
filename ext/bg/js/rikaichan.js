@@ -1,8 +1,6 @@
 window.rikaichanWebEx = new class {
 	constructor() {
 		this.options = null;
-		// this.toggle = false;
-		// this.dataMessage = {};
 		this.translator = new Translator();
 		this.onMessage = this.onMessage.bind(this);
 		this.onCommand = this.onCommand.bind(this);
@@ -60,8 +58,8 @@ window.rikaichanWebEx = new class {
 		}
 
 		if (msg.action == 'load-skin'){
-			return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(css =>{
-               return css;
+			return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(cssFile =>{
+               return {skin:this.options.general.skin, css:cssFile};
 			});
 		}
 
