@@ -4,10 +4,8 @@
 
 class DatabaseRikaichan {
     constructor() {
-        //this.dictionaries = {};
         this.dbList = {};
         this.dbVersion = 2;
-        this.tagMetaCache = {};
         this.findWord = this.findWord.bind(this);
         this.importDictionary = this.importDictionary.bind(this);
     }
@@ -26,7 +24,6 @@ class DatabaseRikaichan {
         if (name == null) {
             return Promise.reject('Unknown title');
         }
-        //this.dictionaries[index.title] = index;
 
         return this.sanitize(name).then(() => {
             this.dbList[name] = new Dexie(name);
@@ -38,16 +35,15 @@ class DatabaseRikaichan {
         });
     }
 
-    purge() {
-        if (this.db === null) {
-            return Promise.reject('database not initialized');
+    purge(name) {
+        if (this.dbList[name] === null) {
+            return Promise.reject('database' + name + ' not initialized');
         }
 
-        this.db.close();
-        return this.db.delete().then(() => {
-            this.db = null;
-            this.tagMetaCache = {};
-            return this.prepare();
+        this.dbList[name].close();
+        return this.dbList[name].delete().then(() => {
+            this.dbList[name] = null;
+            //return this.prepare(name);
         });
     }
 

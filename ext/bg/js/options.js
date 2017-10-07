@@ -81,10 +81,8 @@ function dictionarySpinnerShow(show) {
 function dictionaryDrawGroups(options) {
     dictionaryErrorShow(null);
     dictionarySpinnerShow(true);
-    //TODO change order dict & add style to dict bar
     const dictGroups = document.getElementById('dict-groups');
     const dictWarning = document.getElementById('dict-warning');
-
 
     if (dictOrder.length > 0) {
         dictGroups.setAttribute('class', 'dict-groups');
@@ -102,14 +100,22 @@ function dictionaryDrawGroups(options) {
         dict.setAttribute('data-order',i++);
         let up = document.createElement('button');
         up.innerHTML='&#8896;';
-        up.setAttribute('class','btn');
+        up.setAttribute('class','btn btn-info');
         up.onclick = upDictOrder;
         let down = document.createElement('button');
         down.innerHTML='&#8897;';
-        down.setAttribute('class','btn');
+        down.setAttribute('class','btn btn-info');
         down.onclick = downDictOrder;
         dict.appendChild(up);
         dict.appendChild(down);
+
+        if (dictList[dic].name!='kanji') {
+            let del = document.createElement('button');
+            del.innerHTML = 'Del';
+            del.setAttribute('class', 'btn btn-danger');
+            del.onclick = onDictionaryPurge;
+            dict.appendChild(del);
+        }
         dictGroups.appendChild(dict);
     }
     dictionarySpinnerShow(false);
@@ -117,13 +123,18 @@ function dictionaryDrawGroups(options) {
 
 function onDictionaryPurge(e) {
     e.preventDefault();
-/*
-    dictionaryErrorShow(null);
+    //TODO check purge select dict
+    if (dictOrder.length == 0) return;
+    const dictGroups = document.getElementById('dict-groups');
+    let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
+    instDb().purge(dictOrder[orderNum]).then(()=>{
+        dictList[dictOrder[orderNum]] = null;
+        dictOrder[orderNum] = null;
+        dictOrder = dictOrder.filter(e=>{return e!=null});
+        dictionaryDrawGroups();
+    });
+    /*
     dictionarySpinnerShow(true);
-
-    const dictControls = $('#dict-importer, #dict-groups').hide();
-    const dictProgress = $('#dict-purge-progress').show();
-
     instDb().purge().catch(dictionaryErrorShow).then(() => {
         dictionarySpinnerShow(false);
         dictControls.show();
@@ -195,8 +206,6 @@ function downDictOrder(e) {
 
 optionsLoad().then(options => {
     document.getElementById('dict-file').onchange = onDictionaryImport;
-    //TODO load & save all options
-    //TODO purge select dict
     dictOrder = options.dictOrder.slice(0);
     dictList = Object.assign({},options.dictionaries);
     for(const group in options){

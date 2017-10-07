@@ -38,7 +38,6 @@
         "description": "Toggle text scanning"
       }
     },
-
     "applications": {
         "gecko": {
             "id": "rikaichan@mozilla.org",
