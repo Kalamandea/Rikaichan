@@ -35,7 +35,7 @@ function sendMessageRikai(msg){
 }
 
 function cursorInPopup(pos) {
-	let popup = content.document.getElementById('rikaichan-window');
+	let popup = top.document.getElementById('rikaichan-window');
 	return (popup && (popup.style.display !== 'none') &&
 		(pos.pageX >= popup.offsetLeft) &&
 		(pos.pageX <= popup.offsetLeft + popup.offsetWidth) &&
@@ -56,7 +56,7 @@ function onMouseMove(ev) {
 	let ro = ev.rangeOffset;
 
 	if (cursorInPopup(ev)) {
-		content.clearTimeout(timer);
+        top.clearTimeout(timer);
 		timer = null;
 		return;
 	}
@@ -66,7 +66,7 @@ function onMouseMove(ev) {
 		if ((rp == data.prevRangeNode) && (ro == data.prevRangeOfs)) return;
 	}
 
-	content.clearTimeout(timer);
+    top.clearTimeout(timer);
 	timer = null;
 
 	// Node.TEXT_NODE == 3
@@ -89,7 +89,7 @@ function onMouseMove(ev) {
 		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: ev.shiftKey ? -1 : 0 });	// !!
         //sendMessageRikai({action:'data-select', index: ev.shiftKey ? -1 : 0 }).then(() =>{
             data.pos = { screenX: ev.screenX, screenY: ev.screenY, pageX: ev.pageX, pageY: ev.pageY, clientX: ev.clientX, clientY: ev.clientY };
-            timer = content.setTimeout(show, config.popdelay);
+            timer = top.setTimeout(show, config.popdelay);
             return;
 		//});
 	}
@@ -112,7 +112,7 @@ function onMouseMove(ev) {
 
 	if (data.title) {
 		data.pos = { screenX: ev.screenX, screenY: ev.screenY, pageX: ev.pageX, pageY: ev.pageY, clientX: ev.clientX, clientY: ev.clientY };
-		timer = content.setTimeout(showTitle, config.popdelay);
+		timer = top.setTimeout(showTitle, config.popdelay);
 		return;
 	}
 
@@ -363,7 +363,7 @@ function showPopup(text, elem, pos, _lbPop) {
 
 	if (paused) return;
 
-	let root = content.document;
+	let root = top.document;
 
 	// Positioning...
 	// - The popup is inserted at the root document (if multi-frames).
@@ -435,8 +435,8 @@ function showPopup(text, elem, pos, _lbPop) {
 		}
 		else if (altView == 2) {
 			// lower-right
-			x = (content.innerWidth - (width + 20));
-			y = (content.innerHeight - (height + 20));
+			x = (top.innerWidth - (width + 20));
+			y = (top.innerHeight - (height + 20));
 		}
 		else {
 			// https://developer.mozilla.org/en-US/docs/Web/API/Window/mozInnerScreenX
@@ -446,13 +446,13 @@ function showPopup(text, elem, pos, _lbPop) {
 
 			// convert xy relative to root document position where popup was inserted
 			if (config.usedpr) {
-				let r = content.devicePixelRatio || 1;
-				x = (x / r) - content.mozInnerScreenX;
-				y = (y / r) - content.mozInnerScreenY;
+				let r = top.devicePixelRatio || 1;
+				x = (x / r) - top.mozInnerScreenX;
+				y = (y / r) - top.mozInnerScreenY;
 			}
 			else {
-				x -= content.mozInnerScreenX;
-				y -= content.mozInnerScreenY;
+				x -= top.mozInnerScreenX;
+				y -= top.mozInnerScreenY;
 			}
 
 
@@ -473,14 +473,14 @@ function showPopup(text, elem, pos, _lbPop) {
 				let w = elem.parentNode.offsetWidth + 5;
 				x += w;
 
-				if ((x + width) > content.innerWidth) {
+				if ((x + width) > top.innerWidth) {
 					// too much to the right, go left
 					x -= (w + width + 5);
 					if (x < 0) x = 0;
 				}
 
-				if ((y + height) > content.innerHeight) {
-					y = content.innerHeight - height - 5;
+				if ((y + height) > top.innerHeight) {
+					y = top.innerHeight - height - 5;
 					if (y < 0) y = 0;
 				}
 			}
@@ -488,8 +488,8 @@ function showPopup(text, elem, pos, _lbPop) {
 */
 			 {
 				// go left if necessary
-				if ((x + width) > (content.innerWidth - 20)) {
-					x = (content.innerWidth - width) - 20;
+				if ((x + width) > (top.innerWidth - 20)) {
+					x = (top.innerWidth - width) - 20;
 					if (x < 0) x = 0;
 				}
 
@@ -500,7 +500,7 @@ function showPopup(text, elem, pos, _lbPop) {
 				if ((elem.title) && (elem.title != '')) v += 20;
 
 				// go up if necessary
-				if ((y + v + height) > content.innerHeight) {
+				if ((y + v + height) > top.innerHeight) {
 					let t = y - height - 30;
 					if (t >= 0) y = t;
 				}
@@ -509,8 +509,8 @@ function showPopup(text, elem, pos, _lbPop) {
 		}
 	}
 
-	popup.style.left = (x + content.scrollX) + 'px';
-	popup.style.top = (y + content.scrollY) + 'px';
+	popup.style.left = (x + top.scrollX) + 'px';
+	popup.style.top = (y + top.scrollY) + 'px';
 	popup.style.display = '';
 
 	if (!keyHooked) {
@@ -520,7 +520,7 @@ function showPopup(text, elem, pos, _lbPop) {
 }
 
 function hidePopup() {
-	let popup = content.document.getElementById('rikaichan-window');
+	let popup = top.document.getElementById('rikaichan-window');
 	if (popup) {
 		popup.style.display = 'none';
 		popup.innerHTML = '';
@@ -530,12 +530,12 @@ function hidePopup() {
 }
 
 function removePopup() {
-	let popup = content.document.getElementById('rikaichan-window');
+	let popup = top.document.getElementById('rikaichan-window');
 	if (popup) popup.parentNode.removeChild(popup);
 }
 
 function isVisible() {
-	let popup = content.document.getElementById('rikaichan-window');
+	let popup = top.document.getElementById('rikaichan-window');
 	return (popup) && (popup.style.display != 'none');
 }
 
@@ -712,16 +712,16 @@ function onKeyDown(ev) {
 
 function updateOptions(options) {
 	if(options.general.skin != config.skin){
-        let style = content.document.getElementById('rikaichan-skin');
+        let style = top.document.getElementById('rikaichan-skin');
         if (!style){
             style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
             style.id = 'rikaichan-skin';
-            content.document.head.appendChild(style);
+            top.document.head.appendChild(style);
         }
 		sendMessageRikai({action: 'load-skin'}).then(result => {
 			config.skin = result.skin;
 			style.innerHTML = result.css;
-            content.document.head.appendChild(style);
+            top.document.head.appendChild(style);
 		});
 	}
 }
@@ -730,7 +730,7 @@ function enable() {
 	if (enabled) return;
 	enabled = true;
 	paused = false;
-    let root = content.document;
+    let root = top.document;
     let style = root.getElementById('rikaichan-skin');
     if (!style){
         style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
@@ -768,9 +768,9 @@ function disable() {
 	hidePopup();
 	clearHi();
 
-	let popup = content.document.getElementById('rikaichan-window');
+	let popup = top.document.getElementById('rikaichan-window');
 	if (popup) popup.parentNode.removeChild(popup);
-    let style = content.document.getElementById('rikaichan-skin');
+    let style = top.document.getElementById('rikaichan-skin');
 	if (style) style.parentNode.removeChild(style);
 
 	enabled = false;
@@ -802,8 +802,8 @@ function lookup(text, checkSelected) {
 	// console.log('lookup text=', text, ' checkSelected=', checkSelected);
 
 	if (checkSelected) {
-		let t = getSelected(content).substr(0, 30).replace(/^\s+|\s+$/g, '');
-		clearSelected(content);
+		let t = getSelected(top).substr(0, 30).replace(/^\s+|\s+$/g, '');
+		clearSelected(top);
 
 		// console.log('lookup: getSelected = ' + t);
 
