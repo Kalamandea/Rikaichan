@@ -24,7 +24,6 @@ let dictOrder = [];
 
 function formRead(e) {
     return optionsLoad().then(optionsOld => {
-        // const optionsNew = Object.assign({}, optionsOld);
         const optionsNew = JSON.parse(JSON.stringify(optionsOld));
         optionsNew.dictOrder = dictOrder.slice(0);
 
@@ -123,27 +122,19 @@ function dictionaryDrawGroups(options) {
 
 function onDictionaryPurge(e) {
     e.preventDefault();
-    //TODO check purge select dict
     if (dictOrder.length == 0) return;
     const dictGroups = document.getElementById('dict-groups');
     let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
     instDb().purge(dictOrder[orderNum]).then(()=>{
-        dictList[dictOrder[orderNum]] = null;
-        dictOrder[orderNum] = null;
-        dictOrder = dictOrder.filter(e=>{return e!=null});
-        dictionaryDrawGroups();
+        optionsLoad().then(options => {
+            options.dictionaries[dictList[dictOrder[orderNum]]] = null;
+            dictList[dictOrder[orderNum]] = null;
+            dictOrder[orderNum] = null;
+            dictOrder = dictOrder.filter(e=>{return e!=null});
+            options.dictOrder = dictOrder.slice(0);
+            optionsSave(options).then(dictionaryDrawGroups());
+        });
     });
-    /*
-    dictionarySpinnerShow(true);
-    instDb().purge().catch(dictionaryErrorShow).then(() => {
-        dictionarySpinnerShow(false);
-        dictControls.show();
-        dictProgress.hide();
-        return optionsLoad();
-    }).then(options => {
-        options.dictionaries = {};
-        optionsSave(options).then(() => dictionaryDrawGroups(options));
-    });*/
 }
 
 function onDictionaryImport(e) {

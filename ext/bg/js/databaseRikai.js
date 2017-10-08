@@ -67,6 +67,9 @@ class DatabaseRikaichan {
         let self = this;
         let summary = null;
         const termsLoaded = (index, entries, total, current) => {
+            if(self.dbList[index.name]){
+                return Promise.reject('Dictionary ' + index.name + ' already initialized');
+            }
             const rows = [];
             let ch = 0;
             for (const line of entries) {
