@@ -216,3 +216,14 @@ function zipLoadDb(archive, termsLoaded) {
         });
     });
 }
+
+function copy() {
+    let c = document.getElementById('clipboard');
+    r = document.createRange();
+    r.setStart(c,0);
+    r.setEnd(c,c.childNodes.length);
+    s = document.getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    document.execCommand('copy');
+}
