@@ -24,9 +24,24 @@
 .dict{
     margin-bottom: 5px;
     padding: 5px;
-    display: flex;
+    display: grid;
+    width: 100%;
 }
 
 h4{
     margin: 0;
+}
+
+.btn-dict-up{
+    grid-column-start: 8;
+}
+.btn-dict-down{
+    grid-column-start: 9;
+}
+.btn-dict-drop{
+    grid-column-start: 10;
+}
+.dict-title{
+    grid-column-start: 1;
+    grid-column-end: 8;
 }

@@ -94,27 +94,30 @@ function dictionaryDrawGroups(options) {
     let i = 0;
     for(const dic of dictOrder){
         let dict = document.createElement('div');
-        dict.innerHTML = '<div class="col-md-5" style="padding:5px 0"><h4>' + dictList[dic].title + '\t<small>&nbsp v' + dictList[dic].version + '</small></h4></div>';
+        dict.innerHTML = '<div class="dict-title" style="padding:5px 0"><h4>' + dictList[dic].title + '\t<small>&nbsp v' + dictList[dic].version + '</small></h4></div>';
         dict.setAttribute('class','panel dict');
         dict.setAttribute('data-order',i++);
         let up = document.createElement('button');
         up.innerHTML='&#8896;';
-        up.setAttribute('class','btn btn-info');
+        up.setAttribute('class','btn btn-info btn-dict-up');
         up.onclick = upDictOrder;
         let down = document.createElement('button');
         down.innerHTML='&#8897;';
-        down.setAttribute('class','btn btn-info');
+        down.setAttribute('class','btn btn-info btn-dict-down');
         down.onclick = downDictOrder;
         dict.appendChild(up);
         dict.appendChild(down);
-
+        let del;
         if (dictList[dic].name!='kanji') {
-            let del = document.createElement('button');
-            del.innerHTML = 'Del';
-            del.setAttribute('class', 'btn btn-danger');
+            del = document.createElement('button');
+            del.innerHTML = 'Drop';
+            del.setAttribute('class', 'btn btn-danger btn-dict-drop');
             del.onclick = onDictionaryPurge;
-            dict.appendChild(del);
+        }else{
+            del = document.createElement('div');
+            del.setAttribute('class', 'btn-dict-drop');
         }
+        dict.appendChild(del);
         dictGroups.appendChild(dict);
     }
     dictionarySpinnerShow(false);
