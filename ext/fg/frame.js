@@ -680,6 +680,7 @@ function onKeyDown(ev) {
 		break;
 	case 83:	// s
 		if (lastFound) {
+            sendMessageRikai({action:'save', entries: lastFound});
 			// sendAsyncMessage('rcx@polarcloud.com:msg', { action: 'save', entries: lastFound });
 		}
 		break;

@@ -94,7 +94,9 @@ function optionsSetDefaults(options) {
             snlf: 0,
             ssep: 0,
             smaxce: 7,
-            smaxck: 1
+            smaxck: 1,
+            smaxfe: 7,
+            smaxfk: 1
         }
     };
 

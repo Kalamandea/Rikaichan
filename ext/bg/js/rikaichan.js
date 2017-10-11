@@ -35,10 +35,10 @@ window.rikaichanWebEx = new class {
             me = this.options.clipboardAndSave.smaxce;
             mk = this.options.clipboardAndSave.smaxck;
         }
-        /*else {
+        else {
             me = this.options.clipboardAndSave.smaxfe;
             mk = this.options.clipboardAndSave.smaxfk;
-        }*/
+        }
 
         if (!entries.fromLB) mk = 1;
 
@@ -57,8 +57,8 @@ window.rikaichanWebEx = new class {
             }
         }
 
-        if (this.options.clipboardAndSave.snlf == 1) text = text.replace(/\n/g, '\r\n');
-        else if (this.options.clipboardAndSave.snlf == 2) text = text.replace(/\n/g, '\r');
+        if (this.options.clipboardAndSave.snlf === 1) text = text.replace(/\n/g, '\r\n');
+        else if (this.options.clipboardAndSave.snlf === 2) text = text.replace(/\n/g, '\r');
 
         let sep = parseInt(this.options.clipboardAndSave.ssep);
         switch (sep) {
@@ -88,6 +88,18 @@ window.rikaichanWebEx = new class {
         s.addRange(r);
         document.execCommand('copy');
 	}
+
+	saveToFile(entries){
+        let text = this.savePrep(entries, false);
+        if(text == null) return;
+        let data = new Blob([text], {type: 'text/plain'});
+        let textFile = window.URL.createObjectURL(data);
+        let link = document.getElementById('file');
+        link.href = textFile;
+        let click =(node)=>{node.dispatchEvent(new MouseEvent("click"))}
+        click(link);
+        //link.click();
+    }
 
 	onCommand(command, data) {
 		if(command == 'toggle'){
@@ -138,6 +150,9 @@ window.rikaichanWebEx = new class {
         if(msg.action === 'copy'){
 			this.copyToClipboard(msg.entries);
 		}
+        if(msg.action === 'save'){
+            this.saveToFile(msg.entries);
+        }
         // console.log('text=', msg.text);
 		// console.log('\nonContentMessage');
 		// console.log('name=' + msg.name);
