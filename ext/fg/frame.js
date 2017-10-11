@@ -856,10 +856,9 @@ function processMessage (request, sender, sendResponse) {
 	if (!request.action)
 		return;	
 	const action = request.action;
-	//TODO change
 	if (action == 'enable') {
 		enable();
-		if (request.action) showPopup('<div>Enable</div>');
+		if (request.action) showPopup(request.data);
 	}
 	else if (action == 'disable') {
 		disable();

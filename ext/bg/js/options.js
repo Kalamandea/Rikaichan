@@ -155,7 +155,6 @@ function onDictionaryImport(e) {
 
     optionsLoad().then(options => {
         return instDb().importDictionary(e.target.files[0], updateProgress).then(summary => {
-            //TODO set dict order
             options.dictOrder.push(summary.name);
             options.dictionaries[summary.name] = summary;
             options.dictionaries[summary.name].enable = true;

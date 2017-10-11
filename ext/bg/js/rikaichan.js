@@ -92,10 +92,9 @@ window.rikaichanWebEx = new class {
 	onCommand(command, data) {
 		if(command == 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
-			optionsSave(this.options).then(() => {
+			Promise.all([optionsSave(this.options),fileLoad(browser.extension.getURL('/bg/minihelp.html'))]).then(([opt, file]) => {
 				this.optionsSet(this.options);
-                //TODO change
-                fgBroadcast(this.options.general.enable ? "enable" : "disable", this.options.general.enable);
+                fgBroadcast(this.options.general.enable ? "enable" : "disable", file);
                 setIcon(this.options.general.enable);
 			});
 		}
