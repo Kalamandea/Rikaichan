@@ -675,7 +675,7 @@ function onKeyDown(ev) {
 		break;
 	case 67:	// c
 		if (lastFound) {
-			// sendAsyncMessage('rcx@polarcloud.com:msg', { action: 'copy', entries: lastFound });
+            sendMessageRikai({action:'copy', entries: lastFound});
 		}
 		break;
 	case 83:	// s

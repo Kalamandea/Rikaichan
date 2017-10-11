@@ -26,10 +26,8 @@ function formRead(e) {
     return optionsLoad().then(optionsOld => {
         const optionsNew = JSON.parse(JSON.stringify(optionsOld));
         optionsNew.dictOrder = dictOrder.slice(0);
-
-
         let gr = e.target.id.split(".");
-        console.log(gr);
+        //console.log(gr);
         switch (e.target.type){
             case "checkbox":
                 optionsNew[gr[0]][gr[1]] = e.target.checked;

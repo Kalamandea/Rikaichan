@@ -653,17 +653,17 @@ class Translator {
         else {
             if (max > entry.data.length) max = entry.data.length;
             for (i = 0; i < max; ++i) {
-                e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
+                e = entry.data[i][0]; //.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/(.+)\//);
                 if (!e) continue;
 
-                if (e[2]) {
-                    b.push(e[1] + '\t' + e[2]);
+                if (e.kana) {
+                    b.push(e.kanji + '\t' + e.kana);
                 }
                 else {
-                    b.push(e[1]);
+                    b.push(e.kanji);
                 }
 
-                t = e[3].replace(/\//g, '; ');
+                t = e.entry.replace(/\//g, '; ');
                 if (!this.options.dictOptions.wpos){
                     t = t.replace(/^\([^)]+\)\s*/, '')
                 }

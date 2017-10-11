@@ -27,6 +27,67 @@ window.rikaichanWebEx = new class {
     showText(text) {
         fgBroadcast("show", text);
     }
+    savePrep(entries, clip){
+        if ((!entries) || (entries.length == 0)) return null;
+
+        let me, mk;
+        if (clip) {
+            me = this.options.clipboardAndSave.smaxce;
+            mk = this.options.clipboardAndSave.smaxck;
+        }
+        /*else {
+            me = this.options.clipboardAndSave.smaxfe;
+            mk = this.options.clipboardAndSave.smaxfk;
+        }*/
+
+        if (!entries.fromLB) mk = 1;
+
+        let text = '';
+        //if (!entries.kanji) {entries = entries[0]}
+        for (let i = 0; i < entries.length; ++i) {
+            let e = entries[i];
+            if (e.kanji) {
+                if (mk-- <= 0) continue
+                text += this.translator.makeText(e, 1);
+            }
+            else {
+                if (me <= 0) continue;
+                text += this.translator.makeText(e, me);
+                me -= e.data.length;
+            }
+        }
+
+        if (this.options.clipboardAndSave.snlf == 1) text = text.replace(/\n/g, '\r\n');
+        else if (this.options.clipboardAndSave.snlf == 2) text = text.replace(/\n/g, '\r');
+
+        let sep = this.options.clipboardAndSave.ssep;
+        switch (sep) {
+            case 'Tab':
+                sep = '\t';
+                break;
+            case 'Comma':
+                sep = ',';
+                break;
+            case 'Space':
+                sep = ' ';
+                break;
+        }
+        if (sep != '\t') return text.replace(/\t/g, sep);
+
+        return text;
+	}
+    copyToClipboard(entries){
+        let text = this.savePrep(entries, true);
+        let c = document.getElementById('clipboard');
+        c.textContent = text;
+        let r = document.createRange();
+        r.setStart(c,0);
+        r.setEnd(c,c.childNodes.length);
+        let s = document.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+        document.execCommand('copy');
+	}
 
 	onCommand(command, data) {
 		if(command == 'toggle'){
@@ -75,6 +136,9 @@ window.rikaichanWebEx = new class {
             this.translator.select(msg.index);
             return {};
         }
+        if(msg.action === 'copy'){
+			this.copyToClipboard(msg.entries);
+		}
         // console.log('text=', msg.text);
 		// console.log('\nonContentMessage');
 		// console.log('name=' + msg.name);

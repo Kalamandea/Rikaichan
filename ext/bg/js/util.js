@@ -71,7 +71,7 @@ function optionsSetDefaults(options) {
         dictOptions:{
             hideDef: false,
             hidEx: false,
-            wos: true,
+            wpos: true,
             wpop: true,
             maxEntries:10,
             maxName:20
@@ -93,8 +93,8 @@ function optionsSetDefaults(options) {
         clipboardAndSave:{
             snlf: 0,
             ssep: 0,
-            smaxce: 0,
-            smaxck: 0
+            smaxce: 7,
+            smaxck: 1
         }
     };
 
