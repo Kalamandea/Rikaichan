@@ -60,15 +60,15 @@ window.rikaichanWebEx = new class {
         if (this.options.clipboardAndSave.snlf == 1) text = text.replace(/\n/g, '\r\n');
         else if (this.options.clipboardAndSave.snlf == 2) text = text.replace(/\n/g, '\r');
 
-        let sep = this.options.clipboardAndSave.ssep;
+        let sep = parseInt(this.options.clipboardAndSave.ssep);
         switch (sep) {
-            case 'Tab':
+            case 0:
                 sep = '\t';
                 break;
-            case 'Comma':
+            case 1:
                 sep = ',';
                 break;
-            case 'Space':
+            case 2:
                 sep = ' ';
                 break;
         }
