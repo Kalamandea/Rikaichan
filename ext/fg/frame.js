@@ -86,12 +86,12 @@ function onMouseMove(ev) {
 	if (lbPop) return;
 
 	if ((rp) && (rp.data) && (ro < rp.data.length)) {
-		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: ev.shiftKey ? -1 : 0 });	// !!
-        //sendMessageRikai({action:'data-select', index: ev.shiftKey ? -1 : 0 }).then(() =>{
+        return sendMessageRikai({action:'data-select', index: ev.shiftKey ? -1 : 0 }).then(e =>{
             data.pos = { screenX: ev.screenX, screenY: ev.screenY, pageX: ev.pageX, pageY: ev.pageY, clientX: ev.clientX, clientY: ev.clientY };
             timer = top.setTimeout(show, config.popdelay);
-            return;
-		//});
+            //return;
+		});
+		;
 	}
 
 	if (config.title) {
@@ -311,7 +311,6 @@ async function show() {
 		hidePopup();
 		return 0;
 	}
-	//	console.log('text=' + text);
 
 	let e = {};
 	e = await sendMessageRikai({action:'word-search', text: text});
@@ -597,7 +596,6 @@ async function showNext() {
 		if (data.uofsNext <= 0) data.uofsNext = 1;
 		data.uofs += data.uofsNext;
 
-		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: 0 });	// !!
         await sendMessageRikai({action:'data-select', index: 0});
 		let r = await show();
 		if (r == 1) break;
@@ -629,10 +627,29 @@ async function showPrev() {
 			data.uofsNext = 1;
 		}
 		data.uofs = ofs;
-		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: 0 });	// !!
         await sendMessageRikai({action:'data-select', index: 0});
 		if (await show() != 0) break;
 	}
+}
+
+function saveToFile(){
+    sendMessageRikai({action:'save', entries: lastFound}).then(text=>{
+        let root = top.document;
+        if(text == null) return;
+        let link = root.getElementById('rikaichan-file');
+        if(!link){
+            link = root.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+            link.id = 'rikaichan-file';
+            root.body.appendChild(link);
+        }
+        let data = new Blob([text], {type: 'text/plain'});
+//        let textFile = ;
+        link.href = window.URL.createObjectURL(data);
+        link.setAttribute('style','display:none');
+        link.download = 'rikaichan.txt';
+
+        link.click();
+    });
 }
 
 function onKeyDown(ev) {
@@ -656,10 +673,8 @@ function onKeyDown(ev) {
             }else {
                 show();
             }
-            //break;
 		});
         break;
-		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-next' });
 	case 27:	// esc
 		hidePopup();
 		clearHi();
@@ -675,27 +690,14 @@ function onKeyDown(ev) {
 		break;
 	case 67:	// c
 		if (lastFound) {
-            sendMessageRikai({action:'copy', entries: lastFound});
+            sendMessageRikai({action:'copy', entries: lastFound}).then(e =>{
+            	showPopup('Copied to clipboard.');
+			});
 		}
 		break;
 	case 83:	// s
 		if (lastFound) {
-            sendMessageRikai({action:'save', entries: lastFound}).then(text=>{
-                let root = top.document;
-                if(text == null) return;
-                let link = root.getElementById('rikaichan-file');
-                if(!link){
-                    link = root.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-                    link.id = 'rikaichan-file';
-                }
-                let data = new Blob([text], {type: 'text/plain'});
-                let textFile = window.URL.createObjectURL(data);
-                link.href = textFile;
-                link.setAttribute('style','display:none');
-                link.download = 'rikaichan.txt';
-                root.body.appendChild(link);
-                link.click();
-            });
+            saveToFile();
 		}
 		break;
 	case 66:	// b
@@ -712,7 +714,6 @@ function onKeyDown(ev) {
             sendMessageRikai({action:'data-select', index:(ev.keyCode - 49)}).then(
                 show()
 			);
-			// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: (ev.keyCode - 49) });	// !!
 			break;
 		}
 		return;

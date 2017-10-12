@@ -27,27 +27,19 @@ window.rikaichanWebEx = new class {
     showText(text) {
         fgBroadcast("show", text);
     }
-    savePrep(entries, clip){
-        if ((!entries) || (entries.length == 0)) return null;
+    textPrep(entries, clip){
+        if ((!entries) || (entries.length === 0)) return null;
 
-        let me, mk;
-        if (clip) {
-            me = this.options.clipboardAndSave.smaxce;
-            mk = this.options.clipboardAndSave.smaxck;
-        }
-        else {
-            me = this.options.clipboardAndSave.smaxfe;
-            mk = this.options.clipboardAndSave.smaxfk;
-        }
+        let me = this.options.clipboardAndSave.smaxce;
+        let mk = this.options.clipboardAndSave.smaxck;
 
         if (!entries.fromLB) mk = 1;
 
         let text = '';
-        //if (!entries.kanji) {entries = entries[0]}
         for (let i = 0; i < entries.length; ++i) {
             let e = entries[i];
             if (e.kanji) {
-                if (mk-- <= 0) continue
+                if (mk-- <= 0) continue;
                 text += this.translator.makeText(e, 1);
             }
             else {
@@ -77,7 +69,7 @@ window.rikaichanWebEx = new class {
         return text;
 	}
     copyToClipboard(entries){
-        let text = this.savePrep(entries, true);
+        let text = this.textPrep(entries, true);
         let c = document.getElementById('clipboard');
         c.textContent = text;
         let r = document.createRange();
@@ -89,20 +81,8 @@ window.rikaichanWebEx = new class {
         document.execCommand('copy');
 	}
 
-	saveToFile(entries){
-        let text = this.savePrep(entries, false);
-        if(text == null) return;
-        let data = new Blob([text], {type: 'text/plain'});
-        let textFile = window.URL.createObjectURL(data);
-        let link = document.getElementById('file');
-        link.href = textFile;
-        let click =(node)=>{node.dispatchEvent(new MouseEvent("click"))}
-        click(link);
-        //link.click();
-    }
-
 	onCommand(command, data) {
-		if(command == 'toggle'){
+		if(command === 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
 			Promise.all([optionsSave(this.options),fileLoad(browser.extension.getURL('/bg/minihelp.html'))]).then(([opt, file]) => {
 				this.optionsSet(this.options);
@@ -110,17 +90,17 @@ window.rikaichanWebEx = new class {
                 setIcon(this.options.general.enable);
 			});
 		}
-		if(command == 'options'){
+		if(command === 'options'){
 			browser.runtime.openOptionsPage();
 		}
-		if(command == 'show-text'){
+		if(command === 'show-text'){
             fgBroadcast("show", data);
         }
 	}
 
 	onMessage(msg, sender, callback) {
 
-		if (msg.action == 'word-search') {
+		if (msg.action === 'word-search') {
 			return this.translator.wordSearch(msg.text).then(e =>{
 				if (e != null){
 					e.html = this.translator.makeHtml(e);
@@ -129,21 +109,21 @@ window.rikaichanWebEx = new class {
 			});
 		}
 
-		if (msg.action == 'load-skin'){
+		if (msg.action === 'load-skin'){
 			return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(cssFile =>{
                return {skin:this.options.general.skin, css:cssFile};
 			});
 		}
 
-		if((msg.action == 'insert-frame') && this.options.general.enable){
+		if((msg.action === 'insert-frame') && this.options.general.enable){
             fgBroadcast("enable", this.options.general.enable);
 		}
 
-        if (msg.action == 'data-next') {
+        if (msg.action === 'data-next') {
             this.translator.selectNext();
             return {};
         }
-        if (msg.action == 'data-select') {
+        if (msg.action === 'data-select') {
             this.translator.select(msg.index);
             return {};
         }
@@ -151,7 +131,7 @@ window.rikaichanWebEx = new class {
 			this.copyToClipboard(msg.entries);
 		}
         if(msg.action === 'save'){
-            let text = this.savePrep(msg.entries, false);
+            let text = this.textPrep(msg.entries, false);
             return Promise.resolve(text);
             //this.saveToFile(msg.entries);
         }
@@ -163,7 +143,7 @@ window.rikaichanWebEx = new class {
 		// console.log('target=', msg.target);
 		// console.log('objects=', msg.objects);
 
-		if (msg.action == 'translate') {
+		if (msg.action === 'translate') {
 			let e = this.translator.translate(msg.text).then(e => {
 				if (e != null) {
 					e.title = msg.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) {
@@ -177,7 +157,7 @@ window.rikaichanWebEx = new class {
 		}
 
 		//TODO add Lookup bar
-		if (msg.action == 'lookup-search') {
+		if (msg.action === 'lookup-search') {
 			//return this.translator.lookupSearch(msg.text);
 		}
 
