@@ -513,7 +513,7 @@ class Translator {
 
             b.push('<div class="w-title">Names Dictionary</div><table class="w-na-tb"><tr><td>');
             for (i = 0; i < entry.data.length; ++i) {
-                e = entry.data[i][0].match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/([\S\s]+)\//);
+                e = entry.data[i][0]; //.match(/^(.+?)\s+(?:\[(.*?)\])?\s*\/([\S\s]+)\//);
                 if (!e) continue;
 
                 if (s != e.entry) {
