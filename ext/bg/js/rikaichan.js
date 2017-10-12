@@ -151,7 +151,9 @@ window.rikaichanWebEx = new class {
 			this.copyToClipboard(msg.entries);
 		}
         if(msg.action === 'save'){
-            this.saveToFile(msg.entries);
+            let text = this.savePrep(msg.entries, false);
+            return Promise.resolve(text);
+            //this.saveToFile(msg.entries);
         }
         // console.log('text=', msg.text);
 		// console.log('\nonContentMessage');

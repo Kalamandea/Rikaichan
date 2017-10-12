@@ -680,8 +680,22 @@ function onKeyDown(ev) {
 		break;
 	case 83:	// s
 		if (lastFound) {
-            sendMessageRikai({action:'save', entries: lastFound});
-			// sendAsyncMessage('rcx@polarcloud.com:msg', { action: 'save', entries: lastFound });
+            sendMessageRikai({action:'save', entries: lastFound}).then(text=>{
+                let root = top.document;
+                if(text == null) return;
+                let link = root.getElementById('rikaichan-file');
+                if(!link){
+                    link = root.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+                    link.id = 'rikaichan-file';
+                }
+                let data = new Blob([text], {type: 'text/plain'});
+                let textFile = window.URL.createObjectURL(data);
+                link.href = textFile;
+                link.setAttribute('style','display:none');
+                link.download = 'rikaichan.txt';
+                root.body.appendChild(link);
+                link.click();
+            });
 		}
 		break;
 	case 66:	// b
@@ -714,6 +728,7 @@ function onKeyDown(ev) {
 function updateOptions(options) {
 	if(options.general.skin != config.skin){
         let style = top.document.getElementById('rikaichan-skin');
+        let root = top.document;
         if (!style){
             style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
             style.id = 'rikaichan-skin';
