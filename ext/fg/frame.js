@@ -633,7 +633,7 @@ async function showPrev() {
 }
 
 function saveToFile(){
-    sendMessageRikai({action:'save', entries: lastFound}).then(text=>{
+    sendMessageRikai({action:'format-text', entries: lastFound}).then(text=>{
         let root = top.document;
         if(text == null) return;
         let link = root.getElementById('rikaichan-file');
@@ -643,13 +643,28 @@ function saveToFile(){
             root.body.appendChild(link);
         }
         let data = new Blob([text], {type: 'text/plain'});
-//        let textFile = ;
         link.href = window.URL.createObjectURL(data);
         link.setAttribute('style','display:none');
         link.download = 'rikaichan.txt';
 
         link.click();
     });
+}
+
+function copyToClipboard(text) {
+    function oncopy(event) {
+        document.removeEventListener("copy", oncopy, true);
+        // Hide the event from the page to prevent tampering.
+        event.stopImmediatePropagation();
+
+        // Overwrite the clipboard content.
+        event.preventDefault();
+        event.clipboardData.setData("text/plain", text);
+    }
+    document.addEventListener("copy", oncopy, true);
+
+    // Requires the clipboardWrite permission, or a user gesture:
+    document.execCommand("copy");
 }
 
 function onKeyDown(ev) {
@@ -690,7 +705,8 @@ function onKeyDown(ev) {
 		break;
 	case 67:	// c
 		if (lastFound) {
-            sendMessageRikai({action:'copy', entries: lastFound}).then(e =>{
+            sendMessageRikai({action:'format-text', entries: lastFound}).then(text =>{
+                copyToClipboard(text);
             	showPopup('Copied to clipboard.');
 			});
 		}

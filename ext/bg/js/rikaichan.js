@@ -49,8 +49,8 @@ window.rikaichanWebEx = new class {
             }
         }
 
-        if (this.options.clipboardAndSave.snlf === 1) text = text.replace(/\n/g, '\r\n');
-        else if (this.options.clipboardAndSave.snlf === 2) text = text.replace(/\n/g, '\r');
+        if (parseInt(this.options.clipboardAndSave.snlf) === 1) text = text.replace(/\n/g, '\r\n');
+        else if (parseInt(this.options.clipboardAndSave.snlf) === 2) text = text.replace(/\n/g, '\r');
 
         let sep = parseInt(this.options.clipboardAndSave.ssep);
         switch (sep) {
@@ -68,19 +68,6 @@ window.rikaichanWebEx = new class {
 
         return text;
 	}
-    copyToClipboard(entries){
-        let text = this.textPrep(entries, true);
-        let c = document.getElementById('clipboard');
-        c.textContent = text;
-        let r = document.createRange();
-        r.setStart(c,0);
-        r.setEnd(c,c.childNodes.length);
-        let s = document.getSelection();
-        s.removeAllRanges();
-        s.addRange(r);
-        document.execCommand('copy');
-	}
-
 	onCommand(command, data) {
 		if(command === 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
@@ -127,10 +114,7 @@ window.rikaichanWebEx = new class {
             this.translator.select(msg.index);
             return {};
         }
-        if(msg.action === 'copy'){
-			this.copyToClipboard(msg.entries);
-		}
-        if(msg.action === 'save'){
+        if(msg.action === 'format-text'){
             let text = this.textPrep(msg.entries, false);
             return Promise.resolve(text);
             //this.saveToFile(msg.entries);
