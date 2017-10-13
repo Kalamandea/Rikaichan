@@ -1,0 +1,18 @@
+{
+  "extensionName": {
+    "message": "Rikaichan",
+    "description": "Name of the extension."
+  },
+  "copyToClipboard":{
+    "message": "Скопировано в буфер обмена.",
+    "description": "Copied to clipboard."
+  },
+  "hidingDefinitions":{
+    "message": "Описание скрыто. Для показа нажмите 'D' снова.",
+    "description": "Copied to clipboard."
+  },
+  "notFound":{
+    "message": "было не найдено.",
+    "description": "Not found."
+  }
+}

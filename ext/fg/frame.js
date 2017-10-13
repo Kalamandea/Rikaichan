@@ -632,38 +632,16 @@ async function showPrev() {
 	}
 }
 
-function saveToFile(){
-    sendMessageRikai({action:'format-text', entries: lastFound}).then(text=>{
-        let root = top.document;
-        if(text == null) return;
-        let link = root.getElementById('rikaichan-file');
-        if(!link){
-            link = root.createElementNS('http://www.w3.org/1999/xhtml', 'a');
-            link.id = 'rikaichan-file';
-            root.body.appendChild(link);
-        }
-        let data = new Blob([text], {type: 'text/plain'});
-        link.href = window.URL.createObjectURL(data);
-        link.setAttribute('style','display:none');
-        link.download = 'rikaichan.txt';
-
-        link.click();
-    });
-}
-
 function copyToClipboard(text) {
     function oncopy(event) {
         document.removeEventListener("copy", oncopy, true);
         // Hide the event from the page to prevent tampering.
         event.stopImmediatePropagation();
-
         // Overwrite the clipboard content.
         event.preventDefault();
         event.clipboardData.setData("text/plain", text);
     }
     document.addEventListener("copy", oncopy, true);
-
-    // Requires the clipboardWrite permission, or a user gesture:
     document.execCommand("copy");
 }
 
@@ -700,20 +678,20 @@ function onKeyDown(ev) {
 		break;
 	case 68:	// d
 		config.hidedef = !config.hidedef;
-		if (config.hidedef) showPopup('Hiding definitions. Press "D" to show again.');
+		if (config.hidedef) showPopup(browser.i18n.getMessage("hidingDefinitions"));
 			else show();
 		break;
 	case 67:	// c
 		if (lastFound) {
-            sendMessageRikai({action:'format-text', entries: lastFound}).then(text =>{
+            sendMessageRikai({action:'get-format-text', entries: lastFound}).then(text =>{
                 copyToClipboard(text);
-            	showPopup('Copied to clipboard.');
+            	showPopup(browser.i18n.getMessage("copyToClipboard"));
 			});
 		}
 		break;
 	case 83:	// s
 		if (lastFound) {
-            saveToFile();
+            sendMessageRikai({action:'save', entries: lastFound});
 		}
 		break;
 	case 66:	// b
@@ -866,7 +844,7 @@ function lookup(text, checkSelected) {
 	// })[0];
 
 	if (!result) {
-		showPopup('\u300C ' + text + ' \u300D was not found.', null, null, true);
+		showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
 		lastFound = null;
 		return;
 	}

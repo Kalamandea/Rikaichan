@@ -13,7 +13,16 @@ window.rikaichanWebEx = new class {
 			);
             browser.commands.onCommand.addListener(this.onCommand.bind(this));
             browser.runtime.onMessage.addListener(this.onMessage.bind(this));
-
+            browser.menus.create({
+                id: "rikaichan",
+                title: browser.i18n.getMessage("extensionName"),
+                contexts: ["all"]
+            }, null);
+            browser.menus.onClicked.addListener((info, tab) => {
+                if (info.menuItemId === "rikaichan") {
+                    commandExec('toggle')
+                }
+            });
 		});
 	}
 
@@ -68,6 +77,17 @@ window.rikaichanWebEx = new class {
 
         return text;
 	}
+
+	saveToFile(entries){
+        let text = this.textPrep(entries, true);
+        if(text == null) return;
+        let data = new Blob([text], {type: 'text/plain'});
+        browser.downloads.download({
+            url : window.URL.createObjectURL(data),
+            filename : 'rikaichan.txt',
+            conflictAction : 'uniquify'
+        }).then(null, (e)=>{console.log(e)});
+    }
 	onCommand(command, data) {
 		if(command === 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
@@ -103,7 +123,9 @@ window.rikaichanWebEx = new class {
 		}
 
 		if((msg.action === 'insert-frame') && this.options.general.enable){
-            fgBroadcast("enable", this.options.general.enable);
+            fileLoad(browser.extension.getURL('/bg/minihelp.html')).then(file =>{
+                fgBroadcast("enable", file);
+            });
 		}
 
         if (msg.action === 'data-next') {
@@ -114,10 +136,12 @@ window.rikaichanWebEx = new class {
             this.translator.select(msg.index);
             return {};
         }
-        if(msg.action === 'format-text'){
+        if(msg.action === 'save'){
+		    this.saveToFile(msg.entries);
+        }
+        if(msg.action === 'get-format-text'){
             let text = this.textPrep(msg.entries, false);
             return Promise.resolve(text);
-            //this.saveToFile(msg.entries);
         }
         // console.log('text=', msg.text);
 		// console.log('\nonContentMessage');
