@@ -200,7 +200,7 @@ optionsLoad().then(options => {
     dictOrder = options.dictOrder.slice(0);
     dictList = Object.assign({},options.dictionaries);
     for(const group in options){
-        if (group == 'general' || group == 'dictOptions' || group == 'kanjiDictionary'){
+        if (group !== 'dictionaries' && group !== 'dictOrder'){
             for (const pref in options[group]){
                 let el = document.getElementById(group+'.'+pref);
                 if(el==null){

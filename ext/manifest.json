@@ -26,7 +26,8 @@
     ],
 	"content_scripts": [{
       "js": [
-        "fg/frame.js"
+        "fg/frame.js",
+        "lib/wanakana.min.js"
       ],
       "matches": [
         "file://*/*",

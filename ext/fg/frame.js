@@ -653,6 +653,16 @@ function onKeyDown(ev) {
 	if ((config.nopopkeys) && (ev.keyCode != 16)) return;
 	if (ev.repeat) return;
 
+    if (ev.keyCode=13 && ev.target.id ==='rikaichan-toolbar'){
+        sendMessageRikai({action:'word-search', text: ev.target.value}).then(e=>{
+        	if(!e){
+                showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
+			}else{
+                showPopup(e.html);
+			}
+        });
+        return;
+    }
 	if (!isVisible()) return;
 
 	switch (ev.keyCode) {
@@ -727,12 +737,12 @@ function updateOptions(options) {
         if (!style){
             style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
             style.id = 'rikaichan-skin';
-            top.document.head.appendChild(style);
+            root.head.appendChild(style);
         }
 		sendMessageRikai({action: 'load-skin'}).then(result => {
 			config.skin = result.skin;
 			style.innerHTML = result.css;
-            top.document.head.appendChild(style);
+            root.head.appendChild(style);
 		});
 	}
 }
@@ -809,6 +819,37 @@ function clearSelected(win) {
 	}
 }
 
+function lookupText() {
+	let text = top.document.getElementById('rikaichan-toolbar-input').value;
+    sendMessageRikai({action:'word-search', text: text}).then(e=>{
+        if(!e){
+            showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
+        }else{
+            showPopup(e.html);
+        }
+    });
+}
+
+function toogleToolbar(state){
+    let root = top.document;
+    let rikaiToolbar = root.getElementById('rikaichan-toolbar');
+    if(!rikaiToolbar){
+        rikaiToolbar = root.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+        rikaiToolbar.id = 'rikaichan-toolbar';
+        let rikaiToolbarInput = root.createElementNS('http://www.w3.org/1999/xhtml', 'input');
+        rikaiToolbarInput.id = 'rikaichan-toolbar-input';
+        let rikaiToolbarBtn = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
+        rikaiToolbarBtn.innerHTML = 'search';
+        rikaiToolbarBtn.onclick = lookupText;
+        rikaiToolbar.appendChild(rikaiToolbarInput);
+        rikaiToolbar.appendChild(rikaiToolbarBtn);
+        root.body.insertBefore(rikaiToolbar, root.body.firstChild);
+        wanakana.bind(rikaiToolbar);
+	}else{
+    	root.body.removeChild(rikaiToolbar);
+	}
+}
+
 function lookup(text, checkSelected) {
 	// console.log('lookup text=', text, ' checkSelected=', checkSelected);
 
@@ -867,11 +908,11 @@ function processMessage (request, sender, sendResponse) {
 	if (!request.action)
 		return;	
 	const action = request.action;
-	if (action == 'enable') {
+	if (action === 'enable') {
 		enable();
 		if (request.action) showPopup(request.data);
 	}
-	else if (action == 'disable') {
+	else if (action === 'disable') {
 		disable();
 	}
 	if(action == 'show'){
@@ -881,6 +922,9 @@ function processMessage (request, sender, sendResponse) {
 	if(action == 'optionsSet'){
 		updateOptions(request.data);
 	}
+    if (action === 'toolbar') {
+        toogleToolbar(request.data);
+    }
 };
 
 browser.runtime.onMessage.addListener(processMessage);

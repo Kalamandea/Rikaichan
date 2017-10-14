@@ -32,6 +32,10 @@ function openOptions(){
 	browser.runtime.openOptionsPage();
 }
 
+function openSearch() {
+    commandExec('toolbar');
+}
+
 optionsLoad().then(options => {
 	let btn = document.getElementById('toggle');
 	state = options.general.enable;
@@ -44,3 +48,4 @@ optionsLoad().then(options => {
 
 document.getElementById('toggle').onclick = rikaiToggle;
 document.getElementById('open-options').onclick = openOptions;
+document.getElementById('open-search').onclick = openSearch;

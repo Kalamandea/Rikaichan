@@ -50,6 +50,7 @@ function optionsSetDefaults(options) {
     const defaults = {
         general: {
             enable: false,
+            toolbarEnable: false,
             highlightText: true,
             tranAltTitle: true,
             selectedInLookupBar: true,
@@ -64,7 +65,7 @@ function optionsSetDefaults(options) {
             toggleContentMenu: true,
             lookupBarContentMenu: false,
             toggleToolsMenu: true,
-            lookupToolsMenu: true
+            lookupToolsMenu: false
         },
         dictionaries: {'kanji':{"name":"kanji","title":"Kanji","version":"2.01.170301",isKanji: true,enabled:true}},
         dictOrder:['kanji'],

@@ -13,6 +13,12 @@ window.rikaichanWebEx = new class {
 			);
             browser.commands.onCommand.addListener(this.onCommand.bind(this));
             browser.runtime.onMessage.addListener(this.onMessage.bind(this));
+		});
+	}
+
+	optionsSet(options) {
+        this.options = JSON.parse(JSON.stringify(options));
+        if(this.options.menus.toggleContentMenu){
             browser.menus.create({
                 id: "rikaichan",
                 title: browser.i18n.getMessage("extensionName"),
@@ -23,11 +29,9 @@ window.rikaichanWebEx = new class {
                     commandExec('toggle')
                 }
             });
-		});
-	}
-
-	optionsSet(options) {
-        this.options = JSON.parse(JSON.stringify(options));
+        }else{
+            browser.menus.remove('rikaichan');
+        }
         if(this.translator){
             this.translator.optionsSet(this.options);
         }
@@ -88,6 +92,7 @@ window.rikaichanWebEx = new class {
             conflictAction : 'uniquify'
         }).then(null, (e)=>{console.log(e)});
     }
+
 	onCommand(command, data) {
 		if(command === 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
@@ -102,6 +107,9 @@ window.rikaichanWebEx = new class {
 		}
 		if(command === 'show-text'){
             fgBroadcast("show", data);
+        }
+        if(command === 'toolbar'){
+            fgBroadcast("toolbar", this.options.general.toolbarEnable);
         }
 	}
 
