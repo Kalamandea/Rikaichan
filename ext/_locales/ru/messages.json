@@ -7,6 +7,10 @@
     "message": "Скопировано в буфер обмена.",
     "description": "Copied to clipboard."
   },
+  "saveToFile":{
+    "message": "Сохранено в файл.",
+    "description": "Copied to clipboard."
+  },
   "hidingDefinitions":{
     "message": "Описание скрыто. Для показа нажмите 'D' снова.",
     "description": "Copied to clipboard."
@@ -14,5 +18,41 @@
   "notFound":{
     "message": "было не найдено.",
     "description": "Not found."
+  },
+  "helpCaption":{
+    "message": "Горячие клавиши",
+    "description": "help caption"
+  },
+  "helpAlternateLocation":{
+    "message": "Альтернативный вид",
+    "description": "Alternate popup location"
+  },
+  "helpCopyToClipboard":{
+    "message": "Скопировать в буфер обмена",
+    "description": "Copy to clipboard"
+  },
+  "helpSaveToFile":{
+    "message": "Сохранить в файл",
+    "description": "Save to file"
+  },
+  "helpHideDefinitions":{
+    "message": "Спрятать/показать описание",
+    "description": "Hide/show definitions"
+  },
+  "helpSwitchDictionaries":{
+    "message": "Переключить словарь",
+    "description": "Switch dictionaries"
+  },
+  "helpPreviousCharacter":{
+    "message": "Предыдущий символ",
+    "description": "Previous character"
+  },
+  "helpNextCharacter":{
+    "message": "Следующий символ",
+    "description": "Next character"
+  },
+  "helpNextWord":{
+    "message": "Следующие слово",
+    "description": "Next word"
   }
 }

@@ -288,6 +288,7 @@ function highlightMatch(doc, rp, ro, matchLen, selEndList) {
 async function show() {
 	let rp = data.prevRangeNode;
 	let ro = data.prevRangeOfs + data.uofs;
+    config.hidedef = false;
 
 	data.uofsNext = 1;
 
@@ -701,7 +702,9 @@ function onKeyDown(ev) {
 		break;
 	case 83:	// s
 		if (lastFound) {
-            sendMessageRikai({action:'save', entries: lastFound});
+            sendMessageRikai({action:'save', entries: lastFound}).then(e=>{
+                showPopup(browser.i18n.getMessage("saveToFile"));
+			});
 		}
 		break;
 	case 66:	// b

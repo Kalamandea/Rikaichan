@@ -7,6 +7,10 @@
     "message": "Copied to clipboard.",
     "description": "Copied to clipboard."
   },
+  "saveToFile":{
+    "message": "Saved in file.",
+    "description": "Saved in file."
+  },
   "hidingDefinitions":{
     "message": "Hiding definitions. Press 'D' to show again.",
     "description": "Hiding definitions."
@@ -14,5 +18,41 @@
   "notFound":{
     "message": "was not found.",
     "description": "Not found."
+  },
+  "helpCaption":{
+    "message": "Keys",
+    "description": "help caption"
+  },
+  "helpAlternateLocation":{
+    "message": "Alternate popup location",
+    "description": "Alternate popup location"
+  },
+  "helpCopyToClipboard":{
+    "message": "Copy to clipboard",
+    "description": "Copy to clipboard"
+  },
+  "helpSaveToFile":{
+    "message": "Save to file",
+    "description": "Save to file"
+  },
+  "helpHideDefinitions":{
+    "message": "Hide/show definitions",
+    "description": "Hide/show definitions"
+  },
+  "helpSwitchDictionaries":{
+    "message": "Switch dictionaries",
+    "description": "Switch dictionaries"
+  },
+  "helpPreviousCharacter":{
+    "message": "Previous character",
+    "description": "Previous character"
+  },
+  "helpNextCharacter":{
+    "message": "Next character",
+    "description": "Next character"
+  },
+  "helpNextWord":{
+    "message": "Next word",
+    "description": "Next word"
   }
 }

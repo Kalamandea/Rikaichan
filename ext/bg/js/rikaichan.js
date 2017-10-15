@@ -16,6 +16,20 @@ window.rikaichanWebEx = new class {
 		});
 	}
 
+	getHelp(){
+	    return "<table cellspacing=\"5\">\n" +
+            "<tr><td cellspan=\"2\" style=\"font-weight:bold\">Rikaichan " + browser.i18n.getMessage("helpCaption") + "</td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">A</td><td>" + browser.i18n.getMessage("helpAlternateLocation") + "</td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">C</td><td>" + browser.i18n.getMessage("helpCopyToClipboard") + "</td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">S</td><td>" + browser.i18n.getMessage("helpSaveToFile") + "</td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">D</td><td>" + browser.i18n.getMessage("helpHideDefinitions") + "</td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">shift, enter, 1-9</td><td>"  + browser.i18n.getMessage("helpSwitchDictionaries") +  "</td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">B</td><td>" + browser.i18n.getMessage("helpPreviousCharacter") + "</td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">M</td><td>" + browser.i18n.getMessage("helpNextCharacter") +" </td></tr>\n" +
+            "<tr><td style=\"padding-right:1em\">N</td><td>" + browser.i18n.getMessage("helpNextWord") + "</td></tr>\n" +
+            "</table>";
+    }
+
 	optionsSet(options) {
         this.options = JSON.parse(JSON.stringify(options));
         if(this.options.menus.toggleContentMenu){
@@ -96,9 +110,9 @@ window.rikaichanWebEx = new class {
 	onCommand(command, data) {
 		if(command === 'toggle'){
 			this.options.general.enable = !this.options.general.enable;
-			Promise.all([optionsSave(this.options),fileLoad(browser.extension.getURL('/bg/minihelp.html'))]).then(([opt, file]) => {
+			optionsSave(this.options).then(opt => {
 				this.optionsSet(this.options);
-                fgBroadcast(this.options.general.enable ? "enable" : "disable", file);
+                fgBroadcast(this.options.general.enable ? "enable" : "disable", this.getHelp());
                 setIcon(this.options.general.enable);
 			});
 		}
@@ -131,9 +145,7 @@ window.rikaichanWebEx = new class {
 		}
 
 		if((msg.action === 'insert-frame') && this.options.general.enable){
-            fileLoad(browser.extension.getURL('/bg/minihelp.html')).then(file =>{
-                fgBroadcast("enable", file);
-            });
+                fgBroadcast("enable", this.getHelp());
 		}
 
         if (msg.action === 'data-next') {
