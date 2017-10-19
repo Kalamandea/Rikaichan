@@ -362,6 +362,7 @@ function showTitle() {
 function showPopup(text, elem, pos, _lbPop) {
 
 	if (paused) return;
+	if (!text) return;
 
 	let root = top.document;
 
@@ -839,10 +840,12 @@ function toogleToolbar(state){
     if(!rikaiToolbar){
         rikaiToolbar = root.createElementNS('http://www.w3.org/1999/xhtml', 'div');
         rikaiToolbar.id = 'rikaichan-toolbar';
+        rikaiToolbar.setAttribute("class","toolbar");
         let rikaiToolbarInput = root.createElementNS('http://www.w3.org/1999/xhtml', 'input');
         rikaiToolbarInput.id = 'rikaichan-toolbar-input';
         let rikaiToolbarBtn = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
-        rikaiToolbarBtn.innerHTML = 'search';
+        //rikaiToolbarBtn.innerHTML = 'search';
+        rikaiToolbarBtn.setAttribute("class","btn");
         rikaiToolbarBtn.onclick = lookupText;
         rikaiToolbar.appendChild(rikaiToolbarInput);
         rikaiToolbar.appendChild(rikaiToolbarBtn);
