@@ -656,7 +656,7 @@ function onKeyDown(ev) {
 	if ((config.nopopkeys) && (ev.keyCode != 16)) return;
 	if (ev.repeat) return;
 
-    if (ev.keyCode=13 && ev.target.id ==='rikaichan-toolbar'){
+    if (ev.keyCode=13 && ev.target.id ==='rikaichan-toolbar-input'){
         sendMessageRikai({action:'word-search', text: ev.target.value}).then(e=>{
         	if(!e){
                 showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
@@ -843,7 +843,13 @@ function toogleToolbar(state){
         rikaiToolbar.id = 'rikaichan-toolbar';
         rikaiToolbar.setAttribute("class","rikaichan-toolbar-toolbar");
         let rikaiToolbarInput = root.createElementNS('http://www.w3.org/1999/xhtml', 'input');
+        if(document.getSelection().toString() !== ""){
+            rikaiToolbarInput.value = document.getSelection().toString().trim();
+        }
         rikaiToolbarInput.id = 'rikaichan-toolbar-input';
+        //rikaiToolbarInput.onkeydown = (ev) =>{
+        rikaiToolbarInput.onkeydown = onKeyDown;
+
         let rikaiToolbarSearch = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
         rikaiToolbarSearch.setAttribute("class","btn search");
         rikaiToolbarSearch.onclick = lookupText;

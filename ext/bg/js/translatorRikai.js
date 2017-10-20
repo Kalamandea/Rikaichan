@@ -289,7 +289,7 @@ class Translator {
         result.textLen -= text.length;
         return result;
     }
-
+/*
     textSearch(text) {
         this.searchSkipped = 0;
         text = text.toLowerCase();
@@ -346,7 +346,7 @@ class Translator {
         } while (ds != this.selected);
         return null;
     }
-
+*/
     kanjiSearch(kanji) {
         const hex = '0123456789ABCDEF';
         let kde;
@@ -385,16 +385,17 @@ class Translator {
         return result;
     }
 
-    lookupSearch(text){
+    async lookupSearch(text){
         let r = { };
         let html;
-        if ((text.search(/^:/) != -1) || (text.search(/^([^\u3000-\uFFFF]+)$/) != -1)) {
+        //Deprecated in IndexedDB can't search in not key field
+        //if ((text.search(/^:/) != -1) || (text.search(/^([^\u3000-\uFFFF]+)$/) != -1)) {
             // ":word"  = force a text search of "word"
-            r.entries = this.textSearch(text.replace(/^:/, ''));
-        }
-        else {
-            r.entries = this.wordSearch(text, true);
-        }
+            //r.entries = await this.textSearch(text.replace(/^:/, ''));
+        //}
+        //else {
+            r.entries = await this.wordSearch(text, true);
+        //}
         if (!r.entries) return null;
         r.html = this.makeHtml(r.entries);
 

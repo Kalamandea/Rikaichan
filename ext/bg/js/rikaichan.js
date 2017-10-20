@@ -165,6 +165,9 @@ window.rikaichanWebEx = new class {
             let text = this.textPrep(msg.entries, false);
             return Promise.resolve(text);
         }
+        if (msg.action === 'lookup-search'){
+            return this.translator.lookupSearch(msg.text);
+        }
         // console.log('text=', msg.text);
 		// console.log('\nonContentMessage');
 		// console.log('name=' + msg.name);
