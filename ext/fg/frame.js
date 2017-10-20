@@ -91,7 +91,6 @@ function onMouseMove(ev) {
             timer = top.setTimeout(show, config.popdelay);
             //return;
 		});
-		;
 	}
 
 	if (config.title) {
@@ -600,9 +599,9 @@ async function showNext() {
 
         await sendMessageRikai({action:'data-select', index: 0});
 		let r = await show();
-		if (r == 1) break;
-		if (r == -1) {
-			data.prevRangeNode = getNextTextNode(data.prevRangeNode, 0)
+		if (r === 1) break;
+		if (r === -1) {
+			data.prevRangeNode = getNextTextNode(data.prevRangeNode, 0);
 			if (!data.prevRangeNode) break;
 
 			data.prevRangeOfs = 0;
@@ -618,7 +617,7 @@ async function showPrev() {
 	let ofs = data.uofs;
 	while (n-- > 0) {
 		if (--ofs < 0) {
-			data.prevRangeNode = getPrevTextNode(data.prevRangeNode, 0)
+			data.prevRangeNode = getPrevTextNode(data.prevRangeNode, 0);
 			if (!data.prevRangeNode) break;
 
 			ofs = data.prevRangeNode.length - 1;
@@ -630,7 +629,7 @@ async function showPrev() {
 		}
 		data.uofs = ofs;
         await sendMessageRikai({action:'data-select', index: 0});
-		if (await show() != 0) break;
+		if (await show() !== 0) break;
 	}
 }
 
@@ -652,18 +651,25 @@ function onKeyDown(ev) {
 	// console.log('onKeyDown: keyCode=' + ev.keyCode + ' charCode=' + ev.charCode + ' detail=' + ev.detail);
 
 	if ((ev.altKey) || (ev.metaKey) || (ev.ctrlKey)) return;
-	if ((ev.shiftKey) && (ev.keyCode != 16)) return;
-	if ((config.nopopkeys) && (ev.keyCode != 16)) return;
+	if ((ev.shiftKey) && (ev.keyCode !== 16)) return;
+	if ((config.nopopkeys) && (ev.keyCode !== 16)) return;
 	if (ev.repeat) return;
 
-    if (ev.keyCode=13 && ev.target.id ==='rikaichan-toolbar-input'){
-        sendMessageRikai({action:'word-search', text: ev.target.value}).then(e=>{
-        	if(!e){
-                showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
-			}else{
-                showPopup(e.html);
-			}
-        });
+    if (ev.target.id ==='rikaichan-toolbar-input'){
+        switch (ev.keyCode) {
+            case 13:
+                sendMessageRikai({action: 'word-search', text: ev.target.value}).then(e => {
+                    if (!e) {
+                        showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
+                    } else {
+                        showPopup(e.html);
+                    }
+                });
+                break;
+			case 27:
+                hidePopup();
+                clearHi();
+        }
         return;
     }
 	if (!isVisible()) return;
@@ -735,37 +741,30 @@ function onKeyDown(ev) {
 }
 
 function updateOptions(options) {
-	if(options.general.skin != config.skin){
-        let style = top.document.getElementById('rikaichan-skin');
-        let root = top.document;
-        if (!style){
-            style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
-            style.id = 'rikaichan-skin';
-            root.head.appendChild(style);
-        }
-		sendMessageRikai({action: 'load-skin'}).then(result => {
-			config.skin = result.skin;
-			style.innerHTML = result.css;
-            root.head.appendChild(style);
-		});
+	if(options.general.skin !== config.skin){
+        setRikaichanSkin();
 	}
+}
+
+function setRikaichanSkin() {
+    let root = top.document;
+    let style = root.getElementById('rikaichan-skin');
+    if (!style) {
+        style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
+        style.id = 'rikaichan-skin';
+    }
+    sendMessageRikai({action: 'load-skin'}).then(result => {
+            config.skin = result.skin;
+            style.innerHTML = result.css;
+            root.head.appendChild(style);
+        });
 }
 
 function enable() {
 	if (enabled) return;
 	enabled = true;
 	paused = false;
-    let root = top.document;
-    let style = root.getElementById('rikaichan-skin');
-    if (!style){
-        style = root.createElementNS('http://www.w3.org/1999/xhtml', 'style');
-        style.id = 'rikaichan-skin';
-		sendMessageRikai({action: 'load-skin'}).then(result => {
-            config.skin = result.skin;
-            style.innerHTML = result.css;
-            root.head.appendChild(style);
-		});
-	}
+    setRikaichanSkin();
 
 	addEventListener('mousemove', onMouseMove, false);
 	addEventListener('mousedown', onMouseDown, false);
@@ -806,7 +805,7 @@ function getSelected(win) {
 	let s = win.getSelection();
 	if (s) {
 		text = s.toString();
-		if (text.search(/[^\s]/) != -1) return text;
+		if (text.search(/[^\s]/) !== -1) return text;
 	}
 	for (let i = 0; i < win.frames.length; ++i) {
 		text = getSelected(win.frames[i]);
@@ -823,36 +822,25 @@ function clearSelected(win) {
 	}
 }
 
-function lookupText() {
-	let text = top.document.getElementById('rikaichan-toolbar-input').value;
-	if (text.length === 0) return;
-    sendMessageRikai({action:'word-search', text: text}).then(e=>{
-        if(!e){
-            showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
-        }else{
-            showPopup(e.html);
-        }
-    });
-}
 
 function toogleToolbar(state){
     let root = top.document;
     let rikaiToolbar = root.getElementById('rikaichan-toolbar');
     if(!rikaiToolbar){
+        setRikaichanSkin();
         rikaiToolbar = root.createElementNS('http://www.w3.org/1999/xhtml', 'div');
         rikaiToolbar.id = 'rikaichan-toolbar';
         rikaiToolbar.setAttribute("class","rikaichan-toolbar-toolbar");
         let rikaiToolbarInput = root.createElementNS('http://www.w3.org/1999/xhtml', 'input');
-        if(document.getSelection().toString() !== ""){
-            rikaiToolbarInput.value = document.getSelection().toString().trim();
-        }
+        rikaiToolbarInput.value = getSelected(top).substr(0, 30).replace(/^\s+|\s+$/g, '');
+        clearSelected(top);
+
         rikaiToolbarInput.id = 'rikaichan-toolbar-input';
-        //rikaiToolbarInput.onkeydown = (ev) =>{
         rikaiToolbarInput.onkeydown = onKeyDown;
 
         let rikaiToolbarSearch = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
         rikaiToolbarSearch.setAttribute("class","btn search");
-        rikaiToolbarSearch.onclick = lookupText;
+        rikaiToolbarSearch.onclick = lookup;
         let rikaiToolbarCopy = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
         rikaiToolbarCopy.onclick = () => {
             if (!lastFound) return;
@@ -869,57 +857,37 @@ function toogleToolbar(state){
                 });
 		};
         rikaiToolbarSave.setAttribute("class","btn save");
-        /*let rikaiToolbarConfig = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
-        rikaiToolbarConfig.onclick = () =>{
-            browser.runtime.openOptionsPage();
-		};
-        rikaiToolbarConfig.setAttribute("class","btn config");*/
 
         rikaiToolbar.appendChild(rikaiToolbarInput);
         rikaiToolbar.appendChild(rikaiToolbarSearch);
         rikaiToolbar.appendChild(rikaiToolbarCopy);
         rikaiToolbar.appendChild(rikaiToolbarSave);
-        // rikaiToolbar.appendChild(rikaiToolbarConfig);
         root.body.insertBefore(rikaiToolbar, root.body.firstChild);
+        lookup(false);
         wanakana.bind(rikaiToolbarInput);
 	}else{
-    	root.body.removeChild(rikaiToolbar);
+        rikaiToolbar.parentNode.removeChild(rikaiToolbar);
 	}
 }
 
-function lookup(text, checkSelected) {
+async function lookup() {
+    let text = top.document.getElementById('rikaichan-toolbar-input').value;
+    clearSelected(top);
 	// console.log('lookup text=', text, ' checkSelected=', checkSelected);
 
-	if (checkSelected) {
-		let t = getSelected(top).substr(0, 30).replace(/^\s+|\s+$/g, '');
-		clearSelected(top);
-
-		// console.log('lookup: getSelected = ' + t);
-
-		if (t != '') {
-			// sendAsyncMessage('rcx@polarcloud.com:msg', { action: 'lookupbar-set-text', text: t });
-			text = t;
-		}
-
-		if (!text) return;
-	}
-
 	text = text.replace(/^\s+|\s+$/g, '');
-	if (!text.length) return;
+	if (text  === "") return;
 
 
 	if ((lbLast == text) && (isVisible())) {
-		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-next' });
+        await sendMessageRikai({action:'data-next', text: text});
 	}
 	else {
 		lbLast = text;
-		// sendSyncMessage('rcx@polarcloud.com:msg', { action: 'data-select', index: 0 });
+        await sendMessageRikai({action:'data-select', index: 0});
 	}
 
-	let result; //= sendSyncMessage('rcx@polarcloud.com:msg', {
-		// action: 'lookup-search',
-		// text: text
-	// })[0];
+    let result = await sendMessageRikai({action:'lookup-search', text: text});
 
 	if (!result) {
 		showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
@@ -934,8 +902,12 @@ function lookup(text, checkSelected) {
 	for (let i = 0; i < result.kanjis.length; ++i) {
 		kanjis += '<td class="q-k">' + result.kanjis[i].html + '</td>';
 	}
+    let entryHtml = "";
+	if(result.html !== ""){
+		entryHtml = '<td class="q-w">' + result.html + '</td>';
+	}
 
-	showPopup('<table class="q-tb"><tr><td class="q-w">' + result.html + '</td>' + kanjis + '</tr></table>', null, null, true);
+	showPopup('<table class="q-tb"><tr>' + entryHtml + kanjis + '</tr></table>', null, null, true);
 }
 
 
@@ -943,7 +915,7 @@ function lookup(text, checkSelected) {
 
 function processMessage (request, sender, sendResponse) {
 	if (!request.action)
-		return;	
+		return;
 	const action = request.action;
 	if (action === 'enable') {
 		enable();
@@ -962,7 +934,7 @@ function processMessage (request, sender, sendResponse) {
     if (action === 'toolbar') {
         toogleToolbar(request.data);
     }
-};
+}
 
 browser.runtime.onMessage.addListener(processMessage);
 

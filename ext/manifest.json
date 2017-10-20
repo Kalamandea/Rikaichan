@@ -42,6 +42,12 @@
           "default": "Alt+Insert"
         },
         "description": "Toggle text scanning"
+      },
+      "toolbar": {
+        "suggested_key": {
+          "default": "Alt+Delete"
+        },
+        "description": "Toggle lookup bar"
       }
     },
     "applications": {

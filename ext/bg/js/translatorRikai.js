@@ -92,7 +92,7 @@ class Translator {
     }
 
     select(n) {
-        if (n == -1) n = this.kanjiPos;
+        if (n === -1) n = this.kanjiPos;
         if ((n < 0) || (n >= this.dicList.length)) return;
         this.selected = n;
         this.searchSkipped = 0;
@@ -289,64 +289,7 @@ class Translator {
         result.textLen -= text.length;
         return result;
     }
-/*
-    textSearch(text) {
-        this.searchSkipped = 0;
-        text = text.toLowerCase();
-        const dictionaries = this.options.dictionaries;
-        let ds = this.selected;
-        do {
-            let dic = this.dicList[ds];
-            if (!dictionaries[dic].isKanji) {
-                let result = { data: [], reason: [], kanji: 0, more: 0, names: dictionaries[dic].isName };
 
-                let r = dic.findText(text);
-
-                // try priorizing
-                let list = [];
-                let sW = /[\sW]/;
-                let slashText = '/' + text + '/';
-                for (let i = 0; i < r.length; ++i) {
-                    let t = r[i].replace(/\(.+?\)/g, '').toLowerCase();
-
-                    // closer to the beginning = better
-                    let d = t.indexOf(text);
-                    if (d >= 0) {
-                        // the exact text within an entry = best
-                        if (t.replace(/\s+/g, '').indexOf(slashText) != -1) {
-                            d -= 100;
-                        }
-                        // a word within an entry = better
-                        else if (((d == 0) || (sW.test(t.substr(d - 1, 1)))) &&
-                            (((d + text.length) >= t.length) || (sW.test(t.substr(d + text.length, 1))))) {
-                            d -= 50;
-                        }
-                    }
-                    else d = 9999;
-                    list.push({ rank: d, text: r[i] });
-                }
-
-                let max = dictionaries[dic].isName ? this.options.dictOptions.maxName : this.options.dictOptions.maxEntries;
-                list.sort(function(a, b) { return a.rank - b.rank });
-                for (let i = 0; i < list.length; ++i) {
-                    if (result.data.length >= max) {
-                        result.more = 1;
-                        break;
-                    }
-                    result.data.push([list[i].text, null]);
-                }
-
-                if (result.data.length) {
-                    if (ds != 0) result.title = dictionaries[dic].name;
-                    return result;
-                }
-            }
-            this.searchSkipped++;
-            ds = (ds + 1) % this.dicList.length;
-        } while (ds != this.selected);
-        return null;
-    }
-*/
     kanjiSearch(kanji) {
         const hex = '0123456789ABCDEF';
         let kde;
@@ -388,15 +331,9 @@ class Translator {
     async lookupSearch(text){
         let r = { };
         let html;
-        //Deprecated in IndexedDB can't search in not key field
-        //if ((text.search(/^:/) != -1) || (text.search(/^([^\u3000-\uFFFF]+)$/) != -1)) {
-            // ":word"  = force a text search of "word"
-            //r.entries = await this.textSearch(text.replace(/^:/, ''));
-        //}
-        //else {
-            r.entries = await this.wordSearch(text, true);
-        //}
-        if (!r.entries) return null;
+
+        r.entries = await this.wordSearch(text, true);
+        if (!r.entries) //return null;
         r.html = this.makeHtml(r.entries);
 
         let kanji = '';
@@ -408,7 +345,7 @@ class Translator {
             if ((c >= 0x3000) && (c <= 0xFFFF)) {
                 c = t.charAt(i);
                 if (!have[c]) {
-                    let e = this.kanjiSearch(c);
+                    let e = await this.kanjiSearch(c);
                     if (e) {
                         have[c] = true;
                         e.html = this.makeHtml(e);

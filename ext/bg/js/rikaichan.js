@@ -130,69 +130,54 @@ window.rikaichanWebEx = new class {
 	}
 
 	onMessage(msg, sender, callback) {
-
-		if (msg.action === 'word-search') {
-			return this.translator.wordSearch(msg.text).then(e =>{
-				if (e != null){
-					e.html = this.translator.makeHtml(e);
-				}
-				return e;
-			});
-		}
-
-		if (msg.action === 'load-skin'){
-			return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(cssFile =>{
-               return {skin:this.options.general.skin, css:cssFile};
-			});
-		}
-
-		if((msg.action === 'insert-frame') && this.options.general.enable){
-                fgBroadcast("enable", this.getHelp());
-		}
-
-        if (msg.action === 'data-next') {
-            this.translator.selectNext();
-            return {};
-        }
-        if (msg.action === 'data-select') {
-            this.translator.select(msg.index);
-            return {};
-        }
-        if(msg.action === 'save'){
-		    this.saveToFile(msg.entries);
-        }
-        if(msg.action === 'get-format-text'){
-            let text = this.textPrep(msg.entries, false);
-            return Promise.resolve(text);
-        }
-        if (msg.action === 'lookup-search'){
-            return this.translator.lookupSearch(msg.text);
-        }
         // console.log('text=', msg.text);
-		// console.log('\nonContentMessage');
-		// console.log('name=' + msg.name);
-		// console.log('sync=' + msg.sync);
-		// console.log('data=', msg.data);
-		// console.log('target=', msg.target);
-		// console.log('objects=', msg.objects);
-
-		if (msg.action === 'translate') {
-			let e = this.translator.translate(msg.text).then(e => {
-				if (e != null) {
-					e.title = msg.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) {
-						return ('&#' + c.charCodeAt(0) + ';');
-					});
-					if (msg.text.length > e.textLen) e.title += '...';
-					e.html = this.translator.makeHtml(e);
-				}
-                return e;
-			});
-		}
-
-		//TODO add Lookup bar
-		if (msg.action === 'lookup-search') {
-			//return this.translator.lookupSearch(msg.text);
-		}
-
+        // console.log('\nonContentMessage');
+        // console.log('name=' + msg.action);
+        // console.log('sync=' + msg.index);
+        // console.log('data=', msg.entries);
+        switch (msg.action){
+            case "word-search":
+                return this.translator.wordSearch(msg.text).then(e =>{
+                    if (e != null){
+                        e.html = this.translator.makeHtml(e);
+                    }
+                    return e;
+                });
+            case "data-next":
+                this.translator.selectNext();
+                return {};
+            case "data-select":
+                this.translator.select(msg.index);
+                return {};
+            case "save":
+                this.saveToFile(msg.entries);
+                break;
+            case "get-format-text":
+                let text = this.textPrep(msg.entries, false);
+                return Promise.resolve(text);
+                break;
+            case "lookup-search":
+                return this.translator.lookupSearch(msg.text);
+            case "translate":
+                return this.translator.translate(msg.text).then(e => {
+                    if (e != null) {
+                        e.title = msg.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) {
+                            return ('&#' + c.charCodeAt(0) + ';');
+                        });
+                        if (msg.text.length > e.textLen) e.title += '...';
+                        e.html = this.translator.makeHtml(e);
+                    }
+                    return e;
+                });
+            case "insert-frame":
+                if(this.options.general.enable){
+                    fgBroadcast("enable", this.getHelp());
+                }
+                break;
+            case "load-skin":
+                return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(cssFile =>{
+                    return {skin:this.options.general.skin, css:cssFile};
+                });
+       }
 	}
-}
+};
