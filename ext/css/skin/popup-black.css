@@ -219,6 +219,8 @@
 	vertical-align: top;
 }
 
+/*rikaichan toolbar*/
+
 .rikaichan-toolbar-toolbar{
 	display: flex;
 	border: solid 1px #c6c6c6;
@@ -226,12 +228,21 @@
 	border-radius: 4px;
 }
 
-#rikaichan-toolbar .btn{
+#rikaichan-toolbar .rikaichan-input{
+	border-radius: 4px;
+	border: 1px solid #ccc;
+	height: 20px;
+}
+
+#rikaichan-toolbar .rikaichan-btn{
 	height: 22px;
 	width: 22px;
+	margin: 1px;
 	background-repeat: no-repeat;
 	background-position: center;
+	background-color: transparent;
 	border-radius: 4px;
+	border: 1px solid #ccc;
 }
 
 #rikaichan-toolbar .search{

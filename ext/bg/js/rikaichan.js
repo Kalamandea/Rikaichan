@@ -36,17 +36,31 @@ window.rikaichanWebEx = new class {
         this.options = JSON.parse(JSON.stringify(options));
         if(this.options.menus.toggleContentMenu){
             browser.menus.create({
-                id: "rikaichan",
+                id: "rikaichanMain",
                 title: browser.i18n.getMessage("extensionName"),
                 contexts: ["all"]
             }, null);
             browser.menus.onClicked.addListener((info, tab) => {
-                if (info.menuItemId === "rikaichan") {
+                if (info.menuItemId === "rikaichanMain") {
                     commandExec('toggle')
                 }
             });
         }else{
             browser.menus.remove('rikaichan');
+        }
+        if(this.options.menus.lookupBarContentMenu){
+            browser.menus.create({
+                id: "rikaichanToolbar",
+                title: "Rikaichan Toolbar",
+                contexts: ["all"]
+            }, null);
+            browser.menus.onClicked.addListener((info, tab) => {
+                if (info.menuItemId === "rikaichanToolbar") {
+                    commandExec('toolbar')
+                }
+            });
+        }else{
+            browser.menus.remove('rikaichanToolbar');
         }
         if(this.translator){
             this.translator.optionsSet(this.options);

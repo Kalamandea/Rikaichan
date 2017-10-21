@@ -658,13 +658,7 @@ function onKeyDown(ev) {
     if (ev.target.id ==='rikaichan-toolbar-input'){
         switch (ev.keyCode) {
             case 13:
-                sendMessageRikai({action: 'word-search', text: ev.target.value}).then(e => {
-                    if (!e) {
-                        showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
-                    } else {
-                        showPopup(e.html);
-                    }
-                });
+                lookup();
                 break;
 			case 27:
                 hidePopup();
@@ -832,14 +826,13 @@ function toogleToolbar(state){
         rikaiToolbar.id = 'rikaichan-toolbar';
         rikaiToolbar.setAttribute("class","rikaichan-toolbar-toolbar");
         let rikaiToolbarInput = root.createElementNS('http://www.w3.org/1999/xhtml', 'input');
-        rikaiToolbarInput.value = getSelected(top).substr(0, 30).replace(/^\s+|\s+$/g, '');
-        clearSelected(top);
 
         rikaiToolbarInput.id = 'rikaichan-toolbar-input';
+        rikaiToolbarInput.setAttribute("class", "rikaichan-input");
         rikaiToolbarInput.onkeydown = onKeyDown;
 
         let rikaiToolbarSearch = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
-        rikaiToolbarSearch.setAttribute("class","btn search");
+        rikaiToolbarSearch.setAttribute("class","rikaichan-btn rikaichan-search");
         rikaiToolbarSearch.onclick = lookup;
         let rikaiToolbarCopy = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
         rikaiToolbarCopy.onclick = () => {
@@ -848,7 +841,7 @@ function toogleToolbar(state){
                 copyToClipboard(text);
             });
 		};
-        rikaiToolbarCopy.setAttribute("class","btn copy");
+        rikaiToolbarCopy.setAttribute("class","rikaichan-btn rikaichan-copy");
         let rikaiToolbarSave = root.createElementNS('http://www.w3.org/1999/xhtml', 'button');
         rikaiToolbarSave.onclick  = () =>{
             if (!lastFound) return;
@@ -856,7 +849,7 @@ function toogleToolbar(state){
                     showPopup(browser.i18n.getMessage("saveToFile"));
                 });
 		};
-        rikaiToolbarSave.setAttribute("class","btn save");
+        rikaiToolbarSave.setAttribute("class","rikaichan-btn rikaichan-save");
 
         rikaiToolbar.appendChild(rikaiToolbarInput);
         rikaiToolbar.appendChild(rikaiToolbarSearch);
@@ -871,12 +864,17 @@ function toogleToolbar(state){
 }
 
 async function lookup() {
-    let text = top.document.getElementById('rikaichan-toolbar-input').value;
+    let text = getSelected(top).substr(0, 30).replace(/^\s+|\s+$/g, '');
+    if (text === ""){
+        text = top.document.getElementById('rikaichan-toolbar-input').value;
+	}else {
+        top.document.getElementById('rikaichan-toolbar-input').value = text;
+	}
     clearSelected(top);
 	// console.log('lookup text=', text, ' checkSelected=', checkSelected);
 
 	text = text.replace(/^\s+|\s+$/g, '');
-	if (text  === "") return;
+	if (text === "") return;
 
 
 	if ((lbLast == text) && (isVisible())) {
@@ -889,8 +887,8 @@ async function lookup() {
 
     let result = await sendMessageRikai({action:'lookup-search', text: text});
 
-	if (!result) {
-		showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, null, true);
+	if (!result || (result.entries === null && result.kanjis.length === 0)) {
+		showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, {screenX:0, screenY:40}, true);
 		lastFound = null;
 		return;
 	}
@@ -907,7 +905,7 @@ async function lookup() {
 		entryHtml = '<td class="q-w">' + result.html + '</td>';
 	}
 
-	showPopup('<table class="q-tb"><tr>' + entryHtml + kanjis + '</tr></table>', null, null, true);
+	showPopup('<table class="q-tb"><tr>' + entryHtml + kanjis + '</tr></table>', null, {screenX:0, screenY:40}, true);
 }
 
 
