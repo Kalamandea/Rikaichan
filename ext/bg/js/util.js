@@ -63,10 +63,7 @@ function optionsSetDefaults(options) {
             PopDY: 25
         },
         menus: {
-            toggleContentMenu: true,
-            // lookupBarContentMenu: false,
-            toggleToolsMenu: true,
-            lookupToolsMenu: false
+            toggleContentMenu: true
         },
         dictionaries: {'kanji':{"name":"kanji","title":"Kanji","version":"2.01.170301",isKanji: true,enabled:true}},
         dictOrder:['kanji'],

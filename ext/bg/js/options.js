@@ -211,6 +211,7 @@ optionsLoad().then(options => {
                         el.checked = options[group][pref];
                         break;
                     case "number":
+                    case "string":
                         el.value = options[group][pref];
                         break;
                 }
@@ -218,7 +219,6 @@ optionsLoad().then(options => {
         }
     }
 
-    document.getElementById('dict-purge').onclick = onDictionaryPurge;
     document.getElementById('options-form').onchange = onOptionsChanged;
     dictionaryDrawGroups(options);
 });
