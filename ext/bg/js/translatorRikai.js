@@ -264,7 +264,6 @@ class Translator {
             let e = null;
             let ds = this.selected;
             do {
-                //TODO list
                 if (!this.dicList[ds].isKanji) {
                     e = this._wordSearch(text, this.dicList[ds], 1);
                     if (e != null) break;

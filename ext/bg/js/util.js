@@ -47,6 +47,7 @@ function setIcon(toggle){
  */
 
 function optionsSetDefaults(options) {
+    //TODO modify options
     const defaults = {
         general: {
             enable: false,
@@ -59,11 +60,11 @@ function optionsSetDefaults(options) {
             skin:'blue',
             showMiniHelp: true,
             useDPR: false,
-            PopDY: 20
+            PopDY: 25
         },
         menus: {
             toggleContentMenu: true,
-            lookupBarContentMenu: false,
+            // lookupBarContentMenu: false,
             toggleToolsMenu: true,
             lookupToolsMenu: false
         },

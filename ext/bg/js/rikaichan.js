@@ -40,27 +40,22 @@ window.rikaichanWebEx = new class {
                 title: browser.i18n.getMessage("extensionName"),
                 contexts: ["all"]
             }, null);
-            browser.menus.onClicked.addListener((info, tab) => {
-                if (info.menuItemId === "rikaichanMain") {
-                    commandExec('toggle')
-                }
-            });
-        }else{
-            browser.menus.remove('rikaichan');
-        }
-        if(this.options.menus.lookupBarContentMenu){
             browser.menus.create({
                 id: "rikaichanToolbar",
                 title: "Rikaichan Toolbar",
                 contexts: ["all"]
             }, null);
             browser.menus.onClicked.addListener((info, tab) => {
+                if (info.menuItemId === "rikaichanMain") {
+                    commandExec('toggle')
+                }
                 if (info.menuItemId === "rikaichanToolbar") {
                     commandExec('toolbar')
                 }
             });
         }else{
             browser.menus.remove('rikaichanToolbar');
+            browser.menus.remove('rikaichanMain');
         }
         if(this.translator){
             this.translator.optionsSet(this.options);
@@ -187,6 +182,9 @@ window.rikaichanWebEx = new class {
                 if(this.options.general.enable){
                     fgBroadcast("enable", this.getHelp());
                 }
+                break;
+            case "load-options":
+                fgOptionsSet(this.options);
                 break;
             case "load-skin":
                 return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(cssFile =>{

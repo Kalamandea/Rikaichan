@@ -10,6 +10,7 @@ let ignoreMouseTime = 0;
 
 let data = {};
 
+//TODO modify options
 let config = {
 	popdelay: 40,
 	highlight: true,
@@ -69,8 +70,10 @@ function onMouseMove(ev) {
     top.clearTimeout(timer);
 	timer = null;
 
+	//TODO to standart range
 	// Node.TEXT_NODE == 3
 	if ((ev.explicitOriginalTarget.nodeType != 3) && !('form' in ev.target)) {
+	// if ((ev.target.nodeType != 3) && !('form' in ev.target)) {
 		rp = null;
 		ro = -1;
 	}
@@ -93,7 +96,7 @@ function onMouseMove(ev) {
 		});
 	}
 
-	if (config.title) {
+	if (config.options.general.tranAltTitle) {
 		if ((typeof(ev.target.title) == 'string') && (ev.target.title.length)) {
 			data.title = ev.target.title;
 		}
@@ -329,7 +332,7 @@ async function show() {
 	data.uofs = (ro - data.prevRangeOfs);
 
 	// don't try to highlight form elements
-	if ((config.highlight) && (!('form' in data.prevTarget))) {
+	if ((config.options.general.highlightText) && (!('form' in data.prevTarget))) {
 		let doc = data.prevRangeNode.ownerDocument;
 		if (!doc) {
 			clearHi();
@@ -396,7 +399,7 @@ function showPopup(text, elem, pos, _lbPop) {
 				ev.stopPropagation();
 			}, true);
 
-		if (config.resizedoc) {
+		if (config.options.general.enlargeSmallDocuments) {
 			if ((root.body.clientHeight < 1024) && (root.body.style.minHeight == '')) {
 				root.body.style.minHeight = '1024px';
 				root.body.style.overflow = 'auto';
@@ -445,7 +448,7 @@ function showPopup(text, elem, pos, _lbPop) {
 			// mozInnerScreenX * screenPixelsPerCSSPixel -> can't get nsIDOMWindowUtils from here (?)
 
 			// convert xy relative to root document position where popup was inserted
-			if (config.usedpr) {
+			if (config.options.general.useDPR) {
 				let r = top.devicePixelRatio || 1;
 				x = (x / r) - top.mozInnerScreenX;
 				y = (y / r) - top.mozInnerScreenY;
@@ -494,7 +497,7 @@ function showPopup(text, elem, pos, _lbPop) {
 				}
 
 				// below the mouse
-				let v = config.popdy;
+				let v = config.options.general.PopDY;
 
 				// under the popup title
 				if ((elem.title) && (elem.title != '')) v += 20;
@@ -735,6 +738,9 @@ function onKeyDown(ev) {
 }
 
 function updateOptions(options) {
+	config.options = Object.assign({}, options);
+    config.hidedef = config.options.dictOptions.hideDef;
+
 	if(options.general.skin !== config.skin){
         setRikaichanSkin();
 	}
@@ -758,6 +764,7 @@ function enable() {
 	if (enabled) return;
 	enabled = true;
 	paused = false;
+    sendMessageRikai({action: 'load-options'});
     setRikaichanSkin();
 
 	addEventListener('mousemove', onMouseMove, false);
