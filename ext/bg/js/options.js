@@ -15,10 +15,6 @@
  */
 
 
-/*
- * General
- */
-
 let dictList = {};
 let dictOrder = [];
 
@@ -52,41 +48,27 @@ function onOptionsChanged(e) {
     });
 }
 
-/*
- * Dictionary
- */
-
 function dictionaryErrorShow(error) {
         let errorBar = document.getElementById('dict-error');
     if(error){
-        errorBar.setAttribute('class', 'alert alert-danger');
+        errorBar.classList.remove("novisible");
         errorBar.getElementsByTagName('span')[0].innerHTML = error;
     }else{
-        errorBar.setAttribute('class', 'alert alert-danger novisible');
-    }
-}
-
-function dictionarySpinnerShow(show) {
-    const spinner = document.getElementById('dict-spinner');
-    if (show) {
-        spinner.setAttribute('class', 'pull-right novisible');
-    } else {
-        spinner.setAttribute('class', 'pull-right novisible');
+        errorBar.classList.add("novisible");
     }
 }
 
 function dictionaryDrawGroups(options) {
     dictionaryErrorShow(null);
-    dictionarySpinnerShow(true);
     const dictGroups = document.getElementById('dict-groups');
     const dictWarning = document.getElementById('dict-warning');
 
     if (dictOrder.length > 0) {
-        dictGroups.setAttribute('class', 'dict-groups');
-        dictWarning.setAttribute('class','alert alert-warning novisible');
+        dictGroups.classList.remove("novisible");
+        dictWarning.classList.add("novisible");
     }else{
-        dictGroups.setAttribute('class', 'dict-groups novisible');
-        dictWarning.setAttribute('class','alert alert-warning');
+        dictGroups.classList.add("novisible");
+        dictWarning.classList.remove("novisible");
     }
     dictGroups.innerHTML = '';
     let i = 0;
@@ -118,12 +100,11 @@ function dictionaryDrawGroups(options) {
         dict.appendChild(del);
         dictGroups.appendChild(dict);
     }
-    dictionarySpinnerShow(false);
 }
 
 function onDictionaryPurge(e) {
     e.preventDefault();
-    if (dictOrder.length == 0) return;
+    if (dictOrder.length === 0) return;
     const dictGroups = document.getElementById('dict-groups');
     let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
     instDb().purge(dictOrder[orderNum]).then(()=>{
@@ -140,13 +121,12 @@ function onDictionaryPurge(e) {
 
 function onDictionaryImport(e) {
     dictionaryErrorShow(null);
-    dictionarySpinnerShow(true);
 
     const dictFile = document.getElementById('dict-file'); //$('#dict-file');
     const dictImporter =  document.getElementById('dict-file');
     dictImporter.setAttribute('style', 'display:none');
     const dictProgress = document.getElementById('dict-import-progress');
-    dictProgress.setAttribute('class', '');
+    dictProgress.classList.remove("novisible");
     const dictProgressBar = document.getElementById('dict-progress-bar');
     const setProgress = percent => dictProgressBar.setAttribute('style','width:'+percent+'%');// dictProgress.find('.progress-bar').css('width', `${percent}%`);
     const updateProgress = (total, current) => setProgress(current / total * 100.0);
@@ -167,15 +147,14 @@ function onDictionaryImport(e) {
         });
     }).catch(dictionaryErrorShow).then(() => {
         dictFile.value = '';
-        dictionarySpinnerShow(false);
-        dictProgress.setAttribute('class', 'novisible');
+        dictProgress.classList.add("novisible");
         dictImporter.setAttribute('style', '');
     });
 }
 
 function upDictOrder(e) {
     let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
-    if(orderNum == 0)
+    if(orderNum === 0)
         return;
     let p = dictOrder[orderNum-1];
     dictOrder[orderNum-1] = dictOrder[orderNum];
@@ -186,7 +165,7 @@ function upDictOrder(e) {
 
 function downDictOrder(e) {
     let orderNum = parseInt(e.target.parentNode.getAttribute('data-order'));
-    if(orderNum == dictOrder.length-1)
+    if(orderNum === dictOrder.length-1)
         return;
     let p = dictOrder[orderNum+1];
     dictOrder[orderNum+1] = dictOrder[orderNum];

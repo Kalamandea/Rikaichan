@@ -46,3 +46,6 @@ h4{
     grid-column-start: 1;
     grid-column-end: 8;
 }
+.opt-text-danger{
+    font-weight: bold;
+}
