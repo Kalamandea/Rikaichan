@@ -53,8 +53,11 @@ function onMouseMove(ev) {
 		ignoreMouseTime = 0;
 	}
 
-	let rp = ev.rangeParent;
-	let ro = ev.rangeOffset;
+	// let rp = ev.rangeParent;
+	// let ro = ev.rangeOffset;
+	let car = document.caretPositionFromPoint(ev.clientX, ev.clientY);
+	let rp = car.offsetNode;
+	let ro = car.offset;
 
 	if (cursorInPopup(ev)) {
         top.clearTimeout(timer);
@@ -72,8 +75,8 @@ function onMouseMove(ev) {
 
 	//TODO to standart range
 	// Node.TEXT_NODE == 3
-	if ((ev.explicitOriginalTarget.nodeType != 3) && !('form' in ev.target)) {
-	// if ((ev.target.nodeType != 3) && !('form' in ev.target)) {
+	// if ((ev.explicitOriginalTarget.nodeType != 3) && !('form' in ev.target)) {
+	 if ((rp.nodeType != 3) && !('form' in ev.target)) {
 		rp = null;
 		ro = -1;
 	}
@@ -88,7 +91,8 @@ function onMouseMove(ev) {
 	if (ev.button != 0) return;
 	if (lbPop) return;
 
-	if ((rp) && (rp.data) && (ro < rp.data.length)) {
+	// if ((rp) && (rp.data) && (ro < rp.data.length)) {
+	if (rp) {
         return sendMessageRikai({action:'data-select', index: ev.shiftKey ? -1 : 0 }).then(e =>{
             data.pos = { screenX: ev.screenX, screenY: ev.screenY, pageX: ev.pageX, pageY: ev.pageY, clientX: ev.clientX, clientY: ev.clientY };
             timer = top.setTimeout(show, config.popdelay);
@@ -184,7 +188,8 @@ function xhtmlNS() {
 // selEnd: the selection end object will be changed as a side effect
 // maxLength: the maximum length of returned string
 function getInlineText(node, selEndList, maxLength) {
-	if ((node.nodeType == 3) && (node.data.length == 0)) return '';
+	// if ((node.nodeType == 3) && (node.data.length == 0)) return '';
+	if ((node.nodeType === 3) && (node.textContent.length === 0)) return '';
 
 	let text = '';
 	// XPathResult.ORDERED_NODE_ITERATOR_TYPE == 5
@@ -193,8 +198,10 @@ function getInlineText(node, selEndList, maxLength) {
 		node, xhtmlNS, 5, null);
 
 	while ((maxLength > 0) && (node = result.iterateNext())) {
-		text += node.data.substr(0, maxLength);
-		maxLength -= node.data.length;
+        text += node.textContent.substr(0, maxLength);
+		// text += node.data.substr(0, maxLength);
+		maxLength -= node.textContent.length;
+		// maxLength -= node.data.length;
 		selEndList.push(node);
 	}
 
@@ -220,11 +227,17 @@ function getTextFromRange(rangeParent, offset, selEndList, maxLength) {
 	}
 
 	// Node.TEXT_NODE = 3
-	if (rangeParent.nodeType != 3) {
+	/*if (rangeParent.nodeType != 3) {
 		return '';
-	}
+	}*/
+	/*let range = document.createRange();
+	range.setStart(rangeParent, offset);
+	range.setEnd(rangeParent, maxLength);
+	range.toString().substr(offset, maxLength);*/
 
-	let text = rangeParent.data.substr(offset, maxLength);
+    //let text = range.toString().substr(offset, maxLength);
+	// let text = rangeParent.data.substr(offset, maxLength);
+	let text = rangeParent.textContent.substr(offset, maxLength);
 	selEndList.push(rangeParent);
 
 	let nextNode = rangeParent;
@@ -300,15 +313,15 @@ async function show() {
 		return 0;
 	}
 
-	if ((ro < 0) || (ro >= rp.data.length)) {
+	/*if ((ro < 0) || (ro >= rp.data.length)) {
 		clearHi();
 		hidePopup();
 		return -1;
-	}
+	}*/
 
 	//selection end data
 	let selEndList = [];
-	let text = getTextFromRange(rp, ro, selEndList, 13);
+	let text = getTextFromRange(rp, ro, selEndList, 30);
 	if (text.length == 0) {
 		clearHi();
 		hidePopup();
@@ -924,7 +937,7 @@ function processMessage (request, sender, sendResponse) {
 	const action = request.action;
 	if (action === 'enable') {
 		enable();
-		if (request.action) showPopup(request.data);
+		showPopup(request.data);
 	}
 	else if (action === 'disable') {
 		disable();
