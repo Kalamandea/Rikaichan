@@ -11,52 +11,29 @@ window.rikaichanWebEx = new class {
             this.translator.prepare().then(
                 setIcon(options.general.enable)
 			);
-            browser.commands.onCommand.addListener(this.onCommand.bind(this));
-            browser.runtime.onMessage.addListener(this.onMessage.bind(this));
+            chrome.commands.onCommand.addListener(this.onCommand.bind(this));
+            chrome.runtime.onMessage.addListener(this.onMessage.bind(this));
 		});
 	}
 
 	getHelp(){
 	    if (this.options.general.showMiniHelp){
             return "<table cellspacing=\"5\">\n" +
-                "<tr><td cellspan=\"2\" style=\"font-weight:bold\">Rikaichan " + browser.i18n.getMessage("helpCaption") + "</td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">A</td><td>" + browser.i18n.getMessage("helpAlternateLocation") + "</td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">C</td><td>" + browser.i18n.getMessage("helpCopyToClipboard") + "</td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">S</td><td>" + browser.i18n.getMessage("helpSaveToFile") + "</td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">D</td><td>" + browser.i18n.getMessage("helpHideDefinitions") + "</td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">shift, enter, 1-9</td><td>"  + browser.i18n.getMessage("helpSwitchDictionaries") +  "</td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">B</td><td>" + browser.i18n.getMessage("helpPreviousCharacter") + "</td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">M</td><td>" + browser.i18n.getMessage("helpNextCharacter") +" </td></tr>\n" +
-                "<tr><td style=\"padding-right:1em\">N</td><td>" + browser.i18n.getMessage("helpNextWord") + "</td></tr>\n" +
+                "<tr><td cellspan=\"2\" style=\"font-weight:bold\">Rikaichan " + chrome.i18n.getMessage("helpCaption") + "</td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">A</td><td>" + chrome.i18n.getMessage("helpAlternateLocation") + "</td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">C</td><td>" + chrome.i18n.getMessage("helpCopyToClipboard") + "</td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">S</td><td>" + chrome.i18n.getMessage("helpSaveToFile") + "</td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">D</td><td>" + chrome.i18n.getMessage("helpHideDefinitions") + "</td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">shift, enter, 1-9</td><td>"  + chrome.i18n.getMessage("helpSwitchDictionaries") +  "</td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">B</td><td>" + chrome.i18n.getMessage("helpPreviousCharacter") + "</td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">M</td><td>" + chrome.i18n.getMessage("helpNextCharacter") +" </td></tr>\n" +
+                "<tr><td style=\"padding-right:1em\">N</td><td>" + chrome.i18n.getMessage("helpNextWord") + "</td></tr>\n" +
                 "</table>";
         }
     }
 
 	optionsSet(options) {
         this.options = JSON.parse(JSON.stringify(options));
-        if(this.options.menus.toggleContentMenu){
-            browser.menus.create({
-                id: "rikaichanMain",
-                title: browser.i18n.getMessage("extensionName"),
-                contexts: ["all"]
-            }, null);
-            browser.menus.create({
-                id: "rikaichanToolbar",
-                title: "Rikaichan Toolbar",
-                contexts: ["all"]
-            }, null);
-            browser.menus.onClicked.addListener((info, tab) => {
-                if (info.menuItemId === "rikaichanMain") {
-                    commandExec('toggle')
-                }
-                if (info.menuItemId === "rikaichanToolbar") {
-                    commandExec('toolbar')
-                }
-            });
-        }else{
-            browser.menus.remove('rikaichanToolbar');
-            browser.menus.remove('rikaichanMain');
-        }
         if(this.translator){
             this.translator.optionsSet(this.options);
         }
@@ -111,7 +88,7 @@ window.rikaichanWebEx = new class {
         let text = this.textPrep(entries, true);
         if(text == null) return;
         let data = new Blob([text], {type: 'text/plain'});
-        browser.downloads.download({
+        chrome.downloads.download({
             url : window.URL.createObjectURL(data),
             filename : 'rikaichan.txt',
             conflictAction : 'uniquify'
@@ -128,7 +105,7 @@ window.rikaichanWebEx = new class {
 			});
 		}
 		if(command === 'options'){
-			browser.runtime.openOptionsPage();
+			chrome.runtime.openOptionsPage();
 		}
 		if(command === 'show-text'){
             fgBroadcast("show", data);
@@ -138,7 +115,7 @@ window.rikaichanWebEx = new class {
         }
 	}
 
-	onMessage(msg, sender, callback) {
+    onMessage(msg, sender, sendRespons) {
         // console.log('text=', msg.text);
         // console.log('\nonContentMessage');
         // console.log('name=' + msg.action);
@@ -146,29 +123,32 @@ window.rikaichanWebEx = new class {
         // console.log('data=', msg.entries);
         switch (msg.action){
             case "word-search":
-                return this.translator.wordSearch(msg.text).then(e =>{
-                    if (e != null){
-                        e.html = this.translator.makeHtml(e);
-                    }
-                    return e;
+                this.translator.wordSearch(msg.text).then(e =>{
+                   sendRespons(e);
                 });
+                break;
             case "data-next":
                 this.translator.selectNext();
-                return {};
+                sendRespons(true);
+                break;
             case "data-select":
                 this.translator.select(msg.index);
-                return {};
+                sendRespons(true);
+                break;
             case "save":
                 this.saveToFile(msg.entries);
                 break;
             case "get-format-text":
                 let text = this.textPrep(msg.entries, false);
-                return Promise.resolve(text);
+                sendRespons(text);
                 break;
             case "lookup-search":
-                return this.translator.lookupSearch(msg.text);
+                this.translator.lookupSearch(msg.text).then(r=>{
+                    sendRespons(r);
+                });
+                break;
             case "translate":
-                return this.translator.translate(msg.text).then(e => {
+                this.translator.translate(msg.text).then(e => {
                     if (e != null) {
                         e.title = msg.text.substr(0, e.textLen).replace(/[\x00-\xff]/g, function (c) {
                             return ('&#' + c.charCodeAt(0) + ';');
@@ -178,6 +158,7 @@ window.rikaichanWebEx = new class {
                     }
                     return e;
                 });
+                break;
             case "insert-frame":
                 if(this.options.general.enable){
                     fgBroadcast("enable", this.getHelp());
@@ -187,9 +168,10 @@ window.rikaichanWebEx = new class {
                 fgOptionsSet(this.options);
                 break;
             case "load-skin":
-                return fileLoad(browser.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(cssFile =>{
-                    return {skin:this.options.general.skin, css:cssFile};
+                fileLoad(chrome.extension.getURL('/css/skin/popup-' + this.options.general.skin + '.css')).then(cssFile =>{
+                    sendRespons({skin:this.options.general.skin, css:cssFile});
                 });
        }
+       return true;
 	}
 };

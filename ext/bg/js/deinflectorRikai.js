@@ -10,7 +10,7 @@ class DeinflectorRikaichan {
         let ruleGroup = [];
         ruleGroup.fromLen = -1;
 
-        jsonLoad(browser.extension.getURL('/bg/lang/deinflect.json')).then(deinflect=> {
+        jsonLoad('/bg/lang/deinflect.json').then(deinflect=> {
             for(const line of deinflect){
                 if (line.length == 1) {
                     this.reasons.push(line[0]);

@@ -62,8 +62,8 @@ class Translator {
                 await this.database.prepare(dic);
         }
         const promises = [
-            fileLoad(browser.extension.getURL('/bg/lang/kanji.dat')),
-            jsonLoad(browser.extension.getURL('/bg/lang/radicals.json'))
+            fileLoad(chrome.extension.getURL('/bg/lang/kanji.dat')),
+            jsonLoad('/bg/lang/radicals.json')
         ];
         return Promise.all(promises).then(([kanji, radicals]) => {
             this.kanjiData = kanji;
@@ -235,26 +235,32 @@ class Translator {
     }
 
     async wordSearch(word, noKanji) {
-        this.searchSkipped = 0;
-        let ds = this.selected;
-        const dictionaries = this.options.dictionaries;
-        do {
-            let dic = this.dicList[ds];
-            if ((!noKanji) || (!dictionaries[dic].isKanji)) {
-                let e;
-                if (dictionaries[dic].isKanji)
-                    e = await this.kanjiSearch(word.charAt(0));
-                else e = await this._wordSearch(word, dic, null);
-                if (e) {
-                    if (ds != 0)
-                        e.title = dictionaries[dic].name;
-                    return e;
+        //return new Promise((resolve, reject) => {
+            this.searchSkipped = 0;
+            let ds = this.selected;
+            const dictionaries = this.options.dictionaries;
+            do {
+                let dic = this.dicList[ds];
+                if ((!noKanji) || (!dictionaries[dic].isKanji)) {
+                    let e;
+                    if (dictionaries[dic].isKanji)
+                        e = await  this.kanjiSearch(word.charAt(0));
+                else
+                    e = await  this._wordSearch(word, dic, null);
+                    if (e) {
+                        if (ds != 0)
+                            e.title = dictionaries[dic].name;
+                        e.html = this.makeHtml(e);
+                        // resolve(e);
+                        return e;
+                    }
                 }
-            }
-            this.searchSkipped++;
-            ds = (ds + 1) % this.dicList.length;
-        } while (ds != this.selected);
-        return null;
+                this.searchSkipped++;
+                ds = (ds + 1) % this.dicList.length;
+            } while (ds != this.selected);
+            // resolve(null);
+            return null;
+        // });
     }
 
 

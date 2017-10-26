@@ -29,7 +29,7 @@ function rikaiToggle(){
 }
 
 function openOptions(){
-	browser.runtime.openOptionsPage();
+	chrome.runtime.openOptionsPage();
 }
 
 function openSearch() {

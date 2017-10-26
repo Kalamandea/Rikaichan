@@ -18,7 +18,7 @@ function commandExec(command) {
 }
 
 function instRikai() {
-    return browser.extension.getBackgroundPage().rikaichanWebEx;
+    return chrome.extension.getBackgroundPage().rikaichanWebEx;
 }
 
 function instDb() {
@@ -26,9 +26,9 @@ function instDb() {
 }
 
 function fgBroadcast(action, params) {
-    browser.tabs.query({}, tabs => {
+    chrome.tabs.query({}, tabs => {
         for (const tab of tabs) {
-            browser.tabs.sendMessage(tab.id, {action: action, data: params}, () => null);
+            chrome.tabs.sendMessage(tab.id, {action: action, data: params}, () => null);
         }
     });
 }
@@ -39,7 +39,7 @@ function fgOptionsSet(options) {
 
 function setIcon(toggle){
     const icon = toggle ? "/img/Rikai_new_icon_on.png" : "/img/Rikai_new_icon_off.png";
-    browser.browserAction.setIcon({path: icon});
+    chrome.browserAction.setIcon({path: icon});
 }
 
 /*
@@ -120,7 +120,7 @@ function optionsSetDefaults(options) {
 
 function optionsLoad() {
     return new Promise((resolve, reject) => {
-        browser.storage.local.get(null, store => resolve(store.options));
+        chrome.storage.local.get(null, store => resolve(store.options));
     }).then(optionsStr => {
         return optionsStr ? JSON.parse(optionsStr) : {};
     }).catch(error => {
@@ -133,7 +133,7 @@ function optionsLoad() {
 function optionsSave(options) {
     return new Promise((resolve, reject) => {
         //localStorage.setItem('options',JSON.stringify(options));
-        browser.storage.local.set({options: JSON.stringify(options)}, resolve);
+        chrome.storage.local.set({options: JSON.stringify(options)}, resolve);
     }).then(() => {
         instRikai().optionsSet(options);
         fgOptionsSet(options);
@@ -153,7 +153,7 @@ function fileLoad(url) {
         xhr.addEventListener('error', () => reject('failed to execute network request'));
         xhr.open('GET', url);
         xhr.send();
-    }).then(responseText => {
+    })/*.then(responseText => {
         try {
             //return JSON.parse(responseText);
             return responseText;
@@ -161,12 +161,12 @@ function fileLoad(url) {
         catch (e) {
             return Promise.reject('invalid JSON response');
         }
-    });
+    });*/
 }
 
 function jsonLoad(url) {
     return new Promise((resolve, reject) => {
-        resolve(fileLoad(browser.extension.getURL(url)).then(json=> {return json}));
+        resolve(fileLoad(chrome.extension.getURL(url)).then(json=> {return json}));
         reject('failed to execute network request');
     }).then(file => {return JSON.parse(file)});
 }

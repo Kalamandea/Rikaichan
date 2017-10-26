@@ -21,7 +21,6 @@
         "downloads.open",
         "storage",
         "contextMenus",
-        "menus",
         "clipboardWrite"
     ],
 	"content_scripts": [{
@@ -49,11 +48,5 @@
         },
         "description": "Toggle lookup bar"
       }
-    },
-    "applications": {
-        "gecko": {
-            "id": "rikaichan@mozilla.org",
-            "strict_min_version": "51.0"
-        }
     }
 }

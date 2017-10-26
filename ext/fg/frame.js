@@ -26,7 +26,7 @@ let config = {
 function sendMessageRikai(msg){
 	return new Promise((resolve, reject) => {
 		try {
-			browser.runtime.sendMessage(msg, (result) => {
+            chrome.runtime.sendMessage(msg, (result) => {
 				resolve(result);
 			});
 		} catch (e) {
@@ -55,9 +55,17 @@ function onMouseMove(ev) {
 
 	// let rp = ev.rangeParent;
 	// let ro = ev.rangeOffset;
-	let car = document.caretPositionFromPoint(ev.clientX, ev.clientY);
-	let rp = car.offsetNode;
-	let ro = car.offset;
+    let rp = null;
+    let ro = null;
+    if (document.caretPositionFromPoint) {
+        let car = document.caretPositionFromPoint(ev.clientX, ev.clientY);
+        let rp = car.offsetNode;
+        let ro = car.offset;
+    }else{
+        let car = document.caretRangeFromPoint(ev.clientX, ev.clientY);
+        rp = car.startContainer;
+        ro = car.startOffset;
+    }
 
 	if (cursorInPopup(ev)) {
         top.clearTimeout(timer);
@@ -93,11 +101,11 @@ function onMouseMove(ev) {
 
 	// if ((rp) && (rp.data) && (ro < rp.data.length)) {
 	if (rp) {
-        return sendMessageRikai({action:'data-select', index: ev.shiftKey ? -1 : 0 }).then(e =>{
+        sendMessageRikai({action:'data-select', index: ev.shiftKey ? -1 : 0 }).then(e =>{
             data.pos = { screenX: ev.screenX, screenY: ev.screenY, pageX: ev.pageX, pageY: ev.pageY, clientX: ev.clientX, clientY: ev.clientY };
             timer = top.setTimeout(show, config.popdelay);
-            //return;
 		});
+        return;
 	}
 
 	if (config.options.general.tranAltTitle) {
@@ -329,36 +337,36 @@ async function show() {
 	}
 
 	let e = {};
-	e = await sendMessageRikai({action:'word-search', text: text});
+	e = await sendMessageRikai({action:'word-search', text: text})
+	    //console.log(e);
+        if (!e) {
+            hidePopup();
+            clearHi();
+            return 0;
+        }
+
+        lastFound = [e];
+
+        if (!e.matchLen) e.matchLen = 1;
+        data.uofsNext = e.matchLen;
+        data.uofs = (ro - data.prevRangeOfs);
+
+        // don't try to highlight form elements
+        if ((config.options.general.highlightText) && (!('form' in data.prevTarget))) {
+            let doc = data.prevRangeNode.ownerDocument;
+            if (!doc) {
+                clearHi();
+                hidePopup();
+                return 0;
+            }
+            highlightMatch(doc, data.prevRangeNode, ro, e.matchLen, selEndList);
+            data.prevSelView = doc.defaultView;
+        }
+
+        data.titleShown = false;
+        showPopup(e.html, data.prevTarget, data.pos);
+
 	//e = e[0];
-
-	 if (!e) {
-		 hidePopup();
-		 clearHi();
-		 return 0;
-	 }
-
-	lastFound = [e];
-
-	if (!e.matchLen) e.matchLen = 1;
-	data.uofsNext = e.matchLen;
-	data.uofs = (ro - data.prevRangeOfs);
-
-	// don't try to highlight form elements
-	if ((config.options.general.highlightText) && (!('form' in data.prevTarget))) {
-		let doc = data.prevRangeNode.ownerDocument;
-		if (!doc) {
-			clearHi();
-			hidePopup();
-			return 0;
-		}
-		highlightMatch(doc, data.prevRangeNode, ro, e.matchLen, selEndList);
-		data.prevSelView = doc.defaultView;
-	}
-
-	data.titleShown = false;
-	showPopup(e.html, data.prevTarget, data.pos);
-
 	return 1;
 }
 
@@ -389,8 +397,10 @@ function showPopup(text, elem, pos, _lbPop) {
 	let x = 0;
 	let y = 0;
 	if (pos) {
-		x = pos.screenX;
-		y = pos.screenY;
+		x = pos.clientX;
+		// x = pos.screenX;
+		y = pos.clientY;
+		// y = pos.screenY;
 	}
 
 	lbPop = _lbPop;
@@ -463,12 +473,12 @@ function showPopup(text, elem, pos, _lbPop) {
 			// convert xy relative to root document position where popup was inserted
 			if (config.options.general.useDPR) {
 				let r = top.devicePixelRatio || 1;
-				x = (x / r) - top.mozInnerScreenX;
-				y = (y / r) - top.mozInnerScreenY;
+				x = (x / r) - top.screenX;
+				y = (y / r) - top.screenY;
 			}
 			else {
-				x -= top.mozInnerScreenX;
-				y -= top.mozInnerScreenY;
+				x -= top.screenX;
+				y -= top.screenY;
 			}
 
 
@@ -525,7 +535,9 @@ function showPopup(text, elem, pos, _lbPop) {
 		}
 	}
 
+	// popup.style.left = (x + top.scrollX) + 'px';
 	popup.style.left = (x + top.scrollX) + 'px';
+	// popup.style.top = (y + top.scrollY) + 'px';
 	popup.style.top = (y + top.scrollY) + 'px';
 	popup.style.display = '';
 
@@ -660,7 +672,7 @@ function copyToClipboard(text) {
     }
     document.addEventListener("copy", oncopy, true);
     document.execCommand("copy");
-    showPopup(browser.i18n.getMessage("copyToClipboard"));
+    showPopup(chrome.i18n.getMessage("copyToClipboard"));
 }
 
 function onKeyDown(ev) {
@@ -707,7 +719,7 @@ function onKeyDown(ev) {
 		break;
 	case 68:	// d
 		config.hidedef = !config.hidedef;
-		if (config.hidedef) showPopup(browser.i18n.getMessage("hidingDefinitions"));
+		if (config.hidedef) showPopup(chrome.i18n.getMessage("hidingDefinitions"));
 			else show();
 		break;
 	case 67:	// c
@@ -720,7 +732,7 @@ function onKeyDown(ev) {
 	case 83:	// s
 		if (lastFound) {
             sendMessageRikai({action:'save', entries: lastFound}).then(e=>{
-                showPopup(browser.i18n.getMessage("saveToFile"));
+                showPopup(chrome.i18n.getMessage("saveToFile"));
 			});
 		}
 		break;
@@ -754,7 +766,7 @@ function updateOptions(options) {
 	config.options = Object.assign({}, options);
     config.hidedef = config.options.dictOptions.hideDef;
 
-	if(options.general.skin !== config.skin){
+	if(options.general.skin !== config.options.general.skin){
         setRikaichanSkin();
 	}
 }
@@ -768,6 +780,7 @@ function setRikaichanSkin() {
     }
     sendMessageRikai({action: 'load-skin'}).then(result => {
             config.skin = result.skin;
+            // style.innerHTML = result;
             style.innerHTML = result.css;
             root.head.appendChild(style);
         });
@@ -866,7 +879,7 @@ function toogleToolbar(state){
         rikaiToolbarSave.onclick  = () =>{
             if (!lastFound) return;
                 sendMessageRikai({action:'save', entries: lastFound}).then(e=>{
-                    showPopup(browser.i18n.getMessage("saveToFile"));
+                    showPopup(chrome.i18n.getMessage("saveToFile"));
                 });
 		};
         rikaiToolbarSave.setAttribute("class","rikaichan-btn rikaichan-save");
@@ -908,7 +921,7 @@ async function lookup() {
     let result = await sendMessageRikai({action:'lookup-search', text: text});
 
 	if (!result || (result.entries === null && result.kanjis.length === 0)) {
-		showPopup('\u300C ' + text + ' \u300D ' + browser.i18n.getMessage("notFound"), null, {screenX:0, screenY:40}, true);
+		showPopup('\u300C ' + text + ' \u300D ' + chrome.i18n.getMessage("notFound"), null, {screenX:0, screenY:40}, true);
 		lastFound = null;
 		return;
 	}
@@ -954,6 +967,6 @@ function processMessage (request, sender, sendResponse) {
     }
 }
 
-browser.runtime.onMessage.addListener(processMessage);
+chrome.runtime.onMessage.addListener(processMessage);
 
 sendMessageRikai({action:'insert-frame'});
