@@ -49,3 +49,18 @@ h4{
 .opt-text-danger{
     font-weight: bold;
 }
+
+.opt-label{
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+.opt-select{
+    grid-column-start: 3;
+    grid-column-end: 8;
+}
+
+.opt-group{
+    margin-bottom: 15px;
+    display: grid;
+}
