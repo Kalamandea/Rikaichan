@@ -3,7 +3,7 @@
     "name": "Rikaichan",
     "version": "4.0.0",
     "description": "Japanese dictionary",
-    "author": "ffjon",
+    "author": "Kalamandea",
     "default_locale": "en",
 	"icons": {"16": "img/Rikai_new_icon_on.png", "48": "img/Rikai_new_icon_on.png", "128": "img/Rikai_new_icon_on.png"},
 	"browser_action": {
