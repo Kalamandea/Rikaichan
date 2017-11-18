@@ -201,7 +201,7 @@ window.rikaichanWebEx = new class {
                 });
             case "insert-frame":
                 if(this.options.general.enable){
-                    fgBroadcast("enable", this.getHelp());
+                    fgBroadcast("enable");
                 }
                 break;
             case "load-options":

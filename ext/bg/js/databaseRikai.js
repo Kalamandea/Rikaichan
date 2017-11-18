@@ -67,9 +67,6 @@ class DatabaseRikaichan {
         let self = this;
         let summary = null;
         const termsLoaded = (index, entries, total, current) => {
-            if(self.dbList[index.name]){
-                return Promise.reject('Dictionary ' + index.name + ' already initialized');
-            }
             const rows = [];
             let ch = 0;
             for (const line of entries) {
@@ -84,9 +81,13 @@ class DatabaseRikaichan {
                 }
             }
             summary = Object.assign({},index);
-            return self.prepare(index.name).then(()=> {
+            if(self.dbList[index.name]){
                 return self.dbList[index.name].terms.bulkAdd(rows);
-            });
+            }else{
+                return self.prepare(index.name).then(()=> {
+                    return self.dbList[index.name].terms.bulkAdd(rows);
+                });
+            }
         };
 
         return zipLoadDb(archive, termsLoaded).then(() => summary);
