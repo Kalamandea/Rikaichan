@@ -196,16 +196,31 @@ function zipLoadDb(archive, termsLoaded) {
             }
             return index
         }).then(index =>{
-            const dict = files['Dict.json'];
-            if (!dict) {
-                return Promise.reject('missing Dictionary file');
-            }
             const loaders = [];
-            loaders.push(() => dict.async('string').then(dictJson => {
-                const lines = JSON.parse(dictJson);
-                let banksLoaded = 0;
-                return termsLoaded(index, lines, 1, banksLoaded++);
-            }));
+            if(!index.banksCount){
+                const dict = files['Dict.json'];
+                if (!dict) {
+                    return Promise.reject('missing Dictionary file');
+                }
+                loaders.push(() => dict.async('string').then(dictJson => {
+                    const lines = JSON.parse(dictJson);
+                    let banksLoaded = 0;
+                    return termsLoaded(index, lines, 1, banksLoaded++);
+                }));
+            }else{
+                for (let i = 0; i <= index.banksCount; ++i) {
+                    const bankFile = files[`Dict_${i}.json`];
+                    if (!bankFile) {
+                        return Promise.reject('missing term bank in Dictionary file');
+                    }
+
+                    loaders.push(() => bankFile.async('string').then(bankJson => {
+                        const bank = JSON.parse(bankJson);
+                        let banksLoaded = 0;
+                        return termsLoaded(index, bank, 1, banksLoaded++);
+                    }));
+                }
+            }
 
             let chain = Promise.resolve();
             for (const loader of loaders) {
