@@ -26,7 +26,7 @@ function instDb() {
 }
 
 function fgBroadcast(action, params) {
-    browser.tabs.query({}, tabs => {
+    browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
         for (const tab of tabs) {
             browser.tabs.sendMessage(tab.id, {action: action, data: params}, () => null);
         }
@@ -195,7 +195,7 @@ function zipLoadDb(archive, termsLoaded) {
                 return Promise.reject('unrecognized dictionary format');
             }
             return index
-        }).then(index =>{
+        }).then(async index =>{
             const loaders = [];
             if(!index.banksCount){
                 const dict = files['Dict.json'];
@@ -214,18 +214,18 @@ function zipLoadDb(archive, termsLoaded) {
                         return Promise.reject('missing term bank in Dictionary file');
                     }
 
-                    loaders.push(() => bankFile.async('string').then(bankJson => {
+                    await bankFile.async('string').then(bankJson => {
                         const bank = JSON.parse(bankJson);
                         let banksLoaded = 0;
-                        return termsLoaded(index, bank, 1, banksLoaded++);
-                    }));
+                        return termsLoaded(index, bank, index.banksCount+1, i+1);
+                    });
                 }
             }
-            let chain = Promise.resolve();
+            /*let chain = Promise.resolve();
             for (const loader of loaders) {
                 chain = chain.then(loader);
-            }
-            return chain;
+            }*/
+            return Promise.resolve();
         });
     });
 }

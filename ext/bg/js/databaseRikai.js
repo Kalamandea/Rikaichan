@@ -77,7 +77,7 @@ class DatabaseRikaichan {
                     entry:line[2]
                 });
                 if (callback) {
-                    callback(entries.length, ch);
+                    callback(total, current);
                 }
             }
             summary = Object.assign({},index);
