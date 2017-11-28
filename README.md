@@ -17,12 +17,4 @@ Hiragana, katakana and half-width katakana are treated the same making it possib
 
 Please download and import one or more dictionary files to use with Rikaichan.
 
-* [Japanese - English](https://drive.google.com/file/d/0BwVl0WUbZr5QRU50MkRlY2d2TTg/view)
-* [Japanese Names](https://drive.google.com/file/d/0BwVl0WUbZr5QVkVKV29rOGUtR00/view)
-* [Japanese - Dutch](https://drive.google.com/file/d/0BwVl0WUbZr5QVWgtdGlSek90b28/view)
-* [Japanese - French](https://drive.google.com/file/d/0BwVl0WUbZr5QWWRwdExMUEhSYTA/view)
-* [Japanese - German](https://drive.google.com/file/d/0BwVl0WUbZr5QZUtrQ1ZKVmVCZ0k/view)
-* [Japanese - Hungarian](https://drive.google.com/file/d/0BwVl0WUbZr5QSmt5SWNXM1pIOTQ/view)
-* [Japanese - Russian](https://drive.google.com/file/d/0BwVl0WUbZr5QNmxURXBwNWJFU00/view)
-* [Japanese - Thai](https://drive.google.com/file/d/0BwVl0WUbZr5QcDlGZ3Nac3hQWUk/view)
-* [Japanese - Vietnamese/English](https://drive.google.com/file/d/0BwVl0WUbZr5QNnJvN3RTR2RHRVk/view)
+[Drive folder](https://drive.google.com/open?id=0BwVl0WUbZr5QQkpEdV9YS1RYNDg)
