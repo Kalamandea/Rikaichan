@@ -26,7 +26,7 @@ function instDb() {
 }
 
 function fgBroadcast(action, params) {
-    chrome.tabs.query({active: true, currentWindow: true}).then(tabs => {
+    chrome.tabs.query({}, tabs => {
         for (const tab of tabs) {
             chrome.tabs.sendMessage(tab.id, {action: action, data: params}, () => null);
         }
