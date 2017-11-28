@@ -22,7 +22,7 @@
 
 #rikaichan-window { 
 	position: absolute;
-	z-index: 7777;
+	z-index: 999999999;
 	border: 1px solid #999 !important;
 	padding: 10px;
 	background: #FFF;
