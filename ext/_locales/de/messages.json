@@ -1,0 +1,58 @@
+{
+  "extensionName": {
+    "message": "Rikaichan",
+    "description": "Name of the extension."
+  },
+  "copyToClipboard":{
+    "message": "In Zwischenablage kopiert.",
+    "description": "Copied to clipboard."
+  },
+  "saveToFile":{
+    "message": "Datei gespeichert.",
+    "description": "Saved in file."
+  },
+  "hidingDefinitions":{
+    "message": "Bedeutung ausgeblendet. Zum Einblenden 'D' drücken.",
+    "description": "Hiding definitions."
+  },
+  "notFound":{
+    "message": "nicht gefunden.",
+    "description": "Not found."
+  },
+  "helpCaption":{
+    "message": "Keys",
+    "description": "help caption"
+  },
+  "helpAlternateLocation":{
+    "message": "Popup-Position ändern",
+    "description": "Alternate popup location"
+  },
+  "helpCopyToClipboard":{
+    "message": "In Zwischenablage kopieren",
+    "description": "Copy to clipboard"
+  },
+  "helpSaveToFile":{
+    "message": "Als Datei speichern",
+    "description": "Save to file"
+  },
+  "helpHideDefinitions":{
+    "message": "Bedeutung ein-/ausblenden",
+    "description": "Hide/show definitions"
+  },
+  "helpSwitchDictionaries":{
+    "message": "Wörterbuch auswählen",
+    "description": "Switch dictionaries"
+  },
+  "helpPreviousCharacter":{
+    "message": "Vorheriges Zeichen",
+    "description": "Previous character"
+  },
+  "helpNextCharacter":{
+    "message": "Nächstes Zeichen",
+    "description": "Next character"
+  },
+  "helpNextWord":{
+    "message": "Nächstes Wort",
+    "description": "Next word"
+  }
+}
